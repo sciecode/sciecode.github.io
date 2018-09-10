@@ -20,7 +20,7 @@ function init( renderer, scene, camera, width, height ) {
 	composer.setSize( width, height );
 
 	var renderPass = new THREE.RenderPass( scene, camera );
-	var bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width, height ), 0.2, 0.0, 0.2 );
+	var bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width, height ), 0.25, 0.0, 0.2 );
 	var copyPass = new THREE.ShaderPass( THREE.CopyShader );
 	copyPass.renderToScreen = true;
 

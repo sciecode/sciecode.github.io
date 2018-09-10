@@ -1,6 +1,7 @@
 var glslify = require('glslify');
 
 var mouse = require('./mouse');
+var settings = require('./settings.js');
 var shaderParse = require('../helpers/shaderParse');
 
 var undef;
@@ -71,7 +72,9 @@ function init( renderer ) {
 	        mousePosition: { type: 'v3', value: new THREE.Vector3(0,0,0) },
 	        mousePrev: { type: 'v3', value: new THREE.Vector3(0,0,0) },
 	        mouseVelocity: { type: 'v3', value: new THREE.Vector3(0,0,0) },
-	        mouseRadius: { type: 'f', value: 20 },
+	        mouseRadius: { type: 'f', value: settings.radius },
+	        viscosity: { type: 'f', value: settings.viscosity },
+	        elasticity: { type: 'f', value: settings.elasticity },
 	        defaultPosition: { type: 't', value: _createPositionTexture().texture },
 	        dim: { type: 'f', value: dim },
 	        time: { type: 'f', value: 0 },
@@ -142,6 +145,9 @@ function _updateVelocity() {
     _vtt2 = tmp;
 
     _mesh.material = _velocityShader;
+    _velocityShader.uniforms.mouseRadius.value = settings.radius;
+	_velocityShader.uniforms.viscosity.value = settings.viscosity;
+	_velocityShader.uniforms.elasticity.value = settings.elasticity;
     _velocityShader.uniforms.textureVelocity.value = _vtt2.texture;
     _velocityShader.uniforms.texturePosition.value = _rtt.texture;
     _velocityShader.uniforms.mousePosition.value.copy( mouse.position );

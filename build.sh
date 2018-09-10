@@ -1,1 +1,1 @@
-browserify -t glslify src/index.js | uglifyjs > js/bundle.js
+browserify -t [ glslify ] src/index.js | uglifyjs > js/bundle.js

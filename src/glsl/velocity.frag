@@ -9,8 +9,11 @@ uniform vec3 mousePosition;
 uniform vec3 mousePrev;
 uniform vec3 mouseVelocity;
 uniform float mouseRadius;
+uniform float viscosity;
+uniform float elasticity;
 uniform float dim;
 uniform float time;
+
 
 #define PI 3.1415926535897932384626433832795
 
@@ -52,7 +55,7 @@ void main() {
 
     vec3 offset = (pos - cur);
 
-    vel += offset*0.02 - vel * 0.1;
+    vel += offset*elasticity - vel * viscosity;
 
     //float dist = length(cur - mousePosition) / mouseRadius;
     vec2 dist = distToSegment(mousePrev, mousePosition, cur) / mouseRadius;

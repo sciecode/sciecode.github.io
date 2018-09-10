@@ -1,5 +1,6 @@
 var glslify = require('glslify');
 
+var settings = require('./settings');
 var lights = require('./lights');
 var fbo = require('./fbo');
 var shaderParse = require('../helpers/shaderParse');
@@ -8,11 +9,16 @@ var undef;
 var mesh;
 var particles;
 
+var _color1;
+var _color2;
+
 exports.init = init;
 exports.update = update;
 exports.mesh = mesh = undef;
 
 function init() {
+	_color1 = new THREE.Color(settings.color1);
+    _color2 = new THREE.Color(settings.color2);
 	var AMOUNT = fbo.AMOUNT;
 
 	var position = new Float32Array(AMOUNT * 3);
@@ -37,14 +43,17 @@ function init() {
 	            texturePosition: { type: "t", value: null },
 	            pointSize: { type: "f", value: 1 },
 	            lightPos: { type: 'v3', value: lights.mesh.position },
-	            color1: { type: 'c', value: ( new THREE.Color( 0x2095cc) ) },
-	            color2: { type: 'c', value: ( new THREE.Color( 0x20cc31) ) }
+	            color1: { type: 'c', value: undef },
+	            color2: { type: 'c', value: undef }
 	        } ]),
 	    vertexShader: shaderParse(glslify('../glsl/render.vert')),
 	    fragmentShader: shaderParse(glslify('../glsl/render.frag')),
 	    lights: true,
 	    blending: THREE.NoBlending
 	} );
+
+	renderShader.uniforms.color1.value = _color1;
+	renderShader.uniforms.color2.value = _color2;
 
 	particles = exports.mesh = new THREE.Points( geometry, renderShader );
 
@@ -66,6 +75,8 @@ function init() {
 }
 
 function update() {
+	_color1.setStyle(settings.color1);
+    _color2.setStyle(settings.color2);
 	particles.material.uniforms.texturePosition.value = fbo.rtt.texture;
     particles.customDistanceMaterial.uniforms.texturePosition.value = fbo.rtt.texture;
 }

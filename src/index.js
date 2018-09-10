@@ -2,6 +2,7 @@ var OrbitControls = require('./controls/OrbitControls.js');
 
 var postprocessing =  require('./postprocessing/composer');
 
+var settings = require('./modules/settings.js');
 var fbo = require('./modules/fbo');
 var lights = require('./modules/lights');
 var floor = require('./modules/floor');
@@ -24,7 +25,7 @@ camera.position.z = -100;
 camera.position.y = 110;
 camera.position.x = 160;
 
-controls = new THREE.OrbitControls( camera );
+controls = new THREE.OrbitControls( camera, renderer.domElement );
 controls.enablePan = false;
 controls.maxDistance = 200;
 controls.minDistance = 150;
@@ -32,6 +33,15 @@ controls.minPolarAngle = 0.8;
 controls.maxPolarAngle = Math.PI * 2 / 5 ;
 controls.target.y = 0;
 controls.update();
+
+var gui = new dat.GUI();
+gui.add(settings, 'radius', 10, 50).listen();
+gui.add(settings, 'viscosity', 0.05, 0.3).listen();
+gui.add(settings, 'elasticity', 0.005, 0.1).listen();
+gui.addColor(settings, 'color1').name('primary color').listen();
+gui.addColor(settings, 'color2').name('secondary color').listen();
+gui.add(settings, 'reset');
+gui.open();
 
 postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
 
