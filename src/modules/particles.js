@@ -1,5 +1,6 @@
 var glslify = require('glslify');
 
+var lights = require('./lights');
 var fbo = require('./fbo');
 var shaderParse = require('../helpers/shaderParse');
 
@@ -34,7 +35,9 @@ function init() {
 	        THREE.UniformsLib.ambient,
 	        {
 	            texturePosition: { type: "t", value: null },
+	            textureDefaultPosition: { type: 't', value: fbo.defaultPos },
 	            pointSize: { type: "f", value: 1 },
+	            lightPos: { type: 'v3', value: lights.mesh.position },
 	            color1: { type: 'c', value: ( new THREE.Color( 0x2095cc) ) },
 	            color2: { type: 'c', value: ( new THREE.Color( 0x20cc31) ) }
 	        } ]),
@@ -48,7 +51,7 @@ function init() {
 
 	particles.customDistanceMaterial = new THREE.ShaderMaterial( {
 	    uniforms: {
-	        lightPos: { type: 'v3', value: new THREE.Vector3( 0, 150, 0 ) },
+	        lightPos: { type: 'v3', value: lights.mesh.position },
 	        texturePosition: { type: 't', value: null }
 	    },
 	    vertexShader: shaderParse(glslify('../glsl/distance.vert' )),

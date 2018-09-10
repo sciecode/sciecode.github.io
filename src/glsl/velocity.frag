@@ -6,12 +6,34 @@ uniform sampler2D texturePosition;
 uniform sampler2D textureVelocity;
 uniform sampler2D defaultPosition;
 uniform vec3 mousePosition;
+uniform vec3 mousePrev;
 uniform vec3 mouseVelocity;
 uniform float mouseRadius;
 uniform float dim;
 uniform float time;
 
 #define PI 3.1415926535897932384626433832795
+
+vec2 distToSegment( vec3 x1, vec3 x2, vec3 x0 ) {
+    vec3 v = x2 - x1;
+    vec3 w = x0 - x1;
+
+    float c1 = dot(w,v);
+    float c2 = dot(v,v);
+
+    if ( c1 <= 0.0 ) {
+        return vec2( distance( x0, x1 ), 0.0 );
+    }
+    if ( c2 <= c1) {
+        return vec2( distance( x0, x2), 1.0 );
+    }
+
+    float b = c1 / c2;
+    vec3 pb = x1 + b*v;
+    return vec2( distance( x0, pb ), b );
+}
+
+
 void main() {
 
     vec2 uv = gl_FragCoord.xy / resolution.xy;
@@ -32,10 +54,11 @@ void main() {
 
     vel += offset*0.02 - vel * 0.1;
 
-    float dist = length(cur - mousePosition) / mouseRadius;
+    //float dist = length(cur - mousePosition) / mouseRadius;
+    vec2 dist = distToSegment(mousePrev, mousePosition, cur) / mouseRadius;
 
-    if ( dist <= 1.0 ) {
-        vel += (normalize(cur - mousePosition) * mix(2.0, 0.5, dist) + mouseVelocity * 0.2);
+    if ( dist.x <= 1.0 ) {
+        vel += (normalize(cur - (mousePrev + (mousePosition - mousePrev)* dist.y )) * mix(2.0, 0.5, smoothstep(0.2, 0.9, dist.x) ) + rand * 0.8 );
     }
 
     gl_FragColor = vec4( vel, 1.0 );

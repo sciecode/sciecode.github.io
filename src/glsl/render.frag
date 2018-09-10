@@ -1,6 +1,10 @@
 precision highp float;
 
 varying float ratio;
+varying vec3 pos;
+varying vec3 defaultPos;
+
+uniform vec3 lightPos;
 uniform vec3 color1;
 uniform vec3 color2;
 
@@ -15,8 +19,11 @@ uniform vec3 color2;
 void main() {
     vec3 outgoingLight = mix(color2, color1, mix(0.0, 1.0, ratio));
 
+    vec3 light = normalize(lightPos-pos);
+    float luminosity = smoothstep(0.9,1.0,(max( 0.0, dot( vec3(0.0, 1.0, 0.0), light) ) ) ); 
 
-    outgoingLight *= 0.1 + pow(0.55 + vec3(getShadowMask()) * 0.45, vec3(1.5)) * 0.9;
+    outgoingLight *= 0.65 + luminosity*0.35;
+    outgoingLight *= 0.4 + pow(0.8 + vec3(getShadowMask()) * 0.2, vec3(1.5)) * 0.6;
 
     // chunk(fog_fragment);
 

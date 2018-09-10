@@ -10,6 +10,8 @@ var _scene;
 var _camera;
 var _renderer;
 
+
+var defaultPos;
 var _copyShader;
 var _positionShader;
 var _velocityShader;
@@ -21,7 +23,7 @@ var _vtt2;
 var width = TEXTURE_WIDTH = 512;
 var height = TEXTURE_HEIGHT = 512;
 var AMOUNT = width * height;
-var dim = 150;
+var dim = 190;
 
 var life = 0;
 var cur = Date.now();
@@ -29,6 +31,7 @@ var prev = cur;
 
 exports.init = init;
 exports.update = update;
+exports.defaultPos = _createPositionTexture().texture;
 exports.AMOUNT = AMOUNT;
 
 function init( renderer ) {
@@ -68,6 +71,7 @@ function init( renderer ) {
 	        texturePosition: { type: 't', value: undef },
 	        textureVelocity: { type: 't', value: undef },
 	        mousePosition: { type: 'v3', value: new THREE.Vector3(0,0,0) },
+	        mousePrev: { type: 'v3', value: new THREE.Vector3(0,0,0) },
 	        mouseVelocity: { type: 'v3', value: new THREE.Vector3(0,0,0) },
 	        mouseRadius: { type: 'f', value: 10 },
 	        defaultPosition: { type: 't', value: _createPositionTexture().texture },
@@ -143,6 +147,7 @@ function _updateVelocity() {
     _velocityShader.uniforms.textureVelocity.value = _vtt2.texture;
     _velocityShader.uniforms.texturePosition.value = _rtt.texture;
     _velocityShader.uniforms.mousePosition.value.copy( mouse.position );
+    _velocityShader.uniforms.mousePrev.value.copy( mouse.prev );
     _velocityShader.uniforms.mouseVelocity.value.copy( mouse.speed );
     _velocityShader.uniforms.time.value = life;
     _renderer.render( _scene, _camera, _vtt );
