@@ -35,7 +35,6 @@ function init() {
 	        THREE.UniformsLib.ambient,
 	        {
 	            texturePosition: { type: "t", value: null },
-	            textureDefaultPosition: { type: 't', value: fbo.defaultPos },
 	            pointSize: { type: "f", value: 1 },
 	            lightPos: { type: 'v3', value: lights.mesh.position },
 	            color1: { type: 'c', value: ( new THREE.Color( 0x2095cc) ) },

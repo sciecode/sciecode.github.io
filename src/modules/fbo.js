@@ -11,7 +11,6 @@ var _camera;
 var _renderer;
 
 
-var defaultPos;
 var _copyShader;
 var _positionShader;
 var _velocityShader;
@@ -31,7 +30,6 @@ var prev = cur;
 
 exports.init = init;
 exports.update = update;
-exports.defaultPos = _createPositionTexture().texture;
 exports.AMOUNT = AMOUNT;
 
 function init( renderer ) {
@@ -73,9 +71,9 @@ function init( renderer ) {
 	        mousePosition: { type: 'v3', value: new THREE.Vector3(0,0,0) },
 	        mousePrev: { type: 'v3', value: new THREE.Vector3(0,0,0) },
 	        mouseVelocity: { type: 'v3', value: new THREE.Vector3(0,0,0) },
-	        mouseRadius: { type: 'f', value: 10 },
+	        mouseRadius: { type: 'f', value: 20 },
 	        defaultPosition: { type: 't', value: _createPositionTexture().texture },
-	        dim: { type: 'f', value: 150 },
+	        dim: { type: 'f', value: dim },
 	        time: { type: 'f', value: 0 },
 	    },
 	    vertexShader: shaderParse(glslify('../glsl/quad.vert')),
