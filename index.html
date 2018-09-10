@@ -9,12 +9,43 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/96/three.min.js"></script>
         <style>
+            @import url('https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c:700');
             * { margin: 0; border: 0; box-sizing: border-box; }
-            body { margin: 0; overflow: hidden; }
+            body { margin: 0; overflow: hidden; background-color: #25364c }
             canvas { width: 100%; height: 100% }
+            .sorry {
+                position: absolute;
+                color: white;
+                font-family: 'M PLUS Rounded 1c', sans-serif;
+                width: 100vw;
+                top: 35vh;
+                text-align: center;
+                text-shadow: 2px 2px #000000;
+            }
+            .emote {
+                position: absolute;
+                color: white;
+                font-family: 'M PLUS Rounded 1c', sans-serif;
+                width: 100vw;
+                top: 55vh;
+                text-align: center;
+                font-size: calc(10pt + 10vw);
+                text-shadow: 2px 2px #000000;
+            }
+            .error {
+                visibility: hidden;
+            }
+            .visible {
+                visibility: visible;
+            }
+
         </style>
     </head>
     <body>
+        <div class="error">
+            <h1 class="sorry">sorry.<br />looks like you don't have WebGL enabled.</h1>
+            <h2 class="emote">¯\_(ツ)_/¯</h2>
+        </div>
         <script src="js/bundle.js"></script>
     </body>
 </html>

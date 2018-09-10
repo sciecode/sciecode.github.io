@@ -92,7 +92,7 @@ function init( renderer ) {
 	    wrapT: THREE.ClampToEdgeWrapping,
 	    minFilter: THREE.NearestFilter,
 	    magFilter: THREE.NearestFilter,
-	    format: THREE.RGBFormat,
+	    format: THREE.RGBAFormat,
 	    type: THREE.FloatType,
 	    depthBuffer: false,
 	    stencilBuffer: false
@@ -152,16 +152,16 @@ function _updateVelocity() {
 }
 
 function _createRandomTexture() {
-    var randomData = new Float32Array( AMOUNT * 3 );
+    var randomData = new Float32Array( AMOUNT * 4 );
     for(var x = 0; x < width; x++) {
         for(var z= 0; z < height; z++) {
-            randomData[x*height*3 + z*3] = THREE.Math.randFloat(-dim/width/2, dim/width/2);
-            randomData[x*height*3 + z*3 + 1] = THREE.Math.randFloat(-dim/width/2, dim/width/2);
-            randomData[x*height*3 + z*3 + 2] = THREE.Math.randFloat(-dim/height/2, dim/height/2);
+            randomData[x*height*4 + z*4] = THREE.Math.randFloat(-dim/width/2, dim/width/2);
+            randomData[x*height*4 + z*4 + 1] = THREE.Math.randFloat(-dim/width/2, dim/width/2);
+            randomData[x*height*4 + z*4 + 2] = THREE.Math.randFloat(-dim/height/2, dim/height/2);
         }
     }
     tmp = {};
-    tmp.texture = new THREE.DataTexture( randomData, width, height, THREE.RGBFormat, THREE.FloatType );
+    tmp.texture = new THREE.DataTexture( randomData, width, height, THREE.RGBAFormat, THREE.FloatType );
     tmp.texture.minFilter = THREE.NearestFilter;
     tmp.texture.magFilter = THREE.NearestFilter;
     tmp.texture.needsUpdate = true;
@@ -171,16 +171,16 @@ function _createRandomTexture() {
 }
 
 function _createPositionTexture() {
-    var data = new Float32Array( AMOUNT * 3 );
+    var data = new Float32Array( AMOUNT * 4 );
     for(var x = 0; x < width; x++) {
         for(var z= 0; z < height; z++) {
-            data[x*height*3 + z*3] = -dim/2 + dim*(x/width);
-            data[x*height*3 + z*3 + 1] = 0
-            data[x*height*3 + z*3 + 2] = -dim/2 + dim*(z/height);
+            data[x*height*4 + z*4] = -dim/2 + dim*(x/width);
+            data[x*height*4 + z*4 + 1] = 0
+            data[x*height*4 + z*4 + 2] = -dim/2 + dim*(z/height);
         }
     }
     tmp = {};
-    tmp.texture = new THREE.DataTexture( data, width, height, THREE.RGBFormat, THREE.FloatType );
+    tmp.texture = new THREE.DataTexture( data, width, height, THREE.RGBAFormat, THREE.FloatType );
     tmp.texture.minFilter = THREE.NearestFilter;
     tmp.texture.magFilter = THREE.NearestFilter;
     tmp.texture.needsUpdate = true;
@@ -191,7 +191,7 @@ function _createPositionTexture() {
 
 function _createVelocityTexture() {
 	tmp = {};
-    tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 3 ), TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBFormat, THREE.FloatType );
+    tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
     tmp.texture.minFilter = THREE.NearestFilter;
     tmp.texture.magFilter = THREE.NearestFilter;
     tmp.texture.needsUpdate = true;
