@@ -23,7 +23,7 @@ void main() {
     float luminosity = smoothstep(0.86,1.0,(max( 0.0, dot( vec3(0.0, 1.0, 0.0), light) ) ) ); 
 
     outgoingLight *= 0.65 + luminosity*0.35;
-    outgoingLight *= 0.4 + pow(0.8 + vec3(getShadowMask()) * 0.2, vec3(1.5)) * 0.6;
+    //outgoingLight *= 0.4 + pow(0.8 + vec3(getShadowMask()) * 0.2, vec3(1.5)) * 0.6;
 
     // chunk(fog_fragment);
 
