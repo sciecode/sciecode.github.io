@@ -12,15 +12,22 @@ var particles;
 var _color1;
 var _color2;
 
+var TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
+var TEXTURE_HEIGHT = settings.TEXTURE_HEIGHT;
+var AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
+
 exports.init = init;
 exports.update = update;
 exports.mesh = mesh = undef;
 
 function init() {
+	TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
+	TEXTURE_HEIGHT = settings.TEXTURE_HEIGHT;
+	AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
+
 	_color1 = new THREE.Color(settings.color1);
     _color2 = new THREE.Color(settings.color2);
-	var AMOUNT = fbo.AMOUNT;
-
+	
 	var position = new Float32Array(AMOUNT * 3);
 	var displacement = new Float32Array(AMOUNT);
 	var i3;
@@ -28,7 +35,7 @@ function init() {
 	    i3 = i * 3;
 	    position[i3 + 0] = (i % TEXTURE_WIDTH) / TEXTURE_WIDTH;
 	    position[i3 + 1] = ~~(i / TEXTURE_WIDTH) / TEXTURE_HEIGHT;
-	    displacement[i] = (i % TEXTURE_WIDTH) / TEXTURE_WIDTH;
+	    displacement[i] = ~~(i / TEXTURE_WIDTH) / TEXTURE_HEIGHT;
 	}
 	var geometry = new THREE.BufferGeometry();
 	geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));

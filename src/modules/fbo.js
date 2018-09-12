@@ -1,7 +1,7 @@
 var glslify = require('glslify');
 
 var mouse = require('./mouse');
-var settings = require('./settings.js');
+var settings = require('./settings');
 var shaderParse = require('../helpers/shaderParse');
 
 var undef;
@@ -11,7 +11,6 @@ var _scene;
 var _camera;
 var _renderer;
 
-
 var _copyShader;
 var _positionShader;
 var _velocityShader;
@@ -20,9 +19,9 @@ var _rtt2;
 var _vtt;
 var _vtt2;
 
-var width = TEXTURE_WIDTH = 512;
-var height = TEXTURE_HEIGHT = 512;
-var AMOUNT = width * height;
+var TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
+var TEXTURE_HEIGHT = settings.TEXTURE_HEIGHT;
+var AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 var dim = 190;
 
 var life = 0;
@@ -31,9 +30,12 @@ var prev = cur;
 
 exports.init = init;
 exports.update = update;
-exports.AMOUNT = AMOUNT;
 
 function init( renderer ) {
+
+	TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
+	TEXTURE_HEIGHT = settings.TEXTURE_HEIGHT;
+	AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 	_renderer = renderer;
 	_scene = new THREE.Scene();
@@ -159,15 +161,15 @@ function _updateVelocity() {
 
 function _createRandomTexture() {
     var randomData = new Float32Array( AMOUNT * 4 );
-    for(var x = 0; x < width; x++) {
-        for(var z= 0; z < height; z++) {
-            randomData[x*height*4 + z*4] = THREE.Math.randFloat(-dim/width/2, dim/width/2);
-            randomData[x*height*4 + z*4 + 1] = THREE.Math.randFloat(-dim/width/2, dim/width/2);
-            randomData[x*height*4 + z*4 + 2] = THREE.Math.randFloat(-dim/height/2, dim/height/2);
+    for(var x = 0; x < TEXTURE_WIDTH; x++) {
+        for(var z= 0; z < TEXTURE_HEIGHT; z++) {
+            randomData[x*TEXTURE_HEIGHT*4 + z*4] = THREE.Math.randFloat(-dim/TEXTURE_WIDTH/2, dim/TEXTURE_WIDTH/2);
+            randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1] = THREE.Math.randFloat(-dim/TEXTURE_WIDTH/2, dim/TEXTURE_WIDTH/2);
+            randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2] = THREE.Math.randFloat(-dim/TEXTURE_HEIGHT/2, dim/TEXTURE_HEIGHT/2);
         }
     }
     tmp = {};
-    tmp.texture = new THREE.DataTexture( randomData, width, height, THREE.RGBAFormat, THREE.FloatType );
+    tmp.texture = new THREE.DataTexture( randomData, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
     tmp.texture.minFilter = THREE.NearestFilter;
     tmp.texture.magFilter = THREE.NearestFilter;
     tmp.texture.needsUpdate = true;
@@ -178,15 +180,15 @@ function _createRandomTexture() {
 
 function _createPositionTexture() {
     var data = new Float32Array( AMOUNT * 4 );
-    for(var x = 0; x < width; x++) {
-        for(var z= 0; z < height; z++) {
-            data[x*height*4 + z*4] = -dim/2 + dim*(x/width);
-            data[x*height*4 + z*4 + 1] = 0
-            data[x*height*4 + z*4 + 2] = -dim/2 + dim*(z/height);
+    for(var x = 0; x < TEXTURE_WIDTH; x++) {
+        for(var z= 0; z < TEXTURE_HEIGHT; z++) {
+            data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH);
+            data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = 0
+            data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT);
         }
     }
     tmp = {};
-    tmp.texture = new THREE.DataTexture( data, width, height, THREE.RGBAFormat, THREE.FloatType );
+    tmp.texture = new THREE.DataTexture( data, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
     tmp.texture.minFilter = THREE.NearestFilter;
     tmp.texture.magFilter = THREE.NearestFilter;
     tmp.texture.needsUpdate = true;

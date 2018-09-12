@@ -8,6 +8,7 @@ var lights = require('./modules/lights');
 var floor = require('./modules/floor');
 var particles = require('./modules/particles');
 
+exports.restart = restart;
 
 renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -35,6 +36,7 @@ controls.target.y = 0;
 controls.update();
 
 var gui = new dat.GUI();
+gui.add(settings, 'quality', { Low: 0, Medium: 1, High: 2, Ultra: 3 } ).listen().onChange(settings.changeQuality);
 gui.add(settings, 'radius', 10, 50).listen();
 gui.add(settings, 'viscosity', 0.05, 0.3).listen();
 gui.add(settings, 'elasticity', 0.005, 0.1).listen();
@@ -55,6 +57,13 @@ scene.add(floor.mesh);
 
 particles.init();
 scene.add(particles.mesh);
+
+function restart() {
+    scene.remove(particles.mesh);
+    fbo.init( renderer );
+    particles.init();
+    scene.add(particles.mesh);
+}
 
 
 function update() {
