@@ -12,9 +12,9 @@ var particles;
 var _color1;
 var _color2;
 
-var TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
-var TEXTURE_HEIGHT = settings.TEXTURE_HEIGHT;
-var AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
+var TEXTURE_WIDTH;
+var TEXTURE_HEIGHT;
+var AMOUNT;
 
 exports.init = init;
 exports.update = update;
@@ -29,23 +29,18 @@ function init() {
     _color2 = new THREE.Color(settings.color2);
 	
 	var position = new Float32Array(AMOUNT * 3);
-	var displacement = new Float32Array(AMOUNT);
 	var i3;
 	for(var i = 0; i < AMOUNT; i++ ) {
 	    i3 = i * 3;
 	    position[i3 + 0] = (i % TEXTURE_WIDTH) / TEXTURE_WIDTH;
 	    position[i3 + 1] = ~~(i / TEXTURE_WIDTH) / TEXTURE_HEIGHT;
-	    displacement[i] = ~~(i / TEXTURE_WIDTH) / TEXTURE_HEIGHT;
 	}
 	var geometry = new THREE.BufferGeometry();
 	geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
-	geometry.addAttribute( 'displacement', new THREE.BufferAttribute( displacement, 1 ));
 
 	var renderShader = new THREE.ShaderMaterial( {
 	    uniforms: THREE.UniformsUtils.merge([
 	        THREE.UniformsLib.shadowmap,
-	        THREE.UniformsLib.lights,
-	        THREE.UniformsLib.ambient,
 	        {
 	            texturePosition: { type: "t", value: null },
 	            pointSize: { type: "f", value: 1 },
@@ -55,7 +50,6 @@ function init() {
 	        } ]),
 	    vertexShader: shaderParse(glslify('../glsl/render.vert')),
 	    fragmentShader: shaderParse(glslify('../glsl/render.frag')),
-	    lights: true,
 	    blending: THREE.NoBlending
 	} );
 

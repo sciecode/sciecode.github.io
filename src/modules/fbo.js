@@ -19,9 +19,9 @@ var _rtt2;
 var _vtt;
 var _vtt2;
 
-var TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
-var TEXTURE_HEIGHT = settings.TEXTURE_HEIGHT;
-var AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
+var TEXTURE_WIDTH;
+var TEXTURE_HEIGHT;
+var AMOUNT;
 var dim = 190;
 
 var life = 0;
