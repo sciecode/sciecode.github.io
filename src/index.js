@@ -18,7 +18,7 @@ renderer.setPixelRatio( window.devicePixelRatio );
 document.body.appendChild( renderer.domElement );
 
 scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2( 0x0f1519 , 0.0015 );
+scene.fog = new THREE.FogExp2( 0x0f1519 , 0.0013 );
 renderer.setClearColor( 0x0f1519 );
 
 camera = new THREE.PerspectiveCamera( 60, window.innerWidth/window.innerHeight, 1,10000 );
@@ -28,7 +28,7 @@ camera.position.x = 160;
 
 controls = new THREE.OrbitControls( camera, renderer.domElement );
 controls.enablePan = false;
-controls.maxDistance = 200;
+controls.maxDistance = 250;
 controls.minDistance = 150;
 controls.minPolarAngle = 0.8;
 controls.maxPolarAngle = Math.PI * 2 / 5 ;
@@ -58,16 +58,22 @@ scene.add(floor.mesh);
 particles.init();
 scene.add(particles.mesh);
 
-element = document.getElementById("overlay");
-element.classList.add("invisible");
+overlay = document.getElementById("overlay");
+overlay.classList.add("invisible");
 
-var x = document.getElementsByClassName("qualities");
+brand = document.getElementById("brand");
+brand.classList.remove("brandInit");
+
+exports.notice = document.getElementById("noticeText");
+
+x = document.getElementsByClassName("qualities");
 for (var i = 0; i < x.length; i++) {
     x[i].addEventListener("click", function(e) {
         e.preventDefault();
-        var el = document.getElementsByClassName("qualities");
+        // var el = document.getElementsByClassName("qualities");
         for (var i = 0; i < x.length; i++) {
-            el[i].classList.remove("selected");
+            x[i].classList.remove("selected");
+            x[i].classList.remove("recommended");
         }
         this.classList.add("selected");
         changeQuality( this.dataset.quality );
@@ -85,13 +91,17 @@ function restart() {
     scene.add(particles.mesh);
 }
 
-countLow = countHigh = 0;
-resetHigh = resetLow = false;
+exports.target = 0;
+exports.countHigh = 0;
+exports.countLow = 0;
+exports.resetHigh = false;
+exports.resetLow = false;
 previousTime = Date.now(0);
 
 function update() {
-    target = requestAnimationFrame(update);
+    requestAnimationFrame(update);
 
+    exports.target++;
 
     controls.update();
     fbo.update();
@@ -101,17 +111,24 @@ function update() {
     currentTime = Date.now();
     lapseTime = (currentTime - previousTime)/1000;
     previousTime = currentTime;
-    if ( lapseTime > 1/30 && target > 300) countLow++;
-    if ( lapseTime < 1/59 && target > 300) countHigh++;
-    if ( countLow > 40 && !resetLow ) {
-        resetLow = true;
-        console.log("This experiment is running at low framerate, you might want to consider a lower quality.");
+    if ( lapseTime > 1/30 && exports.target > 500) exports.countLow++;
+    if ( lapseTime < 1/59 && exports.target > 1500) exports.countHigh++;
+    if ( exports.countLow > 40 && !exports.resetLow ) {
+        exports.resetLow = true;
+        if (settings.quality != 0) {
+            x[parseInt(settings.quality)-1].classList.add("recommended");
+            exports.notice.textContent="This experiment is running at low framerate, you might want to consider a lower quality.";
+            exports.notice.classList.add("noticePulse");
+        }
     }
-    if ( countHigh > 40 && !resetHigh ) {
-        resetHigh = true;
-        console.log("This experiment is running at high framerate, you might want to consider a higher quality.");
+    if ( exports.countHigh > 40 && !exports.resetHigh ) {
+        exports.resetHigh = true;
+        if (settings.quality != 3) {
+            x[parseInt(settings.quality)+1].classList.add("recommended");
+            exports.notice.textContent="This experiment is running at high framerate, you might enjoy this experiment at higher quality.";
+            exports.notice.classList.add("noticePulse");
+        }
     } 
-    first = false;
 }
 
 window.onresize = function () {

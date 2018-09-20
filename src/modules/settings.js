@@ -47,5 +47,11 @@ function changeQuality( val ) {
 		exports.TEXTURE_WIDTH = 512;
 		exports.TEXTURE_HEIGHT = 1024;
 	}
+	ind.notice.classList.remove("noticePulse");
+	ind.target = 0;
+	ind.resetLow = false;
+	ind.resetHigh = false;
+	ind.countLow = 0;
+	ind.countHigh = 0;
 	ind.restart();
 }

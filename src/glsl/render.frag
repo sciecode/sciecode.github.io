@@ -26,9 +26,9 @@ void main() {
     vec3 outgoingLight = mix(color2, color1, mix(0.0, 1.0, ratio));
 
     vec3 light = normalize(lightPos-pos);
-    float luminosity = smoothstep(0.86,1.0,(max( 0.0, dot( vec3(0.0, 1.0, 0.0), light) ) ) ); 
+    float luminosity = smoothstep(0.8,1.0,(max( 0.0, dot( vec3(0.0, 1.0, 0.0), light) ) ) ); 
 
-    outgoingLight *= 0.65 + luminosity*0.35;
+    outgoingLight *= 0.45 + luminosity*0.55;
 
 	#ifdef USE_SHADOW
 	    float shadow = smoothstep(0.05, 0.2, getShadowMask());
