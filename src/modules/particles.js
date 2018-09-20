@@ -41,6 +41,8 @@ function init() {
 	var renderShader = new THREE.ShaderMaterial( {
 	    uniforms: THREE.UniformsUtils.merge([
 	        THREE.UniformsLib.shadowmap,
+	        THREE.UniformsLib.lights,
+	        THREE.UniformsLib.fog,
 	        {
 	            texturePosition: { type: "t", value: null },
 	            pointSize: { type: "f", value: 1 },
@@ -48,9 +50,16 @@ function init() {
 	            color1: { type: 'c', value: undef },
 	            color2: { type: 'c', value: undef }
 	        } ]),
+	    defines: { 
+	    	USE_SHADOW: settings.useShadow
+	    },
 	    vertexShader: shaderParse(glslify('../glsl/render.vert')),
 	    fragmentShader: shaderParse(glslify('../glsl/render.frag')),
-	    blending: THREE.NoBlending
+	    precision: "highp",
+	    blending: THREE.NormalBlending,
+        fog: true,
+        lights: true,
+        transparent: true
 	} );
 
 	renderShader.uniforms.color1.value = _color1;

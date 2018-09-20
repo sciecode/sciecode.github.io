@@ -22,7 +22,7 @@ var _vtt2;
 var TEXTURE_WIDTH;
 var TEXTURE_HEIGHT;
 var AMOUNT;
-var dim = 190;
+var dim = 220;
 
 var life = 0;
 var cur = Date.now();
@@ -163,9 +163,9 @@ function _createRandomTexture() {
     var randomData = new Float32Array( AMOUNT * 4 );
     for(var x = 0; x < TEXTURE_WIDTH; x++) {
         for(var z= 0; z < TEXTURE_HEIGHT; z++) {
-            randomData[x*TEXTURE_HEIGHT*4 + z*4] = THREE.Math.randFloat(-dim/TEXTURE_WIDTH/2, dim/TEXTURE_WIDTH/2);
-            randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1] = THREE.Math.randFloat(-dim/TEXTURE_WIDTH/2, dim/TEXTURE_WIDTH/2);
-            randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2] = THREE.Math.randFloat(-dim/TEXTURE_HEIGHT/2, dim/TEXTURE_HEIGHT/2);
+            randomData[x*TEXTURE_HEIGHT*4 + z*4] = THREE.Math.randFloat(-1, 1);
+            randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1] = THREE.Math.randFloat(-1, 1);
+            randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2] = THREE.Math.randFloat(-1, 1);
         }
     }
     tmp = {};

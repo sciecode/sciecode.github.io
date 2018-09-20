@@ -14,6 +14,20 @@
             * { margin: 0; border: 0; box-sizing: border-box; }
             body { margin: 0; overflow: hidden; background-color: #25364c }
             canvas { width: 100%; height: 100% }
+            #overlay { width: 100vw; height: 100vh; background-color: #25364c; z-index: 1; position: fixed; transition: opacity 2s linear 0.5s; pointer-events: none; overflow: hidden;}
+            #quality { position: fixed; width: 26vw; top: 3vh; left: calc(50vw - 26vw/2); padding: 0px; overflow: hidden;}
+            @media screen and (max-width: 1080px) {
+                #quality { width: 284px; left: calc(50vw - 284px/2); }
+            }
+            #quality ul { list-style: none; margin: 0px; padding: 0px; box-sizing: border-box;}
+            #quality ul li { float: left;  width: calc(100% / 4); list-style: none; color: #949494; margin: 0px; padding: 0px; overflow: hidden; box-sizing: border-box; border: 1.6px solid #949494; border-left: none; }
+            #quality ul li:hover { background-color: rgba(90,90,90,0.1) }
+            #quality li:first-child { border-left: 1.6px solid #949494; border-top-left-radius: 5px; border-bottom-left-radius: 5px; }
+            #quality li:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 5px;}
+            #quality .qualities { display: block; font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 13px; text-decoration: none; color: #949494; line-height: 25px; text-align: center; text-rendering: optimizeLegibility; -webkit-font-smoothing: subpixel-antialiased; text-shadow: 1px 1px #000000;}
+            #quality .qualities:hover { color: #e4e5e6;}
+            #quality .qualities.selected { color: #e4e5e6; }
+            
             .sorry {
                 position: absolute;
                 color: white;
@@ -34,16 +48,28 @@
                 text-shadow: 2px 2px #000000;
             }
             .error {
-                visibility: hidden;
+                 pointer-events: none;
+            }
+            .invisible {
+                opacity: 0;
             }
             .visible {
-                visibility: visible;
+                opacity: 1;
             }
 
         </style>
     </head>
     <body>
-        <div class="error">
+        <div id="quality">
+            <ul>
+                <li><a class="qualities" href="javascript:void(0)" data-quality="0">low</a></li>
+                <li><a class="qualities selected" href="javascript:void(0)" data-quality="1">medium</a></li>
+                <li><a class="qualities" href="javascript:void(0)" data-quality="2">high</a></li>
+                <li><a class="qualities" href="javascript:void(0)" data-quality="3">ultra</a></li>
+            </ul>
+        </div>
+        <div id="overlay"></div>
+        <div class="error invisible">
             <h1 class="sorry">sorry.<br />looks like you don't have WebGL enabled.</h1>
             <h2 class="emote">¯\_(ツ)_/¯</h2>
         </div>

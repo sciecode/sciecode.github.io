@@ -1,12 +1,25 @@
 precision highp float;
 
 varying float ratio;
+varying float vAlpha;
 varying vec3 pos;
-varying vec3 defaultPos;
 
 uniform vec3 lightPos;
 uniform vec3 color1;
 uniform vec3 color2;
+
+#include <common>
+#include <packing>
+#include <fog_pars_fragment>
+#include <bsdfs>
+
+#ifdef USE_SHADOW
+
+	#include <lights_pars_begin>
+	#include <shadowmap_pars_fragment>
+	#include <shadowmask_pars_fragment>
+
+#endif
 
 
 void main() {
@@ -17,5 +30,16 @@ void main() {
 
     outgoingLight *= 0.65 + luminosity*0.35;
 
-    gl_FragColor = vec4( outgoingLight, 1.0 );
+	#ifdef USE_SHADOW
+	    float shadow = smoothstep(0.05, 0.2, getShadowMask());
+		outgoingLight *= 0.35 + shadow*0.65;
+	#endif
+    
+    gl_FragColor = vec4( outgoingLight , 1.0 );
+
+    //chunk(fog_fragment);
+
+    gl_FragColor.a = vAlpha;
+    gl_FragColor.a *= 1.0 - smoothstep(0.0, 0.17,clamp(fogFactor,0.0,1.0) );
+
 }

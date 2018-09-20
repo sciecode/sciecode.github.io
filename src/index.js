@@ -18,7 +18,7 @@ renderer.setPixelRatio( window.devicePixelRatio );
 document.body.appendChild( renderer.domElement );
 
 scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2( 0x0f1519 , 0.002 );
+scene.fog = new THREE.FogExp2( 0x0f1519 , 0.0015 );
 renderer.setClearColor( 0x0f1519 );
 
 camera = new THREE.PerspectiveCamera( 60, window.innerWidth/window.innerHeight, 1,10000 );
@@ -58,6 +58,26 @@ scene.add(floor.mesh);
 particles.init();
 scene.add(particles.mesh);
 
+element = document.getElementById("overlay");
+element.classList.add("invisible");
+
+var x = document.getElementsByClassName("qualities");
+for (var i = 0; i < x.length; i++) {
+    x[i].addEventListener("click", function(e) {
+        e.preventDefault();
+        var el = document.getElementsByClassName("qualities");
+        for (var i = 0; i < x.length; i++) {
+            el[i].classList.remove("selected");
+        }
+        this.classList.add("selected");
+        changeQuality( this.dataset.quality );
+    }, false);
+}
+
+function changeQuality( val ) {
+    settings.changeQuality( val );
+}
+
 function restart() {
     scene.remove(particles.mesh);
     fbo.init( renderer );
@@ -65,15 +85,33 @@ function restart() {
     scene.add(particles.mesh);
 }
 
+countLow = countHigh = 0;
+resetHigh = resetLow = false;
+previousTime = Date.now(0);
 
 function update() {
-    requestAnimationFrame(update);
+    target = requestAnimationFrame(update);
+
 
     controls.update();
     fbo.update();
     particles.update();
-
     postprocessing.render();
+
+    currentTime = Date.now();
+    lapseTime = (currentTime - previousTime)/1000;
+    previousTime = currentTime;
+    if ( lapseTime > 1/30 && target > 300) countLow++;
+    if ( lapseTime < 1/59 && target > 300) countHigh++;
+    if ( countLow > 40 && !resetLow ) {
+        resetLow = true;
+        console.log("This experiment is running at low framerate, you might want to consider a lower quality.");
+    }
+    if ( countHigh > 40 && !resetHigh ) {
+        resetHigh = true;
+        console.log("This experiment is running at high framerate, you might want to consider a higher quality.");
+    } 
+    first = false;
 }
 
 window.onresize = function () {

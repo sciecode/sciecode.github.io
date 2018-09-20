@@ -2,6 +2,7 @@ precision highp float;
 
 uniform vec3 lightPos;
 varying vec4 vWorldPosition;
+varying float vAlpha;
 
 //chunk(common);
 
@@ -26,5 +27,6 @@ float unpack1K ( vec4 color ) {
 void main () {
 
    gl_FragColor = pack1K( length( vWorldPosition.xyz - lightPos.xyz ) );
+   gl_FragColor.a *= vAlpha;
 
 }

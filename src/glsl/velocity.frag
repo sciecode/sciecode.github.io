@@ -57,11 +57,10 @@ void main() {
 
     vel += offset*elasticity - vel * viscosity;
 
-    //float dist = length(cur - mousePosition) / mouseRadius;
     vec2 dist = distToSegment(mousePrev, mousePosition, cur) / mouseRadius;
 
     if ( dist.x <= 1.0 ) {
-        vel += (normalize(cur - (mousePrev + (mousePosition - mousePrev)* dist.y )) * mix(2.0, 0.5, smoothstep(0.2, 0.9, dist.x) ) + rand * 0.8 );
+        vel += (normalize(cur - (mousePrev + (mousePosition - mousePrev)* dist.y )) * mix(2.0, 0.5, smoothstep(0.2, 0.9, dist.x) ) + rand * 0.2 );
     }
 
     gl_FragColor = vec4( vel, 1.0 );
