@@ -43,7 +43,7 @@ gui.add(settings, 'elasticity', 0.005, 0.1).listen();
 gui.addColor(settings, 'color1').name('primary color').listen();
 gui.addColor(settings, 'color2').name('secondary color').listen();
 gui.add(settings, 'reset');
-gui.open();
+gui.close();
 
 postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
 
