@@ -46,8 +46,8 @@ void main() {
     vec3 pos = texture2D( defaultPosition, uv ).xyz;
     vec3 vel = texture2D( textureVelocity, uv ).xyz;
 
-    float x = dim/2.0 + ( pos.x / dim ) ;
-    float z = dim/2.0 + ( pos.z / dim ) ;
+    float x = ( dim/2.0 + pos.x ) / dim;
+    float z = ( dim/2.0 + pos.z ) / dim;
 
     pos.x += rand.x;
     pos.y += sin(x*PI + PI*2.0*5.0*z + PI*time)*3.0 + rand.y*4.0;

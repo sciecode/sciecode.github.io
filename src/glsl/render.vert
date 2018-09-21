@@ -1,10 +1,12 @@
 precision highp float;
 
+uniform sampler2D textureDefaultPosition;
 uniform sampler2D texturePosition;
 uniform float pointSize;
 
 varying float ratio;
 varying float vAlpha;
+varying vec3 vNormal;
 varying vec3 pos;
 
 //chunk(common);
@@ -13,7 +15,10 @@ varying vec3 pos;
 
 void main() {
 
+    vec3 def = texture2D( textureDefaultPosition, position.xy ).xyz;
     pos = texture2D( texturePosition, position.xy ).xyz;
+
+    vNormal = pos - def;
 
     float zRatio = (pos.z + 110.0) / 220.0;
     float xRatio = (pos.x + 110.0) / 220.0;
@@ -21,11 +26,12 @@ void main() {
     ratio = zRatio;
 
     float alpha = 1.0;
+    float margin = 0.1;
 
-    if ( zRatio < 0.1 ) alpha *= smoothstep(0.0,0.05,zRatio);
-    if ( zRatio > 0.9 ) alpha *= smoothstep(1.0,0.95,zRatio);
-    if ( xRatio < 0.1 ) alpha *= smoothstep(0.0,0.05,xRatio);
-    if ( xRatio > 0.9 ) alpha *= smoothstep(1.0,0.95,xRatio);
+    if ( zRatio < margin ) alpha *= smoothstep(0.0,margin,zRatio);
+    if ( zRatio > 1.0-margin ) alpha *= smoothstep(1.0,1.0-margin,zRatio);
+    if ( xRatio < margin ) alpha *= smoothstep(0.0,margin,xRatio);
+    if ( xRatio > 1.0-margin ) alpha *= smoothstep(1.0,1.0-margin,xRatio);
 
     vAlpha = alpha;
 

@@ -24,12 +24,13 @@ var TEXTURE_HEIGHT;
 var AMOUNT;
 var dim = 220;
 
-var life = 0;
 var cur = Date.now();
 var prev = cur;
 
+exports.life = 0;
 exports.init = init;
 exports.update = update;
+exports.defaultPosition;
 
 function init( renderer ) {
 
@@ -41,6 +42,8 @@ function init( renderer ) {
 	_scene = new THREE.Scene();
 	_camera = new THREE.Camera();
 	_camera.position.z = 1;
+
+	exports.defaultPosition = _createPositionTexture();
 
 	_copyShader = new THREE.RawShaderMaterial({
 	    uniforms: {
@@ -77,7 +80,7 @@ function init( renderer ) {
 	        mouseRadius: { type: 'f', value: settings.radius },
 	        viscosity: { type: 'f', value: settings.viscosity },
 	        elasticity: { type: 'f', value: settings.elasticity },
-	        defaultPosition: { type: 't', value: _createPositionTexture().texture },
+	        defaultPosition: { type: 't', value: exports.defaultPosition.texture },
 	        dim: { type: 'f', value: dim },
 	        time: { type: 'f', value: 0 },
 	    },
@@ -155,7 +158,7 @@ function _updateVelocity() {
     _velocityShader.uniforms.mousePosition.value.copy( mouse.position );
     _velocityShader.uniforms.mousePrev.value.copy( mouse.prev );
     _velocityShader.uniforms.mouseVelocity.value.copy( mouse.speed );
-    _velocityShader.uniforms.time.value = life;
+    _velocityShader.uniforms.time.value = exports.life;
     _renderer.render( _scene, _camera, _vtt );
 }
 
@@ -214,8 +217,8 @@ function update() {
     prev = cur;
 
 
-    life += Math.min(offset/(1200), 1/8);
-    life %= 2;
+    exports.life += Math.min(offset/(1200), 1/8);
+    exports.life %= 2;
 
     mouse.update( offset/1000 );
 

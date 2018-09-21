@@ -44,6 +44,7 @@ function init() {
 	        THREE.UniformsLib.lights,
 	        THREE.UniformsLib.fog,
 	        {
+	        	textureDefaultPosition: { type: "t", value: fbo.defaultPosition },
 	            texturePosition: { type: "t", value: null },
 	            pointSize: { type: "f", value: 1 },
 	            lightPos: { type: 'v3', value: lights.mesh.position },
@@ -89,4 +90,5 @@ function update() {
     _color2.setStyle(settings.color2);
 	particles.material.uniforms.texturePosition.value = fbo.rtt.texture;
     particles.customDistanceMaterial.uniforms.texturePosition.value = fbo.rtt.texture;
+    particles.material.uniforms.textureDefaultPosition.value = fbo.defaultPosition.texture;
 }
