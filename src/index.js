@@ -65,18 +65,32 @@ brand = document.getElementById("brand");
 brand.classList.remove("brandInit");
 
 exports.notice = document.getElementById("noticeText");
+exports.notice.addEventListener('transitionend', function () {
+    var node = this;
+    setTimeout( function(){
+        node.classList.remove("noticePulse");
+    }, 6000);
+    
+}, false);
 
-x = document.getElementsByClassName("qualities");
-for (var i = 0; i < x.length; i++) {
-    x[i].addEventListener("click", function(e) {
+
+qualities = document.getElementsByClassName("qualities");
+for (var i = 0; i < qualities.length; i++) {
+    qualities[i].addEventListener("click", function(e) {
         e.preventDefault();
-        // var el = document.getElementsByClassName("qualities");
-        for (var i = 0; i < x.length; i++) {
-            x[i].classList.remove("selected");
-            x[i].classList.remove("recommended");
+        if ( this.dataset.quality == settings.quality ) return;
+        for (var i = 0; i < qualities.length; i++) {
+            qualities[i].classList.remove("selected");
+            qualities[i].classList.remove("recommended");
         }
         this.classList.add("selected");
         changeQuality( this.dataset.quality );
+    }, false);
+    qualities[i].addEventListener('transitionend', function () {
+        var node = this;
+        setTimeout( function(){
+            node.classList.remove("recommended");
+        }, 800);
     }, false);
 }
 
@@ -116,15 +130,15 @@ function update() {
     if ( exports.countLow > 40 && !exports.resetLow ) {
         exports.resetLow = true;
         if (settings.quality != 0) {
-            x[parseInt(settings.quality)-1].classList.add("recommended");
+            qualities[parseInt(settings.quality)-1].classList.add("recommended");
             exports.notice.textContent="This experiment is running at low framerate, you might want to consider a lower quality.";
             exports.notice.classList.add("noticePulse");
         }
     }
-    if ( exports.countHigh > 40 && !exports.resetHigh ) {
+    if ( exports.countHigh > 180 && !exports.resetHigh ) {
         exports.resetHigh = true;
         if (settings.quality != 3) {
-            x[parseInt(settings.quality)+1].classList.add("recommended");
+            qualities[parseInt(settings.quality)+1].classList.add("recommended");
             exports.notice.textContent="This experiment is running at high framerate, you might enjoy this experiment at higher quality.";
             exports.notice.classList.add("noticePulse");
         }
