@@ -30,13 +30,14 @@ void main() {
     vec3 light = normalize(lightPos-pos);
     float luminosity = smoothstep(0.4,1.0,(max( 0.0, dot( vNormal, light) ) ) ); 
 
-    outgoingLight *= 0.75 + luminosity*0.45;
+    outgoingLight *= 0.75 + luminosity*0.40;
 
     luminosity = smoothstep(0.8,1.0,(max( 0.0, dot( vec3(0.0,1.0,0.0), light) ) ) ); 
     outgoingLight *= 0.55 + luminosity*0.55;
 
 	#ifdef USE_SHADOW
-
+	    float shadow = smoothstep(0.0, 0.2, getShadowMask());
+		outgoingLight *= 0.65 + shadow*0.35;
 	#endif
     
     gl_FragColor = vec4( outgoingLight , 1.0 );

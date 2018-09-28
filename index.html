@@ -15,16 +15,17 @@
             * { margin: 0; border: 0; box-sizing: border-box; }
             body { margin: 0; overflow: hidden; background-color: #0f1519; user-select: none; }
             canvas { width: 100%; height: 100% }
-            #brand { position: fixed; transition: 1s ease 0.5s; font-size: 30px; text-rendering: optimizeLegibility; -webkit-font-smoothing: subpixel-antialiased; font-family: 'Raleway', sans-serif; z-index: 2; text-shadow: 1px 1px rgba(0,0,0,0.4);}
+            #brand { position: fixed; transition: 1s ease 0.5s; font-size: 30px; text-rendering: optimizeLegibility; -webkit-font-smoothing: subpixel-antialiased; font-family: 'Raleway', sans-serif; z-index: 21; text-shadow: 1px 1px rgba(0,0,0,0.4); pointer-events: none;
+            letter-spacing: 1px;}
             .brandPos { color: #f3f4f6; left: 4vw; top: 4vh; transform: translateX(0) scale(1.5); }
             .brandInit { transform: translateX(44vw) translateY(44vh) scale(4.5); }
-            #overlay { width: 100vw; height: 100vh; background-color: #0f1519; z-index: 1; position: fixed; transition: opacity 1s linear 0.5s; pointer-events: none; overflow: hidden;}
+            #overlay { width: 100vw; height: 100vh; background-color: #0f1519; z-index: 20; position: fixed; transition: opacity 1s linear 0.5s; pointer-events: none; overflow: hidden;}
             #quality { position: fixed; width: 26vw; top: 3vh; left: calc(50vw - 26vw/2); padding: 0px; overflow: hidden; transition: 1s ease 0s;}
             @media screen and (max-width: 1080px) {
                 #quality { width: 284px; left: calc(50vw - 284px/2); }
             }
             #quality ul { list-style: none; margin: 0px; padding: 0px; box-sizing: border-box;}
-            #quality ul li { float: left;  width: calc(100% / 4); list-style: none; color: #949494; margin: 0px; padding: 0px; overflow: hidden; box-sizing: border-box; border: 1.6px solid #949494; border-left: none; }
+            #quality ul li { float: left;  width: calc(100% / 4); list-style: none; color: #949494; margin: 0px; padding: 0px; overflow: hidden; border: 1.6px solid #949494; border-left: none; }
             #quality ul li:hover { background-color: rgba(90,90,90,0.1) }
             #quality li:first-child { border-left: 1.6px solid #949494; border-top-left-radius: 5px; border-bottom-left-radius: 5px; }
             #quality li:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 5px;}
@@ -36,6 +37,327 @@
             #noticeText { color: #949494; font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 13px; text-align: center; text-rendering: optimizeLegibility; -webkit-font-smoothing: subpixel-antialiased; transition: transform 0.8s ease 0.2s, opacity 0.8s linear; user-select: none;} 
             .notice { opacity: 0; transform: translateY(10px); }
             .noticePulse { opacity: 1; transform: translateY(0px); }
+            .init_settings {
+                pointer-events: none;
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            .final_settings {
+                pointer-events: auto;
+                opacity: 1;
+                transform: translateX(0px);
+            }
+            .menu_unactive:hover .hover_menu{
+                background-color: rgba(228, 229, 230, 0.8);
+            }
+            .menu_unactive {
+                width: 30px;
+                height: 16px;
+                transition: 0.6s ease;
+            }
+            .menu_active .upper_menu {
+                transform: rotate(45deg) scale(0.8);
+            }
+            .menu_active .lower_menu {
+                transform: rotate(-45deg) scale(0.8);
+            }
+            .menu_active .middle_menu {
+                width: 3px;
+                transform: translateX(-15px);
+                opacity: 0;
+            }
+            .upper_menu { 
+                position: fixed;
+                top: calc(10vh + 6px);
+                right: 6vw;
+                display: block;
+                width: 30px;
+                height: 3px;
+                background-color: #949494;
+                border-radius: 5px;
+                transition: 0.6s ease;
+                transform-origin: center center;
+                transform: translateY(-8px);
+            }
+            .middle_menu { 
+                position: fixed;
+                top: calc(10vh + 6px);
+                right: 6vw;
+                display: block;
+                width: 30px;
+                height: 3px;
+                background-color: #949494;
+                transition: 0.6s ease;
+                opacity: 1;
+                border-radius: 5px;
+            }
+            .lower_menu {
+                position: fixed;
+                top: calc(10vh + 6px);
+                right: 6vw;
+                display: block;
+                width: 30px;
+                height: 3px;
+                background-color: #949494;
+                border-radius: 5px;
+                transition: 0.6s ease;
+                transform-origin: center center;
+                transform: translateY(8px);
+                
+            }
+            #settings_menu {
+                z-index: 10;
+                position: fixed;
+                right: 6vw; 
+                top: 10vh;
+            }
+            #settings {
+                position: fixed;
+                background-color: rgba(0,0,0,0.23);
+                width: 320px;
+                /*height: 82vh;*/
+                right: 5vw;
+                top: 8vh;
+                transition: 0.6s ease;
+                border-radius: 10px;
+                color: #949494;
+                overflow: hidden;
+            }
+            .settings_header {
+                text-align: center;
+                color: #e4e5e6;
+                margin: 1.5vh 30px 1.5vh 30px;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: subpixel-antialiased;
+                font-family: 'Raleway', sans-serif;
+                letter-spacing: 1px;
+            }
+            .settings_options {
+                padding: 20px;
+                padding-top: 0px;
+            }
+            .settings_options ul {
+                list-style: none; 
+                margin: 0px; 
+                padding: 0px; 
+                box-sizing: border-box;
+            }
+            .settings_options ul li {
+                padding: 15px 0px;
+                border-bottom: 1px solid #939393;
+                transition: 0.6s ease;
+            }
+            .settings_options ul li:not(.selected_item):hover {
+                background-color: rgba(30,30,30,0.8);
+            }
+            .settings_options ul li:last-child {
+                border: 0px;
+            }
+            .settings_options ul li h3 {
+                padding-left: 15px;
+                display: inline-block;
+                color: #e4e5e6;
+                font-size: 13px;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: subpixel-antialiased;
+                font-family: 'Raleway', sans-serif;
+                letter-spacing: 1px;
+                text-align: center;
+                white-space: nowrap;
+                width: 0%;
+                transition: 0.6s ease;
+            }
+            .settings_items.selected_item h3 {
+                width: 90%;
+            }
+            .settings_options ul li p {
+                margin: 15px 0;
+                margin-left: 5px;
+                line-height: 15.5px;
+                font-size: 12px;
+                font-family: 'M PLUS Rounded 1c', sans-serif;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: subpixel-antialiased;
+                transition: 0.6s ease 0.6s;
+                transform: translateY(10px);
+                opacity: 0;
+            }
+            .settings_items.selected_item p {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+            .settings_items {
+                overflow: hidden;
+                height: 80vh;
+                max-height: 45px;
+            }
+            .selected_item {
+                max-height: calc(70vh - 4*30px);
+            }
+            .selected_item.radius_item {
+                max-height: 300px;
+            }
+            .selected_item.viscosity_item {
+                max-height: 250px;
+            }
+            .selected_item.elasticity_item { 
+                max-height: 200px;
+             }
+            .selected_item .rad_range, .selected_item .vis_range, .selected_item .ela_range {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+            .selected_item .rad_slider {
+                transform: scaleY(1) rotate(270deg);
+                opacity: 1;
+            }
+            .selected_item .vis_slider, .selected_item .ela_slider {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+            .settings_items h3::after {
+                content: '';
+                display: block;
+                background-color: rgba(181, 219, 229, 0.8);
+                margin: 0px auto;
+                margin-top: 5px;
+                width: 60%;
+                height: 1.2px;
+                transform: scaleX(0);
+                transition: 0.8s ease 0.6s;
+            }
+            .settings_items.selected_item h3::after {
+                transform: scaleX(1);
+            }
+            .rad_range, .vis_range, .ela_range {
+                letter-spacing: 1px;
+                margin: 10px auto;
+                text-align: center;
+                display: block;
+                font-size: 13px;
+                font-family: 'M PLUS Rounded 1c', sans-serif;
+                color: white;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: subpixel-antialiased;
+                transition: 0.6s ease 0.6s;
+                transform: translateY(10px);
+                opacity: 0;
+            }
+            #rad_value, #vis_value, #ela_value {
+                letter-spacing: 0.6px;
+                margin-left: 10px;
+                font-size: 14px;
+                font-family: sans-serif;
+                font-weight: bold;
+                color: #4CAF50;
+            }
+            #rad_title_value, #vis_title_value, #ela_title_value {
+                float: right;
+                margin-right: 10px;
+                letter-spacing: 0.6px;
+                font-size: 14px;
+                font-family: sans-serif;
+                font-weight: bold;
+                color: #4CAF50;
+                transition: 0.4s;
+                opacity: 1;
+            }
+            .selected_item #rad_title_value, .selected_item #vis_title_value, .selected_item #ela_title_value {
+                opacity: 0;
+            }
+            #ball_sphere {
+                float: left;
+                margin: 12px 50px;
+                margin-right: 30px;
+                width: 100px;
+                height: 100px;
+                border-radius: 100px;
+                border: 2px dotted white;
+                transition: 0.6s ease 0.4s;
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            #ball_sphere_inside {
+                display: block;
+                vertical-align:middle;
+                content: '';
+                width: 96px;
+                height: 96px;
+                border-radius: 100px;
+                background-color: white;
+                transition: 0.6s ease;
+                opacity: 0;
+                transform: scale(0.2);
+            }
+            .selected_item #ball_sphere {
+                transform: scale(1);
+                opacity: 1;
+            }
+            .selected_item #ball_sphere_inside {
+                transform: scale(0.7);
+                opacity: 1;
+            }
+            .div_slider {
+                float: left;
+                position: relative;
+                height: 100px;
+                width: 40px;
+                margin: 12px auto;
+            }
+            .vis_div_slider, .ela_div_slider {
+                width: 100%;
+                height: auto;
+                margin: 20px auto;
+            }
+            input[type=range] {
+                -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+                width: 100px;
+            }
+            .rad_slider {
+                position: absolute;
+                top: 50%;
+                margin-top: -3px;
+                margin-left: -40px;
+                display: block;
+                height: 6px;
+                padding: 0 5px;
+                border-radius: 5px;   
+                background: #d3d3d3;
+                outline: none;
+                transform: scaleY(0) rotate(270deg);
+                transition: 0.8s ease 0.6s;
+                opacity: 0;
+            }
+            .vis_slider, .ela_slider {
+                display: block;
+                height: 6px;
+                padding: 0 5px;
+                border-radius: 5px;   
+                background: #d3d3d3;
+                outline: none;
+                transform: scaleX(0);
+                transition: 0.8s ease 0.6s;
+                opacity: 0;
+                margin: 0px auto;
+            }
+            .rad_slider::-webkit-slider-thumb, .vis_slider::-webkit-slider-thumb, .ela_slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%; 
+                background: #4CAF50;
+                cursor: pointer;
+                box-shadow: 1px 1px rgba(0,0,0,0.4);
+            }
+            .rad_slider::-moz-range-thumb, .vis_slider::-moz-range-thumb, .ela_slider::-moz-range-thumb {
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background: #4CAF50;
+                cursor: pointer;
+                box-shadow: 1px 1px rgba(0,0,0,0.4);
+            }
             .invisible { opacity: 0; }
             .visible { opacity: 1; }
         </style>
@@ -50,7 +372,53 @@
                 <li><a class="qualities" href="javascript:void(0)" data-quality="3">ultra</a></li>
             </ul>
         </div>
-        <div id="notice"><h3 id="noticeText" class="notice">This experiment is running at high framerate, you might enjoy a better quality.</h3></div>
+        <div id="notice">
+            <h3 id="noticeText" class="notice">This experiment is running at high framerate, you might enjoy a better quality.</h3>
+        </div>
+        <div id="settings_menu" class="menu_unactive">
+            <div class="upper_menu hover_menu"></div>
+            <div class="middle_menu hover_menu"></div>
+            <div class="lower_menu hover_menu"></div>
+        </div>
+        <div id="settings" class="init_settings">
+            <h3 class="settings_header">Settings</h3>
+            <div class="settings_options">
+                <ul>
+                    <li class="settings_items selected_item radius_item">
+                        <h3>Sphere Radius</h3><span id="rad_title_value">30</span>
+                        <p>This property controls the size of the mouse sphere. The result of these changes are only noticeable after interacting with the waveform. </p>
+                        <h4 class="rad_range">Radius:<span id="rad_value">30</span></h4>
+                        <div id="ball_sphere">
+                            <div id="ball_sphere_inside"></div>
+                        </div>
+                        <div class="div_slider">
+                            <input type="range" id="rad_slider" class="rad_slider" min="10" max="50" value="30" />
+                        </div>
+                    </li>
+                    <li class="settings_items viscosity_item">
+                        <h3>Fluid Viscosity</h3><span id="vis_title_value">10</span>
+                        <p>This property determines how resistant to velocity changes is the fluid. A higher viscosity will result in a slower moving particle system - like honey. A lower viscosity, though, will result in a faster moving system - like water. </p>
+                        <h4 class="vis_range">Viscosity:<span id="vis_value">10</span></h4>
+                        <div class="vis_div_slider">
+                            <input type="range" id="vis_slider" class="vis_slider" min="5" max="30" value="10" />
+                        </div>
+                    </li>
+                    <li class="settings_items elasticity_item">
+                        <h3>Elasticity Intensity</h3><span id="ela_title_value">20</span>
+                        <p>This property controls how strong is the force pulling the particles back to the waveform. A higher value can accumulate enough speed to overshoot the waveform and create a sligshot effect. </p>
+                        <h4 class="ela_range">Elasticity:<span id="ela_value">20</span></h4>
+                        <div class="ela_div_slider">
+                            <input type="range" id="ela_slider" class="ela_slider" min="5" max="50" value="20" />
+                        </div>
+                    </li>
+ <!--                    <li class="settings_items motion_blur_item">
+                        <h3><input type="checkbox">Motion Blur</h3>
+                        <p>This property determines how strong is the force pulling the particles back to their
+                        original position. </p>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
         <div id="overlay"></div>
         <script src="js/bundle.js"></script>
     </body>

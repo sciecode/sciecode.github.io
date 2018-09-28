@@ -35,22 +35,21 @@ controls.maxPolarAngle = Math.PI * 2 / 5 ;
 controls.target.y = 0;
 controls.update();
 
-var gui = new dat.GUI();
-gui.add(settings, 'quality', { Low: 0, Medium: 1, High: 2, Ultra: 3 } ).listen().onChange(settings.changeQuality);
-gui.add(settings, 'radius', 10, 50).listen();
-gui.add(settings, 'viscosity', 0.05, 0.3).listen();
-gui.add(settings, 'elasticity', 0.005, 0.1).listen();
-gui.addColor(settings, 'color1').name('primary color').listen();
-gui.addColor(settings, 'color2').name('secondary color').listen();
-gui.add(settings, 'reset');
-gui.close();
+// var gui = new dat.GUI();
+// gui.add(settings, 'radius', 10, 50).listen();
+// gui.add(settings, 'viscosity', 0.05, 0.3).listen();
+// gui.add(settings, 'elasticity', 0.005, 0.1).listen();
+// gui.addColor(settings, 'color1').name('primary color').listen();
+// gui.addColor(settings, 'color2').name('secondary color').listen();
+// gui.add(settings, 'reset');
+// gui.close();
 
 postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
 
 fbo.init( renderer );
 
 lights.init();
-scene.add(lights.mesh);
+scene.add( lights.mesh );
 
 floor.init();
 scene.add(floor.mesh);
@@ -63,6 +62,58 @@ overlay.classList.add("invisible");
 
 brand = document.getElementById("brand");
 brand.classList.remove("brandInit");
+
+inside = document.getElementById("ball_sphere_inside");
+inside.style.transform = "scale("+ settings.radius/50; +")";
+
+radSlider = document.getElementById("rad_slider");
+radSlider.addEventListener("change", function(e) {
+    settings.radius = this.value;
+    inside = document.getElementById("ball_sphere_inside");
+    inside.style.transform = "scale("+ settings.radius/50; +")";
+    radValue = document.getElementById("rad_value");
+    radValue.innerHTML = this.value;
+    radValue = document.getElementById("rad_title_value");
+    radValue.innerHTML = this.value;
+}, false);
+
+visSlider = document.getElementById("vis_slider");
+visSlider.addEventListener("change", function(e) {
+    console.log()
+    settings.viscosity = this.value/100;
+    visValue = document.getElementById("vis_value");
+    visValue.innerHTML = this.value;
+    visValue = document.getElementById("vis_title_value");
+    visValue.innerHTML = this.value;
+}, false);
+
+elaSlider = document.getElementById("ela_slider");
+elaSlider.addEventListener("change", function(e) {
+    console.log()
+    settings.elasticity = this.value/1000;
+    elaValue = document.getElementById("ela_value");
+    elaValue.innerHTML = this.value;
+    elaValue = document.getElementById("ela_title_value");
+    elaValue.innerHTML = this.value;
+}, false);
+
+
+menu = document.getElementById("settings_menu");
+menu.addEventListener("click", function(e) {
+    this.classList.toggle("menu_active");
+    set = document.getElementById("settings");
+    set.classList.toggle("final_settings")
+}, false);
+
+settings_items = document.getElementsByClassName("settings_items");
+for (var i = 0; i < settings_items.length; i++) {
+    settings_items[i].addEventListener("click", function(e) {
+        for (var i = 0; i < settings_items.length; i++) {
+            settings_items[i].classList.remove("selected_item");
+        }
+        this.classList.add("selected_item");
+    }, false);
+}
 
 exports.notice = document.getElementById("noticeText");
 exports.notice.addEventListener('transitionend', function () {
@@ -125,8 +176,8 @@ function update() {
     currentTime = Date.now();
     lapseTime = (currentTime - previousTime)/1000;
     previousTime = currentTime;
-    if ( lapseTime > 1/30 && exports.target > 500) exports.countLow++;
-    if ( lapseTime < 1/59 && exports.target > 1500) exports.countHigh++;
+    // if ( lapseTime > 1/30 && exports.target > 500) exports.countLow++;
+    // if ( lapseTime < 1/59 && exports.target > 1500) exports.countHigh++;
     if ( exports.countLow > 40 && !exports.resetLow ) {
         exports.resetLow = true;
         if (settings.quality != 0) {

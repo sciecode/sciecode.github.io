@@ -22,11 +22,12 @@ var _vtt2;
 var TEXTURE_WIDTH;
 var TEXTURE_HEIGHT;
 var AMOUNT;
-var dim = 220;
+
 
 var cur = Date.now();
 var prev = cur;
 
+var dim = exports.dim = 220;
 exports.life = 0;
 exports.init = init;
 exports.update = update;

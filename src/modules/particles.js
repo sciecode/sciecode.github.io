@@ -46,7 +46,8 @@ function init() {
 	        {
 	        	textureDefaultPosition: { type: "t", value: fbo.defaultPosition },
 	            texturePosition: { type: "t", value: null },
-	            pointSize: { type: "f", value: 1 },
+	            dim: { type: "f", value: 0 },
+	            sizeRatio: { type: "f", value: 0 },
 	            lightPos: { type: 'v3', value: lights.mesh.position },
 	            color1: { type: 'c', value: undef },
 	            color2: { type: 'c', value: undef }
@@ -65,6 +66,8 @@ function init() {
 
 	renderShader.uniforms.color1.value = _color1;
 	renderShader.uniforms.color2.value = _color2;
+	renderShader.uniforms.dim.value = fbo.dim;
+	renderShader.uniforms.sizeRatio.value = settings.sizeRatio;
 
 	particles = exports.mesh = new THREE.Points( geometry, renderShader );
 
