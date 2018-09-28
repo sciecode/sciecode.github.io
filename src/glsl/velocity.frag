@@ -58,7 +58,7 @@ void main() {
 
     if ( dist.x <= 1.0 ) {
         vel += offset*elasticity*0.3 - vel * viscosity;
-        vel += (normalize(cur - (mousePrev + (mousePosition - mousePrev)* dist.y )) * mix(2.0, 0.5, smoothstep(0.2, 0.9, dist.x) ) + rand * 0.1 );
+        vel += (normalize(cur - (mousePrev + (mousePosition - mousePrev) )) * mix(2.0, 0.5, smoothstep(0.2, 0.9, dist.x) ) + rand * 0.1 );
     }
     else {
         vel += offset*elasticity - vel * viscosity;
