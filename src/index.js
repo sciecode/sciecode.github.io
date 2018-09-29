@@ -7,6 +7,14 @@ var fbo = require('./modules/fbo');
 var lights = require('./modules/lights');
 var floor = require('./modules/floor');
 var particles = require('./modules/particles');
+var Stats = require('./helpers/stats.min');
+
+var stats = new Stats();
+stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild( stats.dom );
+
+stats.dom.style.left = "";
+stats.dom.style.right = "0px";
 
 exports.restart = restart;
 
@@ -84,6 +92,9 @@ visSlider.addEventListener("mousemove", function(e) {
     visValue.innerHTML = this.value;
     visValue = document.getElementById("vis_title_value");
     visValue.innerHTML = this.value;
+    fluid_box = document.getElementById("fluid_box");
+    fluid_box.style.background = "rgba(78, 177, "+ (219 - 140*settings.viscosity/0.3 )+","+ (0.2 + 0.2*settings.viscosity/0.3)  + ")";
+    fluid_box.style.border = "2px solid rgba(78, 177, "+ (219 - 140*settings.viscosity/0.3 )+", 1)";
 }, false);
 
 elaSlider = document.getElementById("ela_slider");
@@ -186,6 +197,7 @@ ball = 0;
 direction = 1;
 amount = 1;
 function update() {
+    stats.begin();
     requestAnimationFrame(update);
 
     if (ball > 130 || ball < 0)
@@ -227,7 +239,8 @@ function update() {
             exports.notice.textContent="This experiment is running at high framerate, you might enjoy this experiment at higher quality.";
             exports.notice.classList.add("noticePulse");
         }
-    } 
+    }
+    stats.end();
 }
 
 window.onresize = function () {

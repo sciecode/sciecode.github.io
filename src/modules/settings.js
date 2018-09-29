@@ -51,8 +51,8 @@ function changeQuality( val ) {
 	}
 	if (exports.quality == 3) {
 		exports.useShadow = true;
-		exports.TEXTURE_WIDTH = 512;
-		exports.TEXTURE_HEIGHT = 1024;
+		exports.TEXTURE_WIDTH = 2048;
+		exports.TEXTURE_HEIGHT = 2048;
 		exports.sizeRatio = 1.0;
 	}
 	ind.notice.classList.remove("noticePulse");
