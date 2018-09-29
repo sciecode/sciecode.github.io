@@ -115,13 +115,13 @@ mbCheckbox.addEventListener("click", function(e) {
 
 }, false);
 
-
 menu = document.getElementById("settings_menu");
 menu.addEventListener("click", function(e) {
     this.classList.toggle("menu_active");
     set = document.getElementById("settings");
     set.classList.toggle("final_settings")
 }, false);
+
 
 settings_items = document.getElementsByClassName("settings_items");
 for (var i = 0; i < settings_items.length; i++) {
@@ -181,8 +181,24 @@ exports.resetHigh = false;
 exports.resetLow = false;
 previousTime = Date.now(0);
 
+fluid_ball = document.getElementById("fluid_ball");
+ball = 0;
+direction = 1;
+amount = 1;
 function update() {
     requestAnimationFrame(update);
+
+    if (ball > 130 || ball < 0)
+        direction *= -1;
+    if (ball > 35 && ball < 95) {
+        amount =  1 - 0.6*settings.viscosity/0.3;
+    }
+    else {
+        amount = 1.5;
+    }
+
+    ball += direction*amount;
+    fluid_ball.style.transform = "translateX("+ ball +"px) translateY(-20px)";
 
     exports.target++;
 

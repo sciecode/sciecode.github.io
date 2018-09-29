@@ -39,7 +39,7 @@ function init( renderer, scene, camera, width, height ) {
 	blendPass = new THREE.ShaderPass( THREE.BlendShader, "tDiffuse1" );
 
 	blendPass.uniforms[ 'tDiffuse2' ].value = savePass.renderTarget.texture;
-	blendPass.uniforms[ 'mixRatio' ].value = 0.17;
+	blendPass.uniforms[ 'mixRatio' ].value = 0.25;
 
 	var bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width, height ), 0.2, 0, 0.19 );
 	var copyPass = new THREE.ShaderPass( THREE.CopyShader );
