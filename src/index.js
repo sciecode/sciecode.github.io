@@ -67,7 +67,7 @@ inside = document.getElementById("ball_sphere_inside");
 inside.style.transform = "scale("+ settings.radius/50; +")";
 
 radSlider = document.getElementById("rad_slider");
-radSlider.addEventListener("change", function(e) {
+radSlider.addEventListener("mousemove", function(e) {
     settings.radius = this.value;
     inside = document.getElementById("ball_sphere_inside");
     inside.style.transform = "scale("+ settings.radius/50; +")";
@@ -78,8 +78,7 @@ radSlider.addEventListener("change", function(e) {
 }, false);
 
 visSlider = document.getElementById("vis_slider");
-visSlider.addEventListener("change", function(e) {
-    console.log()
+visSlider.addEventListener("mousemove", function(e) {
     settings.viscosity = this.value/100;
     visValue = document.getElementById("vis_value");
     visValue.innerHTML = this.value;
@@ -88,13 +87,32 @@ visSlider.addEventListener("change", function(e) {
 }, false);
 
 elaSlider = document.getElementById("ela_slider");
-elaSlider.addEventListener("change", function(e) {
-    console.log()
+elaSlider.addEventListener("mousemove", function(e) {
     settings.elasticity = this.value/1000;
     elaValue = document.getElementById("ela_value");
     elaValue.innerHTML = this.value;
     elaValue = document.getElementById("ela_title_value");
     elaValue.innerHTML = this.value;
+}, false);
+
+mbCheckbox = document.getElementById("mb_value");
+mbCheckbox.addEventListener("click", function(e) {
+    settings.motionBlur = !settings.motionBlur;
+
+    mbValue = document.getElementById("motion_blur_title_value");
+
+    this.classList.toggle("disabled");
+    mbValue.classList.toggle("disabled");
+
+    if ( settings.motionBlur ) {
+        this.innerHTML = "Enabled";
+        mbValue.innerHTML = "Enabled";
+    } 
+    else {
+        this.innerHTML = "Disabled";
+        mbValue.innerHTML = "Disabled";
+    }
+
 }, false);
 
 

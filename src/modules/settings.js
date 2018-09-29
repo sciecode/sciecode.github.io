@@ -9,7 +9,7 @@ exports.reset = reset;
 exports.TEXTURE_WIDTH = 256;
 exports.TEXTURE_HEIGHT = 256;
 exports.quality = 1;
-exports.motionBlur = false;
+exports.motionBlur = true;
 exports.useShadow = false;
 exports.sizeRatio = 1.6;
 exports.changeQuality = changeQuality;
@@ -23,7 +23,7 @@ function reset() {
 	exports.TEXTURE_WIDTH = 256;
 	exports.TEXTURE_HEIGHT = 256;
 	exports.sizeRatio = 1.6;
-	exports.motionBlur = false;
+	exports.motionBlur = true;
 }
 
 function changeQuality( val ) {

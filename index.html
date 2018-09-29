@@ -12,6 +12,7 @@
         <style>
             @import url('https://fonts.googleapis.com/css?family=Raleway:900');
             @import url('https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c:700');
+            @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800');
             * { margin: 0; border: 0; box-sizing: border-box; }
             body { margin: 0; overflow: hidden; background-color: #0f1519; user-select: none; }
             canvas { width: 100%; height: 100% }
@@ -25,11 +26,11 @@
                 #quality { width: 284px; left: calc(50vw - 284px/2); }
             }
             #quality ul { list-style: none; margin: 0px; padding: 0px; box-sizing: border-box;}
-            #quality ul li { float: left;  width: calc(100% / 4); list-style: none; color: #949494; margin: 0px; padding: 0px; overflow: hidden; border: 1.6px solid #949494; border-left: none; }
-            #quality ul li:hover { background-color: rgba(90,90,90,0.1) }
-            #quality li:first-child { border-left: 1.6px solid #949494; border-top-left-radius: 5px; border-bottom-left-radius: 5px; }
+            #quality ul li { float: left;  width: calc(100% / 4); list-style: none; color: #949494; margin: 0px; padding: 0px; overflow: hidden; border: 2px solid rgba(148, 148, 148, 0.2); border-left: none; transition: 0.6s ease; }
+            #quality ul li:hover {  background-color: rgba(30,30,30,1); }
+            #quality li:first-child { border-left: 2px solid rgba(148, 148, 148, 0.2); border-top-left-radius: 5px; border-bottom-left-radius: 5px; }
             #quality li:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 5px;}
-            #quality .qualities { display: block; font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 13px; text-decoration: none; color: #949494; line-height: 25px; text-align: center; text-rendering: optimizeLegibility; -webkit-font-smoothing: subpixel-antialiased; text-shadow: 1px 1px #000000; transition: 0.8s ease}
+            #quality .qualities { display: block; font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: 13px; text-decoration: none; color: #949494; line-height: 25px; text-align: center; text-rendering: optimizeLegibility; -webkit-font-smoothing: subpixel-antialiased; text-shadow: 1px 1px #000000; transition: 0.8s ease; background-color: rgba(0,0,0,0.4);}
             #quality .qualities:hover { color: #e4e5e6;}
             #quality .qualities.selected { color: #e4e5e6; }
             #quality .qualities.recommended { color: #dde276; }
@@ -114,7 +115,7 @@
             }
             #settings {
                 position: fixed;
-                background-color: rgba(0,0,0,0.23);
+                background-color: rgba(0,0,0,0.4);
                 width: 320px;
                 /*height: 82vh;*/
                 right: 5vw;
@@ -161,7 +162,8 @@
                 font-size: 13px;
                 text-rendering: optimizeLegibility;
                 -webkit-font-smoothing: subpixel-antialiased;
-                font-family: 'Raleway', sans-serif;
+                font-family: 'Open Sans', sans-serif;
+                font-weight: 900;
                 letter-spacing: 1px;
                 text-align: center;
                 white-space: nowrap;
@@ -199,12 +201,16 @@
                 max-height: 300px;
             }
             .selected_item.viscosity_item {
-                max-height: 250px;
+                max-height: 240px;
             }
             .selected_item.elasticity_item { 
-                max-height: 200px;
+                max-height: 230px;
              }
-            .selected_item .rad_range, .selected_item .vis_range, .selected_item .ela_range {
+             .selected_item.motion_blur_item { 
+                max-height: 170px;
+             }
+            .selected_item .rad_range, .selected_item .vis_range, 
+            .selected_item .ela_range, .selected_item .mb_range {
                 transform: translateY(0px);
                 opacity: 1;
             }
@@ -235,41 +241,49 @@
             .settings_items.selected_item h3::after {
                 transform: scaleX(1);
             }
-            .rad_range, .vis_range, .ela_range {
+            .rad_range, .vis_range, .ela_range, .mb_range {
                 letter-spacing: 1px;
                 margin: 10px auto;
                 text-align: center;
                 display: block;
                 font-size: 13px;
-                font-family: 'M PLUS Rounded 1c', sans-serif;
-                color: white;
+                font-family: 'Open Sans', sans-serif;
+                font-weight: 400;
+                color: rgb(178, 178, 178);
                 text-rendering: optimizeLegibility;
                 -webkit-font-smoothing: subpixel-antialiased;
                 transition: 0.6s ease 0.6s;
                 transform: translateY(10px);
                 opacity: 0;
             }
-            #rad_value, #vis_value, #ela_value {
+            #rad_value, #vis_value, #ela_value, #mb_value {
                 letter-spacing: 0.6px;
                 margin-left: 10px;
                 font-size: 14px;
-                font-family: sans-serif;
+                font-family: 'Open Sans', sans-serif;
                 font-weight: bold;
                 color: #4CAF50;
             }
-            #rad_title_value, #vis_title_value, #ela_title_value {
-                float: right;
-                margin-right: 10px;
+            #mb_value {
+                cursor: pointer;
+            }
+            #rad_title_value, #vis_title_value, #ela_title_value, #motion_blur_title_value {
+                position: absolute;
+                right: 30px;
                 letter-spacing: 0.6px;
                 font-size: 14px;
-                font-family: sans-serif;
+                font-family: 'Open Sans', sans-serif;
                 font-weight: bold;
                 color: #4CAF50;
                 transition: 0.4s;
                 opacity: 1;
             }
-            .selected_item #rad_title_value, .selected_item #vis_title_value, .selected_item #ela_title_value {
+            .selected_item #rad_title_value, .selected_item #vis_title_value,
+            .selected_item #ela_title_value, .selected_item #motion_blur_title_value {
                 opacity: 0;
+            }
+            #motion_blur_title_value.disabled, #mb_value.disabled {
+                color: #af4c4c;
             }
             #ball_sphere {
                 float: left;
@@ -353,7 +367,7 @@
                 display: block;
                 width: 5px;
                 height: 1px;
-                font-family: sans-serif;
+                font-family: 'Open Sans', sans-serif;
                 font-size: 12px;
                 color: #949494;
                 margin-left: 25px;
@@ -368,7 +382,7 @@
                 display: block;
                 width: 5px;
                 height: 1px;
-                font-family: sans-serif;
+                font-family: 'Open Sans', sans-serif;
                 font-size: 12px;
                 color: #949494;
                 margin-left: 27px;
@@ -389,7 +403,7 @@
                 display: block;
                 width: 1px;
                 height: 1px;
-                font-family: sans-serif;
+                font-family: 'Open Sans', sans-serif;
                 font-size: 12px;
                 color: #949494;
                 transition: 0.6s ease 1.0s;
@@ -405,7 +419,7 @@
                 display: block;
                 width: 1px;
                 height: 1px;
-                font-family: sans-serif;
+                font-family: 'Open Sans', sans-serif;
                 font-size: 12px;
                 color: #949494;
                 transition: 0.6s ease 1.0s;
@@ -491,11 +505,11 @@
                             </span>
                         </div>
                     </li>
- <!--                    <li class="settings_items motion_blur_item">
-                        <h3><input type="checkbox">Motion Blur</h3>
-                        <p>This property determines how strong is the force pulling the particles back to their
-                        original position. </p>
-                    </li> -->
+                    <li class="settings_items motion_blur_item">
+                        <h3>Motion Blur</h3><span id="motion_blur_title_value">Enabled</span>
+                        <p>This option slightly blurs and leaves a trail behind moving object. Helps to display a more realistic and believable image. Especially important for experiments running at a low framerate.</p>
+                        <h4 class="mb_range">Motion Blur:<span id="mb_value">Enabled</span></h4>
+                    </li>
                 </ul>
             </div>
         </div>
