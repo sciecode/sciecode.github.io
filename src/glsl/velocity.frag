@@ -49,16 +49,16 @@ void main() {
     float x = ( dim/2.0 + pos.x ) / dim;
     float z = ( dim/2.0 + pos.z ) / dim;
 
-    pos.x += rand.x*0.5;
+    pos.x += rand.x*1.0;
     pos.y += sin(x*PI + PI*2.0*5.0*z + PI*time)*3.0 + rand.y*3.5;
-    pos.z += sin(x*PI*1.5 + PI*time)*5.0 + rand.z*0.5;
+    pos.z += sin(x*PI*1.5 + PI*time)*5.0 + rand.z*1.0;
 
     vec3 offset = (pos - cur);
     vec2 dist = distToSegment(mousePrev, mousePosition, cur) / mouseRadius;
 
     if ( dist.x <= 1.0 ) {
         vel += offset*elasticity*0.3 - vel * viscosity;
-        vel += (normalize(cur - (mousePrev + (mousePosition - mousePrev) )) * mix(2.0, 0.5, smoothstep(0.2, 0.9, dist.x) ) + rand * 0.1 );
+        vel += (normalize(cur - (mousePrev + (mousePosition - mousePrev) )) * mix(2.0, 0.5, smoothstep(0.2, 0.9, dist.x) ) + rand * 0.2 );
     }
     else {
         vel += offset*elasticity - vel * viscosity;
