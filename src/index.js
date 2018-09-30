@@ -11,7 +11,7 @@ var Stats = require('./helpers/stats.min');
 
 var stats = new Stats();
 stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-document.body.appendChild( stats.dom );
+// document.body.appendChild( stats.dom );
 
 stats.dom.style.left = "";
 stats.dom.style.right = "0px";
@@ -196,6 +196,7 @@ fluid_ball = document.getElementById("fluid_ball");
 ball = 0;
 direction = 1;
 amount = 1;
+
 function update() {
     stats.begin();
     requestAnimationFrame(update);

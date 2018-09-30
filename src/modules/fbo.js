@@ -22,7 +22,7 @@ var _vtt2;
 var TEXTURE_WIDTH;
 var TEXTURE_HEIGHT;
 var AMOUNT;
-
+var randomData;
 
 var cur = Date.now();
 var prev = cur;
@@ -32,6 +32,7 @@ exports.life = 0;
 exports.init = init;
 exports.update = update;
 exports.defaultPosition;
+
 
 function init( renderer ) {
 
@@ -44,7 +45,8 @@ function init( renderer ) {
 	_camera = new THREE.Camera();
 	_camera.position.z = 1;
 
-	exports.defaultPosition = _createPositionTexture();
+	exports.randomTexture = _createRandomTexture();
+	exports.defaultPosition = _createDefaultPositionTexture();
 
 	_copyShader = new THREE.RawShaderMaterial({
 	    uniforms: {
@@ -72,7 +74,7 @@ function init( renderer ) {
 	_velocityShader = new THREE.RawShaderMaterial({
 	    uniforms: {
 	        resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_WIDTH, TEXTURE_HEIGHT ) },
-	        textureRandom: { type: 't', value: _createRandomTexture().texture },
+	        textureRandom: { type: 't', value: exports.randomTexture.texture },
 	        texturePosition: { type: 't', value: undef },
 	        textureVelocity: { type: 't', value: undef },
 	        mousePosition: { type: 'v3', value: new THREE.Vector3(0,0,0) },
@@ -164,7 +166,7 @@ function _updateVelocity() {
 }
 
 function _createRandomTexture() {
-    var randomData = new Float32Array( AMOUNT * 4 );
+    randomData = new Float32Array( AMOUNT * 4 );
     for(var x = 0; x < TEXTURE_WIDTH; x++) {
         for(var z= 0; z < TEXTURE_HEIGHT; z++) {
             randomData[x*TEXTURE_HEIGHT*4 + z*4] = THREE.Math.randFloat(-1, 1);
@@ -182,7 +184,30 @@ function _createRandomTexture() {
     return tmp;
 }
 
+
 function _createPositionTexture() {
+    var data = new Float32Array( AMOUNT * 4 );
+    for(var x = 0; x < TEXTURE_WIDTH; x++) {
+        for(var z= 0; z < TEXTURE_HEIGHT; z++) {
+        	xNorm = x/TEXTURE_WIDTH;
+        	zNorm = z/TEXTURE_HEIGHT;
+        	time = exports.life;
+            data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
+            data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = Math.sin(xNorm*Math.PI + Math.PI*2.0*5.0*zNorm + Math.PI*time)*3.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*3.5;
+            data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT) + Math.sin(xNorm*Math.PI*1.5 + Math.PI*time)*5.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
+        }
+    }
+    tmp = {};
+    tmp.texture = new THREE.DataTexture( data, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
+    tmp.texture.minFilter = THREE.NearestFilter;
+    tmp.texture.magFilter = THREE.NearestFilter;
+    tmp.texture.needsUpdate = true;
+    tmp.texture.generateMipmaps = false;
+    tmp.texture.flipY = false;
+    return tmp;
+}
+
+function _createDefaultPositionTexture() {
     var data = new Float32Array( AMOUNT * 4 );
     for(var x = 0; x < TEXTURE_WIDTH; x++) {
         for(var z= 0; z < TEXTURE_HEIGHT; z++) {

@@ -30,7 +30,7 @@
             #quality ul li:hover {  background-color: rgba(30,30,30,1); }
             #quality li:first-child { border-left: 2px solid rgba(148, 148, 148, 0.2); border-top-left-radius: 5px; border-bottom-left-radius: 5px; }
             #quality li:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 5px;}
-            #quality .qualities { display: block; font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: 13px; text-decoration: none; color: #949494; line-height: 25px; text-align: center; text-rendering: optimizeLegibility; -webkit-font-smoothing: subpixel-antialiased; text-shadow: 1px 1px #000000; transition: 0.8s ease; background-color: rgba(0,0,0,0.4);}
+            #quality .qualities { display: block; font-family: 'Open Sans', sans-serif; font-weight: 600; font-size: 12.5px; text-decoration: none; color: #949494; line-height: 25px; text-align: center; text-rendering: optimizeLegibility; -webkit-font-smoothing: subpixel-antialiased; text-shadow: 1px 1px #000000; transition: 0.8s ease; background-color: rgba(0,0,0,0.4);}
             #quality .qualities:hover { color: #e4e5e6;}
             #quality .qualities.selected { color: #e4e5e6; }
             #quality .qualities.recommended { color: #dde276; }
@@ -343,7 +343,6 @@
             }
             input[type=range] {
                 -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-                width: 100px;
             }
             .rad_slider {
                 position: absolute;
@@ -359,6 +358,7 @@
                 transform: scaleY(0) rotate(270deg);
                 transition: transform 0.8s ease 0.6s, opacity 0.8s ease 0.6s, background-color 0.4s linear;
                 opacity: 0;
+                width: 100px;
             }
 
             .vis_slider, .ela_slider {
@@ -371,6 +371,7 @@
                 transform: scaleX(0);
                 transition: transform 0.8s ease 0.6s, opacity 0.8s ease 0.6s, background-color 0.4s linear;
                 opacity: 0;
+                width: 160px;
                 margin: 0px auto;
             }
 
@@ -424,7 +425,7 @@
                 color: #949494;
                 transition: 0.6s ease 1.0s;
                 transform: translateX(-10px);
-                left: 58px;
+                left: 28px;
                 top: -6.8px;
                 opacity: 0;
             }
@@ -440,7 +441,7 @@
                 color: #949494;
                 transition: 0.6s ease 1.0s;
                 transform: translateX(10px);
-                left: 202.5px;
+                left: 230px;
                 top: -12.8px;
                 opacity: 0;
             }
@@ -481,8 +482,8 @@
                 margin-left: 30px;
                 width: 50px;
                 height: 50px;
-                background-color: rgba(78, 177, 196, 0.235);
-                border: 1.5px solid rgba(78, 177, 196, 1);
+                background-color: rgba(78, 177, 163, 0.28);
+                border: 1.5px solid rgba(78, 177, 163, 1);
                 transition: opacity 0.8s linear 0.6s;
                 opacity: 0;
                 border-radius: 5px;
@@ -531,24 +532,24 @@
                         </div>
                     </li>
                     <li class="settings_items viscosity_item">
-                        <h3>Fluid Viscosity</h3><span id="vis_title_value">5</span>
+                        <h3>Fluid Viscosity</h3><span id="vis_title_value">12</span>
                         <p>This property determines how resistant to velocity changes is the fluid. A higher viscosity will result in a slower moving particle system - like honey. A lower viscosity, though, will result in a faster moving system - like water. </p>
-                        <h4 class="vis_range">Viscosity:<span id="vis_value">5</span></h4>
+                        <h4 class="vis_range">Viscosity:<span id="vis_value">12</span></h4>
                         <div class="vis_div_slider">
                             <span class="horz_span">
-                                <input type="range" id="vis_slider" class="vis_slider" min="5" max="30" value="5" />
+                                <input type="range" id="vis_slider" class="vis_slider" min="5" max="30" value="12" />
                             </span>
                         </div>
                         <div id="fluid_ball"></div>
                         <div id="fluid_box"></div>
                     </li>
                     <li class="settings_items elasticity_item">
-                        <h3>Elasticity Intensity</h3><span id="ela_title_value">5</span>
+                        <h3>Elasticity Intensity</h3><span id="ela_title_value">15</span>
                         <p>This property controls how strong is the force pulling the particles back to the waveform. A higher value can accumulate enough speed to overshoot the waveform and create a sligshot effect. </p>
-                        <h4 class="ela_range">Elasticity:<span id="ela_value">5</span></h4>
+                        <h4 class="ela_range">Elasticity:<span id="ela_value">15</span></h4>
                         <div class="ela_div_slider">
                             <span class="horz_span">
-                                <input type="range" id="ela_slider" class="ela_slider" min="5" max="50" value="5" />
+                                <input type="range" id="ela_slider" class="ela_slider" min="5" max="50" value="15" />
                             </span>
                         </div>
                     </li>

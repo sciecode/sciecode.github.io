@@ -1,8 +1,8 @@
 var ind = require('../index');
 
 exports.radius = 30;
-exports.viscosity = 0.05;
-exports.elasticity = 0.005;
+exports.viscosity = 0.12;
+exports.elasticity = 0.015;
 exports.color1 = "#2095cc";
 exports.color2 = "#20cc31";
 exports.reset = reset;
@@ -16,8 +16,8 @@ exports.changeQuality = changeQuality;
 
 function reset() {
 	exports.radius = 30;
-	exports.viscosity = 0.05;
-	exports.elasticity = 0.005;
+	exports.viscosity = 0.12;
+	exports.elasticity = 0.015;
 	exports.color1 = "#2095cc";
 	exports.color2 = "#20cc31";
 	exports.TEXTURE_WIDTH = 256;

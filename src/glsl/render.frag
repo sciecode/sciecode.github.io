@@ -32,7 +32,7 @@ void main() {
 
     outgoingLight *= 0.75 + luminosity*0.40;
 
-    luminosity = smoothstep(0.8,1.0,(max( 0.0, dot( vec3(0.0,1.0,0.0), light) ) ) ); 
+    luminosity = smoothstep(0.88,1.0,(max( 0.0, dot( vec3(0.0,1.0,0.0), light) ) ) ); 
     outgoingLight *= 0.55 + luminosity*0.55;
 
 	#ifdef USE_SHADOW

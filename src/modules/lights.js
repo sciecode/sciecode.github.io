@@ -5,7 +5,7 @@ exports.init = init;
 
 function init() {
 	mesh = exports.mesh = new THREE.Object3D();
-	mesh.position.set(0, 150, 0);
+	mesh.position.set(0, 190, 0);
 
 	var ambient = new THREE.AmbientLight( 0x333333 );
 	mesh.add( ambient );
@@ -18,11 +18,11 @@ function init() {
 	directionalLight2.position.set( 1, 1, -1 );
 	mesh.add( directionalLight2 );
 
-	var pointLight = new THREE.PointLight( 0x999999, 1, 800 );
+	var pointLight = new THREE.PointLight( 0x999999, 1, 1600 );
 	pointLight.castShadow = true;
 	pointLight.shadow.camera.near = 10;
-	pointLight.shadow.camera.far = 800;
-	pointLight.shadow.bias = 0.1;
+	pointLight.shadow.camera.far = 1500;
+	pointLight.shadow.bias = 0.04;
 	pointLight.shadow.mapSize.width = 2048;
 	pointLight.shadow.mapSize.height = 1024;
 	mesh.add( pointLight );
