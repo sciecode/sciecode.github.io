@@ -106,6 +106,26 @@ elaSlider.addEventListener("mousemove", function(e) {
     elaValue.innerHTML = this.value;
 }, false);
 
+color1 = document.getElementById("color1_slider");
+color1.addEventListener("mousemove", function(e) {
+    col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
+    settings.color1 = "#" + col.getHexString();
+    col1 = document.getElementById("color1_value");
+    col1.style.background = "#" + col.getHexString();
+    col1 = document.getElementById("color1_box");
+    col1.style.background = "#" + col.getHexString();
+}, false);
+
+color2 = document.getElementById("color2_slider");
+color2.addEventListener("mousemove", function(e) {
+    col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
+    settings.color2 = "#" + col.getHexString();
+    col2 = document.getElementById("color2_value");
+    col2.style.background = "#" + col.getHexString();
+    col2 = document.getElementById("color2_box");
+    col2.style.background = "#" + col.getHexString();
+}, false);
+
 mbCheckbox = document.getElementById("mb_value");
 mbCheckbox.addEventListener("click", function(e) {
     settings.motionBlur = !settings.motionBlur;

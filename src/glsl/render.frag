@@ -1,4 +1,4 @@
-precision highp float;
+precision mediump float;
 
 varying float ratio;
 varying float vAlpha;
@@ -45,6 +45,6 @@ void main() {
     //chunk(fog_fragment);
 
     gl_FragColor.a = vAlpha;
-    gl_FragColor.a *= 1.0 - smoothstep(0.0, 0.17,clamp(fogFactor,0.0,1.0) );
+    gl_FragColor.a *= 1.0 - smoothstep(0.0, 0.19, clamp( fogFactor, 0.0, 1.0 ) );
 
 }

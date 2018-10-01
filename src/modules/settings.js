@@ -4,7 +4,7 @@ exports.radius = 30;
 exports.viscosity = 0.12;
 exports.elasticity = 0.015;
 exports.color1 = "#2095cc";
-exports.color2 = "#20cc31";
+exports.color2 = "#20cc2e";
 exports.reset = reset;
 exports.TEXTURE_WIDTH = 256;
 exports.TEXTURE_HEIGHT = 256;
@@ -19,7 +19,7 @@ function reset() {
 	exports.viscosity = 0.12;
 	exports.elasticity = 0.015;
 	exports.color1 = "#2095cc";
-	exports.color2 = "#20cc31";
+	exports.color2 = "#20cc2e";
 	exports.TEXTURE_WIDTH = 256;
 	exports.TEXTURE_HEIGHT = 256;
 	exports.sizeRatio = 1.6;
