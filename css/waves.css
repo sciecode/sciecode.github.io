@@ -149,6 +149,29 @@ canvas {
     color: #dde276; 
 }
 
+/* === [FOOTER] === */
+
+#footer {
+    position: absolute;
+    right: 4vw;
+    bottom: 5vh;
+}
+
+.footers, .footers a {
+    font-weight: 600;
+    display: inline-block;
+    color: #e4e5e6;
+    font-size: 14px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: subpixel-antialiased;
+    font-family: 'Open Sans', sans-serif;
+    letter-spacing: 1.1px;
+}
+
+.footers a {
+    text-decoration: underline;
+}
+
 
 /* === [NOTICE] === */
 
