@@ -5,6 +5,7 @@ This experiment was inspired by Edan Kwan's [The Spirit](http://edankwan.com/exp
 ## Build
 
 requires **browserify** `npm install browserify` with **glslify** transform `npm install -t glslify `
+
 requires **uglifyjs** `npm install uglifyjs`
 
 ```
