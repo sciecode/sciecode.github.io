@@ -39,8 +39,8 @@ void main() {
 
     vec4 worldPosition = modelMatrix * vec4( pos, 1.0 );
     vec4 mvPosition = viewMatrix * worldPosition;
-    
-    gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * sizeRatio ;
+
+    gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * sizeRatio * 1.5 ;
     mvPosition.y += gl_PointSize * 0.5;
 
     gl_Position = projectionMatrix * mvPosition;

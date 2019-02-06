@@ -1,6 +1,11 @@
+var easing = require('../helpers/easing');
 var settings = require('./settings');
+var floor = require('./floor');
 
 var undef;
+
+var _camera = undef;
+var _controls = undef;
 
 var overlay = undef;
 var brand = undef;
@@ -21,6 +26,14 @@ var color2 = undef;
 
 var fluid_ball = undef;
 
+var stBtn = undef;
+
+var stExp = false;
+var edExp = false;
+var prevTime = undef;
+var curTime = undef;
+var sumTime = undef;
+
 var ball = 0;
 var direction = 1;
 var amount = 1;
@@ -28,13 +41,19 @@ var amount = 1;
 exports.init = init;
 exports.update = update;
 
-function init () {
+function init ( camera, controls ) {
 
     // definitions
+
+    _camera = camera;
+    _controls = controls;
 
     notice = document.getElementById("noticeText");
 
     qualities = document.getElementsByClassName("qualities");
+    quality_list = document.getElementById("quality_list");
+    quality_value = document.getElementById("quality_value");
+    caret = document.querySelector(".caret");
 
     settings_items = document.getElementsByClassName("settings_items");
     menu = document.getElementById("settings_menu");
@@ -54,14 +73,11 @@ function init () {
 
     overlay = document.getElementById("overlay");
 
-    overlay.classList.add("invisible");
-    brand.classList.remove("brandInit");
-
     fluid_ball = document.getElementById("fluid_ball");
 
+    stBtn = document.getElementById("st_btn");
 
-    // eventListeners and initializers
-
+    // eventListeners-block
     inside.style.transform = "scale("+ settings.radius/50; +")";
 
     radSlider.addEventListener("mousemove", function(e) {
@@ -95,6 +111,7 @@ function init () {
 
     color1.addEventListener("mousemove", function(e) {
         col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
+        floor.update();
         settings.color1 = "#" + col.getHexString();
         col1 = document.getElementById("color1_value");
         col1.style.background = "#" + col.getHexString();
@@ -112,6 +129,10 @@ function init () {
         col2.style.background = "#" + col.getHexString();
     }, false);
 
+    stBtn.addEventListener("click", function(e) {
+        startExperience();
+    }, false);
+
     mbCheckbox.addEventListener("click", function(e) {
         settings.motionBlur = !settings.motionBlur;
 
@@ -123,7 +144,7 @@ function init () {
         if ( settings.motionBlur ) {
             this.innerHTML = "Enabled";
             mbValue.innerHTML = "Enabled";
-        } 
+        }
         else {
             this.innerHTML = "Disabled";
             mbValue.innerHTML = "Disabled";
@@ -155,6 +176,9 @@ function init () {
                 qualities[i].classList.remove("recommended");
             }
             this.classList.add("selected");
+            quality_list.classList.remove("vis");
+            quality_value.classList.remove("vis");
+            quality_value.innerHTML = this.innerHTML + "<span class=\"caret\"></span>";
             changeQuality( this.dataset.quality );
         }, false);
         qualities[i].addEventListener('transitionend', function () {
@@ -165,13 +189,72 @@ function init () {
         }, false);
     }
 
+    quality_value.addEventListener("click", function(e) {
+      quality_list.classList.toggle("vis");
+      this.classList.toggle("vis");
+      caret.classList.toggle("vis");
+    }, false);
+
 }
 
 function changeQuality( val ) {
     settings.changeQuality( val );
 }
 
-function update() { 
+
+function startExperience() {
+    document.body.classList.add("active");
+
+    brand.classList.remove("nodelay");
+    brand.classList.remove("brandInit");
+    overlay.classList.add("invisible");
+    stExp = true;
+    prevTime = Date.now();
+    sumTime = 0;
+}
+
+function startUI() {
+  _controls.enableZoom = true;
+  _controls.enableRotate = true;
+  _controls.maxPolarAngle = Math.PI * 2 / 5;
+  _controls.maxDistance = 250;
+  _controls.minDistance = 150;
+  // _controls.minPolarAngle = 0.8;
+
+  var delays = document.querySelectorAll(".delay");
+  for ( var i = 0; i < delays.length; i++ )
+    delays[i].classList.remove("delay");
+
+  var inactives = document.querySelectorAll(".inactive");
+  for ( var i = 0; i < inactives.length; i++ )
+    inactives[i].classList.remove("inactive");
+}
+
+function update() {
+
+    if ( stExp && !edExp ) {
+        if ( sumTime < 3500 ) {
+            curTime = Date.now();
+            elapsedTime = curTime - prevTime;
+            prevTime = curTime;
+
+            sumTime += elapsedTime;
+
+            t = sumTime / 3500;
+        }
+        else {
+            t = 1;
+            edExp = true;
+            startUI();
+        }
+
+        xpos = easing.easeInOutQuint( t,   0, -110, 1 );
+        ypos = easing.easeInOutQuart( t, 200,  -90, 1 );
+        zpos = easing.easeInOutQuart( t,   0,  130, 1 );
+        _camera.position.set( xpos, ypos, zpos );
+
+    }
+
     if (ball > 130 || ball < 0)
         direction *= -1;
     if (ball > 35 && ball < 95) {
@@ -184,6 +267,3 @@ function update() {
     ball += direction*amount;
     fluid_ball.style.transform = "translateX("+ ball +"px) translateY(-20px)";
 }
-
-
-

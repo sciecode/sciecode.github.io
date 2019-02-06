@@ -1,7 +1,12 @@
-var OrbitControls = require('./controls/OrbitControls.js');
 
+var undef;
+var _ = this;
+
+// vendor-block
+var OrbitControls = require('./controls/OrbitControls.js');
 var postprocessing =  require('./postprocessing/composer');
 
+// require-block
 var settings = require('./modules/settings.js');
 var fbo = require('./modules/fbo');
 var lights = require('./modules/lights');
@@ -9,44 +14,42 @@ var floor = require('./modules/floor');
 var particles = require('./modules/particles');
 var dom = require('./modules/dom');
 
+// export-block
 exports.restart = restart;
+
+// defines-block
+origin = new THREE.Vector3();
+stPos = new THREE.Vector3( 0, 200, 0);
 
 renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.enabled = true;
 renderer.setPixelRatio( window.devicePixelRatio );
+renderer.setClearColor( 0x020406 );
 document.body.appendChild( renderer.domElement );
 
 scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2( 0x0f1519 , 0.0013 );
-renderer.setClearColor( 0x0f1519 );
+scene.fog = new THREE.FogExp2( 0x020406 , 0.0013 );
 
-camera = new THREE.PerspectiveCamera( 60, window.innerWidth/window.innerHeight, 1,10000 );
-camera.position.z = -100;
-camera.position.y = 110;
-camera.position.x = 160;
+camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
+camera.position.copy( stPos );
 
 controls = new THREE.OrbitControls( camera, renderer.domElement );
 controls.enablePan = false;
-controls.maxDistance = 250;
-controls.minDistance = 150;
-controls.minPolarAngle = 0.8;
-controls.maxPolarAngle = Math.PI * 2 / 5 ;
-controls.target.y = 0;
+controls.enableZoom = false;
+controls.enableRotate = false;
+// controls.target.copy( origin );
 controls.update();
 
 postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
 
-dom.init();
-fbo.init( renderer );
+dom.init( camera, controls );
 lights.init();
 floor.init();
-particles.init();
 
 scene.add( lights.mesh );
 scene.add( floor.mesh );
-scene.add( particles.mesh );
 
 function restart() {
     scene.remove( particles.mesh );
@@ -57,16 +60,12 @@ function restart() {
 
 function update() {
 
-    requestAnimationFrame(update);
+    requestAnimationFrame(update)
 
     dom.update();
-
     controls.update();
-
     fbo.update();
-
     particles.update();
-
     postprocessing.render();
 
 }
@@ -80,4 +79,18 @@ window.onresize = function () {
     postprocessing.setSize( w, h );
 };
 
-requestAnimationFrame(update);
+if ( WEBGL.isWebGLAvailable() ) {
+
+  fbo.init( renderer );
+  particles.init();
+
+  scene.add( particles.mesh );
+
+  requestAnimationFrame(update); // start
+
+} else {
+
+	var warning = WEBGL.getWebGLErrorMessage();
+	console.log( warning );
+
+}

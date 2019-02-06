@@ -15,36 +15,40 @@ uniform vec3 color2;
 #include <bsdfs>
 
 #ifdef USE_SHADOW
-
 	#include <lights_pars_begin>
 	#include <shadowmap_pars_fragment>
 	#include <shadowmask_pars_fragment>
-
 #endif
 
 
 void main() {
-    vec3 outgoingLight = mix(color2, color1, mix(0.0, 1.0, ratio));
 
+	vec2 toCenter = (gl_PointCoord.xy - 0.5) * 2.0;
+	float len = length(toCenter);
+	if (len > 0.8) discard;
 
-    vec3 light = normalize(lightPos-pos);
-    float luminosity = smoothstep(0.4,1.0,(max( 0.0, dot( vNormal, light) ) ) ); 
+  vec3 outgoingLight = mix(color2, color1, mix(0.0, 1.0, ratio));
+  vec3 light = normalize(lightPos-pos);
 
-    outgoingLight *= 0.75 + luminosity*0.40;
+  float luminosity = smoothstep(0.0,1.0,(max( 0.0, dot( vNormal, light) ) ) );
+  outgoingLight *= 0.75 + luminosity*0.35;
 
-    luminosity = smoothstep(0.88,1.0,(max( 0.0, dot( vec3(0.0,1.0,0.0), light) ) ) ); 
-    outgoingLight *= 0.55 + luminosity*0.55;
+	luminosity = smoothstep(0.3,1.0, max( 0.0, vNormal.y/8.0 ) );
+	outgoingLight *= 0.85 + luminosity*0.25;
+
+  luminosity = smoothstep(0.88,1.0,(max( 0.0, dot( vec3(0.0,1.0,0.0), light) ) ) );
+  outgoingLight *= 0.55 + luminosity*0.55;
 
 	#ifdef USE_SHADOW
-	    float shadow = smoothstep(0.0, 0.2, getShadowMask());
+    float shadow = smoothstep(0.0, 0.2, getShadowMask());
 		outgoingLight *= 0.65 + shadow*0.35;
 	#endif
-    
-    gl_FragColor = vec4( outgoingLight , 1.0 );
 
-    //chunk(fog_fragment);
+  gl_FragColor = vec4( outgoingLight , 1.0 );
 
-    gl_FragColor.a = vAlpha;
-    gl_FragColor.a *= 1.0 - smoothstep(0.0, 0.19, clamp( fogFactor, 0.0, 1.0 ) );
+  //chunk(fog_fragment);
+
+  gl_FragColor.a = vAlpha;
+  gl_FragColor.a *= 1.0 - smoothstep(0.0, 0.19, clamp( fogFactor, 0.0, 1.0 ) );
 
 }

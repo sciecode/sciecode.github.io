@@ -3,6 +3,7 @@ var glslify = require('glslify');
 var mouse = require('./mouse');
 var settings = require('./settings');
 var shaderParse = require('../helpers/shaderParse');
+var classical = require('../helpers/noise');
 
 var undef;
 
@@ -192,9 +193,14 @@ function _createPositionTexture() {
         	xNorm = x/TEXTURE_WIDTH;
         	zNorm = z/TEXTURE_HEIGHT;
         	time = exports.life;
-            data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
-            data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = Math.sin(xNorm*Math.PI + Math.PI*2.0*5.0*zNorm + Math.PI*time)*3.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*3.5;
-            data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT) + Math.sin(xNorm*Math.PI*1.5 + Math.PI*time)*5.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
+					var res = 7.6;
+					data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
+					data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = classical.noise( xNorm*res, zNorm*res/2, time)*8 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*2.5;
+					data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT) + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
+
+					// data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
+					// data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = Math.sin(xNorm*Math.PI + Math.PI*2.0*5.0*zNorm + Math.PI*time)*3.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*3.5;
+					// data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT) + Math.sin(xNorm*Math.PI*1.5 + Math.PI*time)*5.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
         }
     }
     tmp = {};
@@ -244,7 +250,7 @@ function update() {
 
 
     exports.life += Math.min(offset/(1200), 1/8);
-    exports.life %= 2;
+    // exports.life %= 2; // uncomment if trigonometric wave
 
     mouse.update( offset/1000 );
 
