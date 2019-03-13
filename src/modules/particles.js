@@ -7,10 +7,12 @@ var shaderParse = require('../helpers/shaderParse');
 
 var undef;
 var mesh;
+var set;
 var particles;
 
 var _color1;
 var _color2;
+var _camera;
 
 var TEXTURE_WIDTH;
 var TEXTURE_HEIGHT;
@@ -20,7 +22,25 @@ exports.init = init;
 exports.update = update;
 exports.mesh = mesh = undef;
 
-function init() {
+function init( camera ) {
+
+	_camera = camera;
+
+	set = {
+	  befEnlargementNear: 34.0,
+	  befEnlargementFar: 129.0,
+	  befEnlargementFactor: 13,
+	  aftEnlargementNear: 34.0,
+	  aftEnlargementFar: 129.0,
+	  aftEnlargementFactor: 5,
+	  befOpacityNear: 0.0,
+	  befOpacityFar: 79.0,
+	  befOpacityBase: 0.035,
+	  aftOpacityNear: 0.0,
+	  aftOpacityFar: 79.0,
+	  aftOpacityBase: 0.035
+	}
+
 	TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
 	TEXTURE_HEIGHT = settings.TEXTURE_HEIGHT;
 	AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
@@ -50,7 +70,20 @@ function init() {
 				sizeRatio: { type: "f", value: 0 },
 				lightPos: { type: 'v3', value: lights.mesh.position },
 				color1: { type: 'c', value: undef },
-				color2: { type: 'c', value: undef }
+				color2: { type: 'c', value: undef },
+				camera: { type: "v3", value: new THREE.Vector3() },
+		    befEnlargementNear: { type: "f", value: set.befEnlargementNear },
+		    befEnlargementFar: { type: "f", value: set.befEnlargementFar },
+		    befEnlargementFactor: { type: "f", value: set.befEnlargementFactor },
+		    aftEnlargementNear: { type: "f", value: set.aftEnlargementNear },
+		    aftEnlargementFar: { type: "f", value: set.aftEnlargementFar },
+		    aftEnlargementFactor: { type: "f", value: set.aftEnlargementFactor },
+		    befOpacityNear: { type: "f", value: set.befOpacityNear },
+		    befOpacityFar: { type: "f", value: set.befOpacityFar },
+		    befOpacityBase: { type: "f", value: set.befOpacityBase },
+		    aftOpacityNear: { type: "f", value: set.aftOpacityNear },
+		    aftOpacityFar: { type: "f", value: set.aftOpacityFar },
+		    aftOpacityBase: { type: "f", value: set.aftOpacityBase }
 			} ]),
 			defines: {
 				USE_SHADOW: settings.useShadow
@@ -61,7 +94,8 @@ function init() {
 			blending: THREE.NormalBlending,
 			fog: true,
 			lights: true,
-			transparent: true
+			transparent: true,
+			depthTest: false
 		} );
 
 		renderShader.uniforms.color1.value = _color1;
@@ -94,4 +128,5 @@ function init() {
 		particles.material.uniforms.texturePosition.value = fbo.rtt.texture;
 		particles.customDistanceMaterial.uniforms.texturePosition.value = fbo.rtt.texture;
 		particles.material.uniforms.textureDefaultPosition.value = fbo.defaultPosition.texture;
+		particles.material.uniforms.camera.value = _camera.position.clone();
 	}

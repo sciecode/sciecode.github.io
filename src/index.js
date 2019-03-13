@@ -42,8 +42,8 @@ controls.enableRotate = false;
 // controls.target.copy( origin );
 controls.update();
 
+// initialization-block
 postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
-
 dom.init( camera, controls );
 lights.init();
 floor.init();
@@ -54,13 +54,13 @@ scene.add( floor.mesh );
 function restart() {
     scene.remove( particles.mesh );
     fbo.init( renderer );
-    particles.init();
+    particles.init( camera );
     scene.add( particles.mesh );
 }
 
 function update() {
 
-    requestAnimationFrame(update)
+    requestAnimationFrame(update);
 
     dom.update();
     controls.update();
@@ -82,7 +82,7 @@ window.onresize = function () {
 if ( WEBGL.isWebGLAvailable() ) {
 
   fbo.init( renderer );
-  particles.init();
+  particles.init( camera );
 
   scene.add( particles.mesh );
 

@@ -216,7 +216,7 @@ function startExperience() {
 function startUI() {
   _controls.enableZoom = true;
   _controls.enableRotate = true;
-  _controls.maxPolarAngle = Math.PI * 2 / 5;
+  _controls.maxPolarAngle = Math.PI * 1.8 / 5;
   _controls.maxDistance = 250;
   _controls.minDistance = 150;
   // _controls.minPolarAngle = 0.8;
