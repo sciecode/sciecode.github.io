@@ -28,6 +28,5 @@ function update() {
 
   var C = new THREE.Color( settings.color1 );
   C.getHSL( c2 );
-  console.log( c1.h );
   exports.mesh.material.color.setHSL( (c2.h+0.045%1) , c1.s, c1.l );
 }

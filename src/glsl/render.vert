@@ -52,7 +52,7 @@ void main() {
     float focalLength = length(camera);
 		float dist = focalLength + mvPosition.z;
 
-		float size = pow(sizeRatio*1.25, 1.4);
+		float size = pow(abs(sizeRatio*1.3), 1.3);
 
 		if ( dist < 0.0 ) {
 			diameter = size*( 1.0 + aftEnlargementFactor*smoothstep(aftEnlargementNear, aftEnlargementFar, abs(dist) ) );
@@ -63,8 +63,9 @@ void main() {
 			vAlpha = befOpacityBase + (1.0 - befOpacityBase)*(1.0 - smoothstep(befOpacityNear, befOpacityFar, abs(dist) ) );
 		}
 
-		gl_PointSize = diameter;
+    gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * diameter;
 
+    // gl_PointSize = diameter;
     //gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * sizeRatio * 1.5 ;
 
     gl_Position = projectionMatrix * mvPosition;

@@ -28,7 +28,7 @@ function reset() {
 
 function changeQuality( val ) {
 	if ( val ) {
-		if ( exports.quality == val ) return; 
+		if ( exports.quality == val ) return;
 		exports.quality = val;
 	}
 	if (exports.quality == 0) {

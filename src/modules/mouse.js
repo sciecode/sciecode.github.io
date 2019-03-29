@@ -15,19 +15,19 @@ exports.prev = prevmouse;
 exports.speed = mousespeed;
 
 function update(dt) {
-    prevmouse.copy( mouse3d );
-    raycaster.setFromCamera( mouse, camera );
+  prevmouse.copy( mouse3d );
+  raycaster.setFromCamera( mouse, camera );
 
-    raycaster.ray.intersectPlane( plane3d, tmpmouse );
-    if ( tmpmouse != null ) {
-        mouse3d.copy(tmpmouse);
-    }
+  raycaster.ray.intersectPlane( plane3d, tmpmouse );
+  if ( tmpmouse != null ) {
+    mouse3d.copy(tmpmouse);
+  }
 
-    mousespeed.copy( mouse3d.clone().sub(prevmouse) );
-    mousespeed.y = 0;
+  mousespeed.copy( mouse3d.clone().sub(prevmouse) );
+  mousespeed.y = 0;
 }
 
-window.onmousemove = function (evt) { 
-    mouse.x = (evt.pageX / window.innerWidth) * 2 - 1;
-    mouse.y = -(evt.pageY / window.innerHeight) * 2 + 1;
+window.onmousemove = function (evt) {
+  mouse.x = (evt.pageX / window.innerWidth) * 2 - 1;
+  mouse.y = -(evt.pageY / window.innerHeight) * 2 + 1;
 }

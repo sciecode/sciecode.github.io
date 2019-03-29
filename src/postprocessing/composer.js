@@ -69,5 +69,4 @@ function setSize( width, height ) {
 	SCREEN_WIDTH = width;
 	SCREEN_HEIGHT = height;
 	composer.setSize( width, height );
-} 
-
+}

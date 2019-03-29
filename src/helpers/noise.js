@@ -5,14 +5,14 @@
 // Sean McCullough banksean@gmail.com
 
 /**
- * You can pass in a random number generator object if you like.
- * It is assumed to have a random() method.
- */
+* You can pass in a random number generator object if you like.
+* It is assumed to have a random() method.
+*/
 var r = undefined;
 if (r == undefined) r = Math;
 this.grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
-             [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
-             [0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
+[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
 this.p = [];
 for (var i=0; i<256; i++) {
   this.p[i] = Math.floor(r.random()*256);
@@ -21,19 +21,19 @@ for (var i=0; i<256; i++) {
 // To remove the need for index wrapping, double the permutation table length
 this.perm = [];
 for(var i=0; i<512; i++) {
-	this.perm[i]=this.p[i & 255];
+  this.perm[i]=this.p[i & 255];
 }
 
 this.dot = function(g, x, y, z) {
-    return g[0]*x + g[1]*y + g[2]*z;
+  return g[0]*x + g[1]*y + g[2]*z;
 };
 
 this.mix = function(a, b, t) {
-    return (1.0-t)*a + t*b;
+  return (1.0-t)*a + t*b;
 };
 
 this.fade = function(t) {
-    return t*t*t*(t*(t*6.0-15.0)+10.0);
+  return t*t*t*(t*(t*6.0-15.0)+10.0);
 };
 
 // Classic Perlin noise, 3D version
@@ -85,7 +85,7 @@ function noise(x, y, z) {
   var u = this.fade(x);
   var v = this.fade(y);
   var w = this.fade(z);
-   // Interpolate along x the contributions from each of the corners
+  // Interpolate along x the contributions from each of the corners
   var nx00 = this.mix(n000, n100, u);
   var nx01 = this.mix(n001, n101, u);
   var nx10 = this.mix(n010, n110, u);

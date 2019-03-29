@@ -27,18 +27,18 @@ function init( camera ) {
 	_camera = camera;
 
 	set = {
-	  befEnlargementNear: 34.0,
-	  befEnlargementFar: 129.0,
-	  befEnlargementFactor: 13,
-	  aftEnlargementNear: 34.0,
-	  aftEnlargementFar: 129.0,
-	  aftEnlargementFactor: 5,
-	  befOpacityNear: 0.0,
-	  befOpacityFar: 79.0,
-	  befOpacityBase: 0.035,
-	  aftOpacityNear: 0.0,
-	  aftOpacityFar: 79.0,
-	  aftOpacityBase: 0.035
+		befEnlargementNear: 34.0,
+		befEnlargementFar: 129.0,
+		befEnlargementFactor: 11,
+		aftEnlargementNear: 34.0,
+		aftEnlargementFar: 129.0,
+		aftEnlargementFactor: 5,
+		befOpacityNear: 0.0,
+		befOpacityFar: 79.0,
+		befOpacityBase: 0.035,
+		aftOpacityNear: 0.0,
+		aftOpacityFar: 79.0,
+		aftOpacityBase: 0.035
 	}
 
 	TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
@@ -72,18 +72,18 @@ function init( camera ) {
 				color1: { type: 'c', value: undef },
 				color2: { type: 'c', value: undef },
 				camera: { type: "v3", value: new THREE.Vector3() },
-		    befEnlargementNear: { type: "f", value: set.befEnlargementNear },
-		    befEnlargementFar: { type: "f", value: set.befEnlargementFar },
-		    befEnlargementFactor: { type: "f", value: set.befEnlargementFactor },
-		    aftEnlargementNear: { type: "f", value: set.aftEnlargementNear },
-		    aftEnlargementFar: { type: "f", value: set.aftEnlargementFar },
-		    aftEnlargementFactor: { type: "f", value: set.aftEnlargementFactor },
-		    befOpacityNear: { type: "f", value: set.befOpacityNear },
-		    befOpacityFar: { type: "f", value: set.befOpacityFar },
-		    befOpacityBase: { type: "f", value: set.befOpacityBase },
-		    aftOpacityNear: { type: "f", value: set.aftOpacityNear },
-		    aftOpacityFar: { type: "f", value: set.aftOpacityFar },
-		    aftOpacityBase: { type: "f", value: set.aftOpacityBase }
+				befEnlargementNear: { type: "f", value: set.befEnlargementNear },
+				befEnlargementFar: { type: "f", value: set.befEnlargementFar },
+				befEnlargementFactor: { type: "f", value: set.befEnlargementFactor },
+				aftEnlargementNear: { type: "f", value: set.aftEnlargementNear },
+				aftEnlargementFar: { type: "f", value: set.aftEnlargementFar },
+				aftEnlargementFactor: { type: "f", value: set.aftEnlargementFactor },
+				befOpacityNear: { type: "f", value: set.befOpacityNear },
+				befOpacityFar: { type: "f", value: set.befOpacityFar },
+				befOpacityBase: { type: "f", value: set.befOpacityBase },
+				aftOpacityNear: { type: "f", value: set.aftOpacityNear },
+				aftOpacityFar: { type: "f", value: set.aftOpacityFar },
+				aftOpacityBase: { type: "f", value: set.aftOpacityBase }
 			} ]),
 			defines: {
 				USE_SHADOW: settings.useShadow

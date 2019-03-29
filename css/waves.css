@@ -18,7 +18,7 @@
 body {
   margin: 0;
   overflow: hidden;
-  background-color: #0f1519;
+  background-color: #030506;
   user-select: none;
 }
 
@@ -49,6 +49,38 @@ body.active  #footer.inactive, body.active #settings_menu.inactive {
 
 .delay, #quality.delay, #footer.delay, #settings_menu.delay {
   transition-delay: 1.8s;
+}
+
+/* === [UI INIT] === */
+
+body.starting #brand {
+  transition: 0.6s ease 0.0s;
+  transform: translateY(0px) scale(2.1);
+}
+
+body.starting #experience {
+  transition: 0.6s ease 0.125s;
+  transform: translateY(0px);
+}
+
+body.starting #intro {
+  transition: 0.6s ease 0.26s;
+  transform: translateY(0px);
+}
+
+body.starting #st_btn {
+  transition: 0.6s ease 0.5s;
+  transform: translateY(0px);
+}
+
+body.hid #brand, body.hid #experience, body.hid #intro,
+body.hid #st_btn {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+body.hid #brand {
+  transform: translateY(-10px) scale(2.1);
 }
 
 /* === [BRAND] === */
