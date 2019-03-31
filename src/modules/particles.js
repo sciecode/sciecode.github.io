@@ -91,11 +91,13 @@ function init( camera ) {
 			vertexShader: shaderParse(glslify('../glsl/render.vert')),
 			fragmentShader: shaderParse(glslify('../glsl/render.frag')),
 			precision: "highp",
-			blending: THREE.NormalBlending,
 			fog: true,
 			lights: true,
 			transparent: true,
-			depthTest: false
+			blending: THREE.NormalBlending,
+			// blending: THREE.AdditiveBlending,
+	    depthTest: false,
+	    depthWrite: false,
 		} );
 
 		renderShader.uniforms.color1.value = _color1;

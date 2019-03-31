@@ -1,6 +1,4 @@
-
 var undef;
-var _ = this;
 
 // vendor-block
 var OrbitControls = require('./controls/OrbitControls.js');

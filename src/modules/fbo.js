@@ -197,9 +197,9 @@ function _createPositionTexture() {
 			zNorm = z/TEXTURE_HEIGHT;
 			time = exports.life;
 			var res = 7.6;
-			data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
+			data[x*TEXTURE_HEIGHT*4 + z*4] = dim/2 - dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
 			data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = classical.noise( xNorm*res, zNorm*res/2, time)*8 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*2.5;
-			data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT) + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
+			data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = dim/2 - dim*(z/TEXTURE_HEIGHT) + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
 
 			// data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
 			// data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = Math.sin(xNorm*Math.PI + Math.PI*2.0*5.0*zNorm + Math.PI*time)*3.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*3.5;
@@ -220,9 +220,9 @@ function _createDefaultPositionTexture() {
 	var data = new Float32Array( AMOUNT * 4 );
 	for(var x = 0; x < TEXTURE_WIDTH; x++) {
 		for(var z= 0; z < TEXTURE_HEIGHT; z++) {
-			data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH);
+			data[x*TEXTURE_HEIGHT*4 + z*4] = dim/2 - dim*(x/TEXTURE_WIDTH);
 			data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = 0
-			data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT);
+			data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = dim/2 - dim*(z/TEXTURE_HEIGHT);
 		}
 	}
 	tmp = {};

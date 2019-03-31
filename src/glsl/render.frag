@@ -69,10 +69,6 @@ void main() {
 
   float alpha = vAlpha;
 
-  if ( (outgoingLight.r + outgoingLight.g + outgoingLight.b) < 0.0 ) {
-    alpha = 0.0;
-  }
-
   gl_FragColor = vec4( outgoingLight , alpha );
 
   //chunk(fog_fragment);
