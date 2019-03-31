@@ -1,3 +1,4 @@
+export default /* glsl */`
 precision highp float;
 
 uniform vec2 resolution;
@@ -16,3 +17,4 @@ void main() {
 
     gl_FragColor = vec4( pos, 1.0 );
 }
+`;

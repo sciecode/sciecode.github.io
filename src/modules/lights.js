@@ -1,10 +1,9 @@
+// define-block
 var undef;
-
-mesh = exports.mesh = undef;
-exports.init = init;
+var mesh = undef;
 
 function init() {
-	mesh = exports.mesh = new THREE.Object3D();
+	mesh = new THREE.Object3D();
 	mesh.position.set(0, 190, 0);
 
 	var ambient = new THREE.AmbientLight( 0x333333 );
@@ -26,5 +25,6 @@ function init() {
 	pointLight.shadow.mapSize.width = 2048;
 	pointLight.shadow.mapSize.height = 1024;
 	mesh.add( pointLight );
-
 }
+
+export { init, mesh };

@@ -6,4 +6,4 @@ function shaderParse(glsl) {
   return glsl.replace(/\/\/\s?chunk\(\s?(\w+)\s?\);/g, replaceThreeChunkFn);
 }
 
-module.exports = shaderParse;
+export { shaderParse };

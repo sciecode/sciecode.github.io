@@ -1,3 +1,4 @@
+export default /* glsl */`
 precision highp float;
 
 uniform vec3 lightPos;
@@ -16,9 +17,9 @@ vec4 pack1K ( float depth ) {
 
 }
 
-
 void main () {
 
    gl_FragColor = pack1K( length( vWorldPosition.xyz - lightPos.xyz ) );
 
 }
+`;

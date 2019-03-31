@@ -4,13 +4,9 @@ This experiment was inspired by Edan Kwan's [The Spirit](http://edankwan.com/exp
 
 ## Build
 
-requires **browserify** `npm install browserify` with **glslify** transform `npm install -t glslify `
+`npm install browserify` to install development dependencies.
 
-requires **uglifyjs** `npm install uglifyjs`
-
-```
-sh build.sh
-```
+`npm run build` to compile changes, `npm run build-closure` to compile and compress changes.
 
 ## License
 This experiment is under MIT License.

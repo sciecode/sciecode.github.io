@@ -1,14 +1,19 @@
-var glslify = require('glslify');
+// import-block
+import * as settings from './settings.js';
+import * as lights from './lights.js';
+import * as fbo from './fbo.js'
+import { shaderParse } from '../helpers/shaderParse.js';
 
-var settings = require('./settings');
-var lights = require('./lights');
-var fbo = require('./fbo');
-var shaderParse = require('../helpers/shaderParse');
+// shader-import-block
+import render_vert from '../glsl/render.vert.js'
+import render_frag from '../glsl/render.frag.js'
+import distance_vert from '../glsl/distance.vert.js'
+import distance_frag from '../glsl/distance.frag.js'
 
+// define-block
 var undef;
 var mesh;
 var set;
-var particles;
 
 var _color1;
 var _color2;
@@ -17,10 +22,6 @@ var _camera;
 var TEXTURE_WIDTH;
 var TEXTURE_HEIGHT;
 var AMOUNT;
-
-exports.init = init;
-exports.update = update;
-exports.mesh = mesh = undef;
 
 function init( camera ) {
 
@@ -41,12 +42,12 @@ function init( camera ) {
 		aftOpacityBase: 0.035
 	}
 
-	TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
-	TEXTURE_HEIGHT = settings.TEXTURE_HEIGHT;
+	TEXTURE_WIDTH = settings.options.TEXTURE_WIDTH;
+	TEXTURE_HEIGHT = settings.options.TEXTURE_HEIGHT;
 	AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
-	_color1 = new THREE.Color(settings.color1);
-	_color2 = new THREE.Color(settings.color2);
+	_color1 = new THREE.Color(settings.options.color1);
+	_color2 = new THREE.Color(settings.options.color2);
 
 	var position = new Float32Array(AMOUNT * 3);
 	var i3;
@@ -84,51 +85,54 @@ function init( camera ) {
 				aftOpacityNear: { type: "f", value: set.aftOpacityNear },
 				aftOpacityFar: { type: "f", value: set.aftOpacityFar },
 				aftOpacityBase: { type: "f", value: set.aftOpacityBase }
-			} ]),
-			defines: {
-				USE_SHADOW: settings.useShadow
-			},
-			vertexShader: shaderParse(glslify('../glsl/render.vert')),
-			fragmentShader: shaderParse(glslify('../glsl/render.frag')),
-			precision: "highp",
-			fog: true,
-			lights: true,
-			transparent: true,
-			blending: THREE.NormalBlending,
-			// blending: THREE.AdditiveBlending,
-	    depthTest: false,
-	    depthWrite: false,
-		} );
+			}
+		]),
+		defines: {
+			USE_SHADOW: settings.options.useShadow
+		},
+		vertexShader: shaderParse( render_vert ),
+		fragmentShader: shaderParse( render_frag ),
+		precision: "highp",
+		fog: true,
+		lights: true,
+		transparent: true,
+		blending: THREE.NormalBlending,
+		// blending: THREE.AdditiveBlending,
+		depthTest: false,
+		depthWrite: false,
+	});
 
-		renderShader.uniforms.color1.value = _color1;
-		renderShader.uniforms.color2.value = _color2;
-		renderShader.uniforms.dim.value = fbo.dim;
-		renderShader.uniforms.sizeRatio.value = settings.sizeRatio;
+	renderShader.uniforms.color1.value = _color1;
+	renderShader.uniforms.color2.value = _color2;
+	renderShader.uniforms.dim.value = fbo.dim;
+	renderShader.uniforms.sizeRatio.value = settings.options.sizeRatio;
 
-		particles = exports.mesh = new THREE.Points( geometry, renderShader );
+	mesh = new THREE.Points( geometry, renderShader );
 
-		particles.customDistanceMaterial = new THREE.ShaderMaterial( {
-			uniforms: {
-				lightPos: { type: 'v3', value: lights.mesh.position },
-				texturePosition: { type: 't', value: null }
-			},
-			vertexShader: shaderParse(glslify('../glsl/distance.vert' )),
-			fragmentShader: shaderParse(glslify('../glsl/distance.frag')),
-			depthTest: true,
-			depthWrite: true,
-			side: THREE.BackSide,
-			blending: THREE.NoBlending
-		} );
+	mesh.customDistanceMaterial = new THREE.ShaderMaterial( {
+		uniforms: {
+			lightPos: { type: 'v3', value: lights.mesh.position },
+			texturePosition: { type: 't', value: null }
+		},
+		vertexShader: shaderParse( distance_vert ),
+		fragmentShader: shaderParse( distance_frag ),
+		depthTest: true,
+		depthWrite: true,
+		side: THREE.BackSide,
+		blending: THREE.NoBlending
+	} );
 
-		particles.castShadow = true;
-		particles.receiveShadow = true;
-	}
+	mesh.castShadow = true;
+	mesh.receiveShadow = true;
+}
 
-	function update() {
-		_color1.setStyle(settings.color1);
-		_color2.setStyle(settings.color2);
-		particles.material.uniforms.texturePosition.value = fbo.rtt.texture;
-		particles.customDistanceMaterial.uniforms.texturePosition.value = fbo.rtt.texture;
-		particles.material.uniforms.textureDefaultPosition.value = fbo.defaultPosition.texture;
-		particles.material.uniforms.camera.value = _camera.position.clone();
-	}
+function update() {
+	_color1.setStyle(settings.options.color1);
+	_color2.setStyle(settings.options.color2);
+	mesh.material.uniforms.texturePosition.value = fbo.rtt.texture;
+	mesh.customDistanceMaterial.uniforms.texturePosition.value = fbo.rtt.texture;
+	mesh.material.uniforms.textureDefaultPosition.value = fbo.defaultPosition.texture;
+	mesh.material.uniforms.camera.value = _camera.position.clone();
+}
+
+export { mesh, init, update };

@@ -1,60 +1,66 @@
-var ind = require('../index');
-
-exports.radius = 30;
-exports.viscosity = 0.12;
-exports.elasticity = 0.015;
-exports.color1 = "#2095cc";
-exports.color2 = "#20cc2e";
-exports.reset = reset;
-exports.TEXTURE_WIDTH = 256;
-exports.TEXTURE_HEIGHT = 256;
-exports.quality = 1;
-exports.motionBlur = true;
-exports.useShadow = false;
-exports.sizeRatio = 1.6;
-exports.changeQuality = changeQuality;
+// define-block
+var options = {
+	radius: 30,
+	viscosity: 0.12,
+	elasticity: 0.015,
+	color1: "#2095cc",
+	color2: "#20cc2e",
+	TEXTURE_WIDTH: 256,
+	TEXTURE_HEIGHT: 256,
+	quality: 1,
+	motionBlur: true,
+	useShadow: false,
+	sizeRatio: 1.6,
+	restart: false
+}
 
 function reset() {
-	exports.radius = 30;
-	exports.viscosity = 0.12;
-	exports.elasticity = 0.015;
-	exports.color1 = "#2095cc";
-	exports.color2 = "#20cc2e";
-	exports.TEXTURE_WIDTH = 256;
-	exports.TEXTURE_HEIGHT = 256;
-	exports.sizeRatio = 1.6;
-	exports.motionBlur = true;
+	options.radius = 30;
+	options.viscosity = 0.12;
+	options.elasticity = 0.015;
+	options.color1 = "#2095cc";
+	options.color2 = "#20cc2e";
+	options.TEXTURE_WIDTH = 256;
+	options.TEXTURE_HEIGHT = 256;
+	options.sizeRatio = 1.6;
+	options.motionBlur = true;
+	options.restart = false;
 }
 
 function changeQuality( val ) {
 	if ( val ) {
-		if ( exports.quality == val ) return;
-		exports.quality = val;
+		if ( options.quality == val ) return;
+		options.quality = val;
 	}
-	if (exports.quality == 0) {
-		exports.useShadow = false;
-		exports.TEXTURE_WIDTH = 256;
-		exports.TEXTURE_HEIGHT = 256;
-		exports.sizeRatio = 1.65;
+	if (options.quality == 0) {
+		options.useShadow = false;
+		options.TEXTURE_WIDTH = 256;
+		options.TEXTURE_HEIGHT = 256;
+		options.sizeRatio = 1.65;
 	}
-	if (exports.quality == 1) {
-		exports.useShadow = false;
-		exports.TEXTURE_WIDTH = 256;
-		exports.TEXTURE_HEIGHT = 512;
-		exports.sizeRatio = 1.35;
+	if (options.quality == 1) {
+		options.useShadow = false;
+		options.TEXTURE_WIDTH = 256;
+		options.TEXTURE_HEIGHT = 512;
+		options.sizeRatio = 1.35;
 	}
-	if (exports.quality == 2) {
-		exports.useShadow = true;
-		exports.TEXTURE_WIDTH = 512;
-		exports.TEXTURE_HEIGHT = 512;
-		exports.sizeRatio = 1.15;
+	if (options.quality == 2) {
+		options.useShadow = true;
+		options.TEXTURE_WIDTH = 512;
+		options.TEXTURE_HEIGHT = 512;
+		options.sizeRatio = 1.15;
 	}
-	if (exports.quality == 3) {
-		exports.useShadow = true;
-		exports.TEXTURE_WIDTH = 512;
-		exports.TEXTURE_HEIGHT = 1024;
-		exports.sizeRatio = 1.0;
+	if (options.quality == 3) {
+		options.useShadow = true;
+		options.TEXTURE_WIDTH = 512;
+		options.TEXTURE_HEIGHT = 1024;
+		options.sizeRatio = 1.0;
 	}
-
-	ind.restart();
+	options.restart = true;
 }
+
+function update( prop, val ) {
+	options[prop] = val;
+}
+
+export { options, reset, changeQuality, update };

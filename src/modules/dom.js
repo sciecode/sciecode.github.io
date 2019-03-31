@@ -1,12 +1,15 @@
-var easing = require('../helpers/easing');
-var settings = require('./settings');
-var floor = require('./floor');
+// import-block
+import * as settings from './settings.js';
+import * as floor from './floor.js';
+import { easeInOutQuint , easeInOutQuart } from '../helpers/easing.js';
 
+// define-block
 var undef;
 
 var _camera = undef;
 var _controls = undef;
 
+var body = undef;
 var overlay = undef;
 var brand = undef;
 var inside = undef;
@@ -14,6 +17,9 @@ var inside = undef;
 var mbCheckbox = undef;
 var menu = undef;
 var qualities = undef;
+var quality_list = undef;
+var quality_value = undef;
+var caret = undef;
 var settings_items = undef;
 var notice = undef;
 
@@ -38,12 +44,7 @@ var ball = 0;
 var direction = 1;
 var amount = 1;
 
-exports.init = init;
-exports.update = update;
-
 function init ( camera, controls ) {
-
-  // definitions
 
   _camera = camera;
   _controls = controls;
@@ -80,42 +81,42 @@ function init ( camera, controls ) {
   stBtn = document.getElementById("st_btn");
 
   // eventListeners-block
-  inside.style.transform = "scale("+ settings.radius/50; +")";
+  inside.style.transform = "scale("+ settings.options.radius/50; +")";
 
   radSlider.addEventListener("mousemove", function(e) {
-    settings.radius = this.value;
+    settings.update('radius', this.value);
     inside = document.getElementById("ball_sphere_inside");
-    inside.style.transform = "scale("+ settings.radius/50; +")";
-    radValue = document.getElementById("rad_value");
+    inside.style.transform = "scale("+ settings.options.radius/50; +")";
+    var radValue = document.getElementById("rad_value");
     radValue.innerHTML = this.value;
     radValue = document.getElementById("rad_title_value");
     radValue.innerHTML = this.value;
   }, false);
 
   visSlider.addEventListener("mousemove", function(e) {
-    settings.viscosity = this.value/100;
-    visValue = document.getElementById("vis_value");
+    settings.update('viscosity', this.value/100);
+    var visValue = document.getElementById("vis_value");
     visValue.innerHTML = this.value;
     visValue = document.getElementById("vis_title_value");
     visValue.innerHTML = this.value;
-    fluid_box = document.getElementById("fluid_box");
-    fluid_box.style.background = "rgba(78, 177, "+ (219 - 140*settings.viscosity/0.3 )+","+ (0.2 + 0.2*settings.viscosity/0.3)  + ")";
-    fluid_box.style.border = "2px solid rgba(78, 177, "+ (219 - 140*settings.viscosity/0.3 )+", 1)";
+    var fluid_box = document.getElementById("fluid_box");
+    fluid_box.style.background = "rgba(78, 177, "+ (219 - 140*settings.options.viscosity/0.3 )+","+ (0.2 + 0.2*settings.options.viscosity/0.3)  + ")";
+    fluid_box.style.border = "2px solid rgba(78, 177, "+ (219 - 140*settings.options.viscosity/0.3 )+", 1)";
   }, false);
 
   elaSlider.addEventListener("mousemove", function(e) {
-    settings.elasticity = this.value/1000;
-    elaValue = document.getElementById("ela_value");
+    settings.update('elasticity', this.value/1000);
+    var elaValue = document.getElementById("ela_value");
     elaValue.innerHTML = this.value;
     elaValue = document.getElementById("ela_title_value");
     elaValue.innerHTML = this.value;
   }, false);
 
   color1.addEventListener("mousemove", function(e) {
-    col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
+    var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
     floor.update();
-    settings.color1 = "#" + col.getHexString();
-    col1 = document.getElementById("color1_value");
+    settings.update('color1', "#" + col.getHexString() );
+    var col1 = document.getElementById("color1_value");
     col1.style.background = "#" + col.getHexString();
     col1 = document.getElementById("color1_box");
     col1.style.background = "#" + col.getHexString();
@@ -123,9 +124,9 @@ function init ( camera, controls ) {
 
 
   color2.addEventListener("mousemove", function(e) {
-    col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
-    settings.color2 = "#" + col.getHexString();
-    col2 = document.getElementById("color2_value");
+    var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
+    settings.update('color2', "#" + col.getHexString() );
+    var col2 = document.getElementById("color2_value");
     col2.style.background = "#" + col.getHexString();
     col2 = document.getElementById("color2_box");
     col2.style.background = "#" + col.getHexString();
@@ -136,14 +137,14 @@ function init ( camera, controls ) {
   }, false);
 
   mbCheckbox.addEventListener("click", function(e) {
-    settings.motionBlur = !settings.motionBlur;
+    settings.update('motionBlur', !settings.options.motionBlur );
 
-    mbValue = document.getElementById("motion_blur_title_value");
+    var mbValue = document.getElementById("motion_blur_title_value");
 
     this.classList.toggle("disabled");
     mbValue.classList.toggle("disabled");
 
-    if ( settings.motionBlur ) {
+    if ( settings.options.motionBlur ) {
       this.innerHTML = "Enabled";
       mbValue.innerHTML = "Enabled";
     }
@@ -156,7 +157,7 @@ function init ( camera, controls ) {
 
   menu.addEventListener("click", function(e) {
     this.classList.toggle("menu_active");
-    set = document.getElementById("settings");
+    var set = document.getElementById("settings");
     set.classList.toggle("final_settings")
   }, false);
 
@@ -172,7 +173,7 @@ function init ( camera, controls ) {
   for (var i = 0; i < qualities.length; i++) {
     qualities[i].addEventListener("click", function(e) {
       e.preventDefault();
-      if ( this.dataset.quality == settings.quality ) return;
+      if ( this.dataset.quality == settings.options.quality ) return;
       for (var i = 0; i < qualities.length; i++) {
         qualities[i].classList.remove("selected");
         qualities[i].classList.remove("recommended");
@@ -235,11 +236,11 @@ function startUI() {
 }
 
 function update() {
-
+  var t;
   if ( stExp && !edExp ) {
     if ( sumTime < 3500 ) {
       curTime = Date.now();
-      elapsedTime = curTime - prevTime;
+      var elapsedTime = curTime - prevTime;
       prevTime = curTime;
 
       sumTime += elapsedTime;
@@ -252,9 +253,9 @@ function update() {
       startUI();
     }
 
-    xpos = easing.easeInOutQuint( t,   0, -110, 1 );
-    ypos = easing.easeInOutQuart( t, 200,  -90, 1 );
-    zpos = easing.easeInOutQuart( t,   0,  130, 1 );
+    let xpos = easeInOutQuint( t,   0, -110, 1 );
+    let ypos = easeInOutQuart( t, 200,  -90, 1 );
+    let zpos = easeInOutQuart( t,   0,  130, 1 );
     _camera.position.set( xpos, ypos, zpos );
 
   }
@@ -262,7 +263,7 @@ function update() {
   if (ball > 130 || ball < 0)
   direction *= -1;
   if (ball > 35 && ball < 95) {
-    amount =  1 - 0.6*settings.viscosity/0.3;
+    amount =  1 - 0.6*settings.options.viscosity/0.3;
   }
   else {
     amount = 1.5;
@@ -271,3 +272,5 @@ function update() {
   ball += direction*amount;
   fluid_ball.style.transform = "translateX("+ ball +"px) translateY(-20px)";
 }
+
+export { init, update };

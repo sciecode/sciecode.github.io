@@ -1,24 +1,19 @@
-var undef;
-
-// vendor-block
-var OrbitControls = require('./controls/OrbitControls.js');
-var postprocessing =  require('./postprocessing/composer');
-
-// require-block
-var settings = require('./modules/settings.js');
-var fbo = require('./modules/fbo');
-var lights = require('./modules/lights');
-var floor = require('./modules/floor');
-var particles = require('./modules/particles');
-var dom = require('./modules/dom');
-
-// export-block
-exports.restart = restart;
+// import-block
+import * as postprocessing from './postprocessing/composer.js';
+import * as settings from './modules/settings.js';
+import * as dom from './modules/dom.js';
+import * as lights from './modules/lights.js';
+import * as floor from './modules/floor.js';
+import * as fbo from './modules/fbo.js';
+import * as particles from './modules/particles.js';
 
 // defines-block
-origin = new THREE.Vector3();
-stPos = new THREE.Vector3( 0, 200, 0);
-isGPU = true;
+var undef;
+var w, h;
+var renderer, scene, camera, controls;
+var origin = new THREE.Vector3();
+var stPos = new THREE.Vector3( 0, 200, 0);
+var isGPU = true;
 
 function start() {
   try {
@@ -60,7 +55,7 @@ function start() {
   dom.init( camera, controls );
   lights.init();
   floor.init();
-  fbo.init( renderer );
+  fbo.init( renderer, camera );
   particles.init( camera );
 
   scene.add( particles.mesh );
@@ -72,12 +67,14 @@ function start() {
 
 function restart() {
   scene.remove( particles.mesh );
-  fbo.init( renderer );
+  settings.update('restart', false);
+  fbo.init( renderer, camera );
   particles.init( camera );
   scene.add( particles.mesh );
 }
 
 function update() {
+  if ( settings.options.restart ) restart();
   requestAnimationFrame(update);
 
   dom.update();

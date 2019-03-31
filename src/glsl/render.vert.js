@@ -1,3 +1,4 @@
+export default /* glsl */`
 precision highp float;
 
 uniform sampler2D textureDefaultPosition;
@@ -74,3 +75,4 @@ void main() {
     //chunk(shadowmap_vertex);
     //chunk(fog_vertex);
 }
+`;

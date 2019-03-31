@@ -39,18 +39,17 @@ function easeInOutQuint(t, b, c) {
 }
 
 
-exports.easeInQuad 		= easeInQuad;
-exports.easeOutQuad 	= easeOutQuad;
-exports.easeInOutQuad 	= easeInOutQuad;
-
-exports.easeInCubic		= easeInCubic;
-exports.easeOutCubic 	= easeOutCubic;
-exports.easeInOutCubic 	= easeInOutCubic;
-
-exports.easeInQuart 	= easeInQuart;
-exports.easeOutQuart	= easeOutQuart;
-exports.easeInOutQuart 	= easeInOutQuart;
-
-exports.easeInQuint		= easeInQuint;
-exports.easeOutQuint 	= easeOutQuint;
-exports.easeInOutQuint 	= easeInOutQuint;
+export {
+	easeInQuad,
+	easeOutQuad,
+	easeInOutQuad,
+	easeInCubic,
+	easeOutCubic,
+	easeInOutCubic,
+	easeInQuart,
+	easeOutQuart,
+	easeInOutQuart,
+	easeInQuint,
+	easeOutQuint,
+	easeInOutQuint
+}

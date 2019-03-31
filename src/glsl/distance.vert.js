@@ -1,3 +1,4 @@
+export default /* glsl */`
 precision highp float;
 
 uniform sampler2D texturePosition;
@@ -18,3 +19,4 @@ void main() {
     gl_Position = projectionMatrix * mvPosition;
 
 }
+`;

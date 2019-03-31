@@ -1,10 +1,16 @@
-var glslify = require('glslify');
+// import-block
+import * as mouse from './mouse.js';
+import * as settings from './settings.js';
+import { shaderParse } from '../helpers/shaderParse.js';
+import { noise } from '../helpers/noise.js';
 
-var mouse = require('./mouse');
-var settings = require('./settings');
-var shaderParse = require('../helpers/shaderParse');
-var classical = require('../helpers/noise');
+// shader-import-block
+import quad_vert from '../glsl/quad.vert.js'
+import through_frag from '../glsl/through.frag.js'
+import position_frag from '../glsl/position.frag.js'
+import velocity_frag from '../glsl/velocity.frag.js'
 
+// define-block;
 var undef;
 
 var _mesh;
@@ -15,6 +21,7 @@ var _renderer;
 var _copyShader;
 var _positionShader;
 var _velocityShader;
+var rtt;
 var _rtt;
 var _rtt2;
 var _vtt;
@@ -28,17 +35,18 @@ var randomData;
 var cur = Date.now();
 var prev = cur;
 
-var dim = exports.dim = 220;
-exports.life = 0;
-exports.init = init;
-exports.update = update;
-exports.defaultPosition;
+var dim = 220;
+var life = 0;
 
+var randomTexture;
+var defaultPosition;
 
-function init( renderer ) {
+function init( renderer, camera ) {
 
-	TEXTURE_WIDTH = settings.TEXTURE_WIDTH;
-	TEXTURE_HEIGHT = settings.TEXTURE_HEIGHT;
+	mouse.init( camera );
+
+	TEXTURE_WIDTH = settings.options.TEXTURE_WIDTH;
+	TEXTURE_HEIGHT = settings.options.TEXTURE_HEIGHT;
 	AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 	_renderer = renderer;
@@ -46,16 +54,16 @@ function init( renderer ) {
 	_camera = new THREE.Camera();
 	_camera.position.z = 1;
 
-	exports.randomTexture = _createRandomTexture();
-	exports.defaultPosition = _createDefaultPositionTexture();
+	randomTexture = _createRandomTexture();
+	defaultPosition = _createDefaultPositionTexture();
 
 	_copyShader = new THREE.RawShaderMaterial({
 		uniforms: {
 			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_WIDTH, TEXTURE_HEIGHT ) },
 			texture: { type: 't', value: undef }
 		},
-		vertexShader: shaderParse(glslify('../glsl/quad.vert' )),
-		fragmentShader: shaderParse(glslify('../glsl/through.frag')),
+		vertexShader: shaderParse( quad_vert ),
+		fragmentShader: shaderParse( through_frag ),
 	});
 
 	_positionShader = new THREE.RawShaderMaterial({
@@ -64,8 +72,8 @@ function init( renderer ) {
 			texturePosition: { type: 't', value: undef },
 			textureVelocity: { type: 't', value: undef }
 		},
-		vertexShader: shaderParse(glslify('../glsl/quad.vert')),
-		fragmentShader: shaderParse(glslify('../glsl/position.frag')),
+		vertexShader: shaderParse( quad_vert ),
+		fragmentShader: shaderParse( position_frag ),
 		blending: THREE.NoBlending,
 		transparent: false,
 		depthWrite: false,
@@ -75,21 +83,21 @@ function init( renderer ) {
 	_velocityShader = new THREE.RawShaderMaterial({
 		uniforms: {
 			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_WIDTH, TEXTURE_HEIGHT ) },
-			textureRandom: { type: 't', value: exports.randomTexture.texture },
+			textureRandom: { type: 't', value: randomTexture.texture },
 			texturePosition: { type: 't', value: undef },
 			textureVelocity: { type: 't', value: undef },
 			mousePosition: { type: 'v3', value: new THREE.Vector3(0,0,0) },
 			mousePrev: { type: 'v3', value: new THREE.Vector3(0,0,0) },
 			mouseVelocity: { type: 'v3', value: new THREE.Vector3(0,0,0) },
-			mouseRadius: { type: 'f', value: settings.radius },
-			viscosity: { type: 'f', value: settings.viscosity },
-			elasticity: { type: 'f', value: settings.elasticity },
-			defaultPosition: { type: 't', value: exports.defaultPosition.texture },
+			mouseRadius: { type: 'f', value: settings.options.radius },
+			viscosity: { type: 'f', value: settings.options.viscosity },
+			elasticity: { type: 'f', value: settings.options.elasticity },
+			defaultPosition: { type: 't', value: defaultPosition.texture },
 			dim: { type: 'f', value: dim },
 			time: { type: 'f', value: 0 },
 		},
-		vertexShader: shaderParse(glslify('../glsl/quad.vert')),
-		fragmentShader: shaderParse(glslify('../glsl/velocity.frag')),
+		vertexShader: shaderParse( quad_vert ),
+		fragmentShader: shaderParse( velocity_frag ),
 		blending: THREE.NoBlending,
 		transparent: false,
 		depthWrite: false,
@@ -156,15 +164,15 @@ function _updateVelocity() {
 	_vtt2 = tmp;
 
 	_mesh.material = _velocityShader;
-	_velocityShader.uniforms.mouseRadius.value = settings.radius;
-	_velocityShader.uniforms.viscosity.value = settings.viscosity;
-	_velocityShader.uniforms.elasticity.value = settings.elasticity;
+	_velocityShader.uniforms.mouseRadius.value = settings.options.radius;
+	_velocityShader.uniforms.viscosity.value = settings.options.viscosity;
+	_velocityShader.uniforms.elasticity.value = settings.options.elasticity;
 	_velocityShader.uniforms.textureVelocity.value = _vtt2.texture;
 	_velocityShader.uniforms.texturePosition.value = _rtt.texture;
 	_velocityShader.uniforms.mousePosition.value.copy( mouse.position );
 	_velocityShader.uniforms.mousePrev.value.copy( mouse.prev );
 	_velocityShader.uniforms.mouseVelocity.value.copy( mouse.speed );
-	_velocityShader.uniforms.time.value = exports.life;
+	_velocityShader.uniforms.time.value = life;
 	_renderer.setRenderTarget( _vtt );
 	_renderer.render( _scene, _camera );
 }
@@ -178,7 +186,7 @@ function _createRandomTexture() {
 			randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2] = THREE.Math.randFloat(-1, 1);
 		}
 	}
-	tmp = {};
+	var tmp = {};
 	tmp.texture = new THREE.DataTexture( randomData, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
@@ -193,12 +201,12 @@ function _createPositionTexture() {
 	var data = new Float32Array( AMOUNT * 4 );
 	for(var x = 0; x < TEXTURE_WIDTH; x++) {
 		for(var z= 0; z < TEXTURE_HEIGHT; z++) {
-			xNorm = x/TEXTURE_WIDTH;
-			zNorm = z/TEXTURE_HEIGHT;
-			time = exports.life;
+			var xNorm = x/TEXTURE_WIDTH;
+			var zNorm = z/TEXTURE_HEIGHT;
+			var time = life;
 			var res = 7.6;
 			data[x*TEXTURE_HEIGHT*4 + z*4] = dim/2 - dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
-			data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = classical.noise( xNorm*res, zNorm*res/2, time)*8 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*2.5;
+			data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = noise( xNorm*res, zNorm*res/2, time)*8 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*2.5;
 			data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = dim/2 - dim*(z/TEXTURE_HEIGHT) + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
 
 			// data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
@@ -206,7 +214,7 @@ function _createPositionTexture() {
 			// data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT) + Math.sin(xNorm*Math.PI*1.5 + Math.PI*time)*5.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
 		}
 	}
-	tmp = {};
+	var tmp = {};
 	tmp.texture = new THREE.DataTexture( data, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
@@ -225,7 +233,7 @@ function _createDefaultPositionTexture() {
 			data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = dim/2 - dim*(z/TEXTURE_HEIGHT);
 		}
 	}
-	tmp = {};
+	var tmp = {};
 	tmp.texture = new THREE.DataTexture( data, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
@@ -236,7 +244,7 @@ function _createDefaultPositionTexture() {
 }
 
 function _createVelocityTexture() {
-	tmp = {};
+	var tmp = {};
 	tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
@@ -252,12 +260,13 @@ function update() {
 	prev = cur;
 
 
-	exports.life += Math.min(offset/(1200), 1/8);
-	// exports.life %= 2; // uncomment if trigonometric wave
+	life += Math.min(offset/(1200), 1/8);
 
 	mouse.update( offset/1000 );
 
 	_updateVelocity();
 	_updatePosition();
-	exports.rtt = _rtt;
+	rtt = _rtt;
 }
+
+export { dim, life, rtt, defaultPosition, randomTexture, init, update };

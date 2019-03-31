@@ -1,28 +1,13 @@
-var LuminosityHighPassShader = require('./support/LuminosityHighPassShader');
-var CopyShader = require('./support/CopyShader');
-var BlendShader = require('./support/BlendShader');
+// import-block
+import { options } from '../modules/settings.js';
 
-var EffectComposer = require('./support/EffectComposer');
-
-var RenderPass = require('./support/RenderPass');
-var UnrealBloomPass = require('./support/UnrealBloomPass');
-var ShaderPass = require('./support/ShaderPass');
-var SavePass = require('./support/SavePass');
-
-var settings = require('../modules/settings');
-
+// define-block
 var undef;
-
 var SCREEN_WIDTH = undef;
 var SCREEN_HEIGHT = undef;
-
-exports.init = init;
-exports.setSize = setSize;
-exports.render = render;
-
-savePass = undef;
-blendPass = undef;
-composer = undef;
+var savePass = undef;
+var blendPass = undef;
+var composer = undef;
 
 function init( renderer, scene, camera, width, height ) {
 	composer = new THREE.EffectComposer( renderer );
@@ -55,7 +40,7 @@ function init( renderer, scene, camera, width, height ) {
 }
 
 function render() {
-	if ( settings.motionBlur ) {
+	if ( options.motionBlur ) {
 		blendPass.enabled = true;
 		savePass.enabled = true;
 	} else {
@@ -70,3 +55,5 @@ function setSize( width, height ) {
 	SCREEN_HEIGHT = height;
 	composer.setSize( width, height );
 }
+
+export { init, setSize, render };
