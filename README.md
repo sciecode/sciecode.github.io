@@ -4,7 +4,7 @@ This experiment was inspired by Edan Kwan's [The Spirit](http://edankwan.com/exp
 
 ## Build
 
-`npm install browserify` to install development dependencies.
+`npm install` to install development dependencies.
 
 `npm run build` to compile changes, `npm run build-closure` to compile and compress changes.
 
