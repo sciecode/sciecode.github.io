@@ -11,11 +11,11 @@
 		color1: "#2095cc",
 		color2: "#20cc2e",
 		TEXTURE_WIDTH: 256,
-		TEXTURE_HEIGHT: 256,
+		TEXTURE_HEIGHT: 512,
 		quality: 1,
 		motionBlur: true,
 		useShadow: false,
-		sizeRatio: 1.6,
+		sizeRatio: 1.35,
 		restart: false
 	};
 
@@ -333,7 +333,7 @@
 	      this.classList.add("selected");
 	      quality_list.classList.remove("vis");
 	      quality_value.classList.remove("vis");
-	      quality_value.innerHTML = this.innerHTML + "<span class=\"caret\"></span>";
+	      quality_value.innerHTML = this.innerHTML + " <span class=\"pn\">" + (65)*Math.pow(2, this.dataset.quality) +"k</span><span class=\"caret\"></span>";
 	      changeQuality$1( this.dataset.quality );
 	    }, false);
 	    qualities[i].addEventListener('transitionend', function () {
@@ -398,18 +398,17 @@
 	      sumTime += elapsedTime;
 
 	      t = sumTime / 3500;
+
+	      let xpos = easeInOutQuint( t,  0,  130 );
+	      let ypos = easeInOutQuart( t, 200, -90 );
+	      let zpos = easeInOutQuart( t,  0, -110 );
+	      _camera.position.set( xpos, ypos, zpos );
 	    }
 	    else {
 	      t = 1;
 	      edExp = true;
 	      startUI();
 	    }
-
-	    let xpos = easeInOutQuint( t,   0, -110, 1 );
-	    let ypos = easeInOutQuart( t, 200,  -90, 1 );
-	    let zpos = easeInOutQuart( t,   0,  130, 1 );
-	    _camera.position.set( xpos, ypos, zpos );
-
 	  }
 
 	  if (ball > 130 || ball < 0)
@@ -759,13 +758,9 @@ void main() {
     float x = ( dim/2.0 + pos.x ) / dim;
     float z = ( dim/2.0 + pos.z ) / dim;
 
-    //pos.x += 3.0*cos(x*PI/8.0 + PI*9.2*z)*rand.x*1.0;
-    //pos.y += cos(x*PI/2.0 + PI*4.2*z + PI*time)*sin(x*PI + PI*2.0*5.0*z + PI*time)*4.0 + rand.y*2.5 ;
-    //pos.z += cos(z*PI*7.2 + PI*2.7*x)*sin(x*PI*1.5 + PI*time)*2.5 + rand.z*1.0;
-
     float res = 7.6;
     pos.x += rand.x*1.0;
-    pos.y = cnoise( vec3(x*res, z*res/2.0, time) ) * 8.0 + rand.y*2.5;
+    pos.y = cnoise( vec3(x*res, z*res/2.0, time) ) * 8.0 + rand.y*1.0;
     pos.z += rand.z*1.0;
 
     vec3 offset = (pos - cur);
@@ -834,7 +829,7 @@ void main() {
 
 		_copyShader = new THREE.RawShaderMaterial({
 			uniforms: {
-				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_WIDTH, TEXTURE_HEIGHT ) },
+				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texture: { type: 't', value: undef$4 }
 			},
 			vertexShader: shaderParse( quad_vert ),
@@ -843,7 +838,7 @@ void main() {
 
 		_positionShader = new THREE.RawShaderMaterial({
 			uniforms: {
-				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_WIDTH, TEXTURE_HEIGHT ) },
+				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texturePosition: { type: 't', value: undef$4 },
 				textureVelocity: { type: 't', value: undef$4 }
 			},
@@ -851,13 +846,14 @@ void main() {
 			fragmentShader: shaderParse( position_frag ),
 			blending: THREE.NoBlending,
 			transparent: false,
+			depthTest: false,
 			depthWrite: false,
 			depthTest: false
 		});
 
 		_velocityShader = new THREE.RawShaderMaterial({
 			uniforms: {
-				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_WIDTH, TEXTURE_HEIGHT ) },
+				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				textureRandom: { type: 't', value: randomTexture.texture },
 				texturePosition: { type: 't', value: undef$4 },
 				textureVelocity: { type: 't', value: undef$4 },
@@ -882,13 +878,14 @@ void main() {
 		_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), _copyShader );
 		_scene.add( _mesh );
 
-		_vtt = new THREE.WebGLRenderTarget( TEXTURE_WIDTH, TEXTURE_HEIGHT, {
+		_vtt = new THREE.WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
 			wrapS: THREE.ClampToEdgeWrapping,
 			wrapT: THREE.ClampToEdgeWrapping,
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
 			format: THREE.RGBAFormat,
 			type: THREE.FloatType,
+			depthTest: false,
 			depthBuffer: false,
 			stencilBuffer: false
 		});
@@ -897,13 +894,14 @@ void main() {
 		_copyTexture(_createVelocityTexture(), _vtt);
 		_copyTexture(_vtt, _vtt2);
 
-		_rtt = new THREE.WebGLRenderTarget( TEXTURE_WIDTH, TEXTURE_HEIGHT, {
+		_rtt = new THREE.WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
 			wrapS: THREE.ClampToEdgeWrapping,
 			wrapT: THREE.ClampToEdgeWrapping,
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
 			format: THREE.RGBAFormat,
 			type: THREE.FloatType,
+			depthTest: false,
 			depthWrite: false,
 			depthBuffer: false,
 			stencilBuffer: false
@@ -962,7 +960,7 @@ void main() {
 			}
 		}
 		var tmp = {};
-		tmp.texture = new THREE.DataTexture( randomData, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
+		tmp.texture = new THREE.DataTexture( randomData, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 		tmp.texture.minFilter = THREE.NearestFilter;
 		tmp.texture.magFilter = THREE.NearestFilter;
 		tmp.texture.needsUpdate = true;
@@ -981,7 +979,7 @@ void main() {
 				var time = life;
 				var res = 7.6;
 				data[x*TEXTURE_HEIGHT*4 + z*4] = dim/2 - dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
-				data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = noise( xNorm*res, zNorm*res/2, time)*8 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*2.5;
+				data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = noise( xNorm*res, zNorm*res/2, time)*8 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*1.0;
 				data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = dim/2 - dim*(z/TEXTURE_HEIGHT) + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
 
 				// data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
@@ -990,7 +988,7 @@ void main() {
 			}
 		}
 		var tmp = {};
-		tmp.texture = new THREE.DataTexture( data, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
+		tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 		tmp.texture.minFilter = THREE.NearestFilter;
 		tmp.texture.magFilter = THREE.NearestFilter;
 		tmp.texture.needsUpdate = true;
@@ -1009,7 +1007,7 @@ void main() {
 			}
 		}
 		var tmp = {};
-		tmp.texture = new THREE.DataTexture( data, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
+		tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 		tmp.texture.minFilter = THREE.NearestFilter;
 		tmp.texture.magFilter = THREE.NearestFilter;
 		tmp.texture.needsUpdate = true;
@@ -1020,7 +1018,7 @@ void main() {
 
 	function _createVelocityTexture() {
 		var tmp = {};
-		tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
+		tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 		tmp.texture.minFilter = THREE.NearestFilter;
 		tmp.texture.magFilter = THREE.NearestFilter;
 		tmp.texture.needsUpdate = true;
@@ -1076,7 +1074,6 @@ varying vec3 vNormal;
 varying vec3 pos;
 
 //chunk(common);
-//chunk(fog_pars_vertex);
 //chunk(shadowmap_pars_vertex);
 
 float diameter;
@@ -1089,7 +1086,6 @@ void main() {
     vNormal = pos - def;
 
     float zRatio = (pos.z + dim/2.0 ) / dim;
-    float xRatio = (pos.x + dim/2.0 ) / dim;
 
     ratio = zRatio;
 
@@ -1099,18 +1095,21 @@ void main() {
     float focalLength = length(camera);
 		float dist = focalLength + mvPosition.z;
 
-		float size = pow(abs(sizeRatio*1.3), 1.3);
+		float size = pow(abs(sizeRatio*1.5), 1.2);
+
+    float aftEnlargementMax =  130.0 + ( (focalLength-150.0)/100.00 * 60.0);
+    float befEnlargementMax =  130.0 + ( (focalLength-150.0)/100.00 * 60.0);
 
 		if ( dist < 0.0 ) {
-			diameter = size*( 1.0 + aftEnlargementFactor*smoothstep(aftEnlargementNear, aftEnlargementFar, abs(dist) ) );
+			diameter = size*( 1.0 + aftEnlargementFactor*smoothstep(aftEnlargementNear, aftEnlargementMax, abs(dist) ) );
 			vAlpha = aftOpacityBase + (1.0 - aftOpacityBase)*(1.0 - smoothstep(aftOpacityNear, aftOpacityFar, abs(dist) ) );
 		}
 		else {
-			diameter = size*( 1.0 + befEnlargementFactor*smoothstep(befEnlargementNear, befEnlargementFar, abs(dist) ) );
+			diameter = size*( 1.0 + befEnlargementFactor*smoothstep(befEnlargementNear, befEnlargementMax, abs(dist) ) );
 			vAlpha = befOpacityBase + (1.0 - befOpacityBase)*(1.0 - smoothstep(befOpacityNear, befOpacityFar, abs(dist) ) );
 		}
 
-    gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * diameter;
+    gl_PointSize = ( 1.27 - 0.3 * clamp( length(mvPosition.xyz) / 600.0 , 0.0, 1.0 ) ) * diameter;
 
     // gl_PointSize = diameter;
     //gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * sizeRatio * 1.5 ;
@@ -1119,7 +1118,6 @@ void main() {
     focalDirection = (gl_Position.xyz / gl_Position.w).xy;
 
     //chunk(shadowmap_vertex);
-    //chunk(fog_vertex);
 }
 `;
 
@@ -1160,7 +1158,6 @@ uniform vec3 color2;
 
 #include <common>
 #include <packing>
-#include <fog_pars_fragment>
 #include <bsdfs>
 
 #ifdef USE_SHADOW
@@ -1196,10 +1193,6 @@ void main() {
   float alpha = vAlpha;
 
   gl_FragColor = vec4( outgoingLight , alpha );
-
-  //chunk(fog_fragment);
-
-  //gl_FragColor.a *= 1.0 - smoothstep(0.0, 0.19, clamp( fogFactor, 0.0, 1.0 ) );
 
 }
 `;
@@ -1258,11 +1251,19 @@ void main () {
 	// define-block
 	var undef$5;
 	var mesh$2;
+	var meshes;
+	var dists;
 	var set;
 
 	var _color1;
 	var _color2;
 	var _camera$3;
+
+	var renderShader;
+	var distanceShader;
+
+	var i3;
+	var discrete = 16;
 
 	var TEXTURE_WIDTH$1;
 	var TEXTURE_HEIGHT$1;
@@ -1271,6 +1272,7 @@ void main () {
 	function init$6( camera ) {
 
 		_camera$3 = camera;
+		meshes = [];
 
 		set = {
 			befEnlargementNear: 34.0,
@@ -1291,24 +1293,12 @@ void main () {
 		TEXTURE_HEIGHT$1 = options.TEXTURE_HEIGHT;
 		AMOUNT$1 = TEXTURE_WIDTH$1 * TEXTURE_HEIGHT$1;
 
-		_color1 = new THREE.Color(options.color1);
-		_color2 = new THREE.Color(options.color2);
 
-		var position = new Float32Array(AMOUNT$1 * 3);
-		var i3;
-		for(var i = 0; i < AMOUNT$1; i++ ) {
-			i3 = i * 3;
-			position[i3 + 0] = (i % TEXTURE_WIDTH$1) / TEXTURE_WIDTH$1;
-			position[i3 + 1] = ~~(i / TEXTURE_WIDTH$1) / TEXTURE_HEIGHT$1;
-		}
-		var geometry = new THREE.BufferGeometry();
-		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
-
-		var renderShader = new THREE.ShaderMaterial( {
+		// material-block
+		renderShader = new THREE.ShaderMaterial( {
 			uniforms: THREE.UniformsUtils.merge([
 				THREE.UniformsLib.shadowmap,
 				THREE.UniformsLib.lights,
-				THREE.UniformsLib.fog,
 				{
 					textureDefaultPosition: { type: "t", value: defaultPosition },
 					texturePosition: { type: "t", value: null },
@@ -1338,7 +1328,6 @@ void main () {
 			vertexShader: shaderParse( render_vert ),
 			fragmentShader: shaderParse( render_frag ),
 			precision: "highp",
-			fog: true,
 			lights: true,
 			transparent: true,
 			blending: THREE.NormalBlending,
@@ -1347,14 +1336,15 @@ void main () {
 			depthWrite: false,
 		});
 
+		_color1 = new THREE.Color(options.color1);
+		_color2 = new THREE.Color(options.color2);
+
 		renderShader.uniforms.color1.value = _color1;
 		renderShader.uniforms.color2.value = _color2;
 		renderShader.uniforms.dim.value = dim;
 		renderShader.uniforms.sizeRatio.value = options.sizeRatio;
 
-		mesh$2 = new THREE.Points( geometry, renderShader );
-
-		mesh$2.customDistanceMaterial = new THREE.ShaderMaterial( {
+		distanceShader = new THREE.ShaderMaterial( {
 			uniforms: {
 				lightPos: { type: 'v3', value: mesh$1.position },
 				texturePosition: { type: 't', value: null }
@@ -1367,24 +1357,71 @@ void main () {
 			blending: THREE.NoBlending
 		} );
 
-		mesh$2.castShadow = true;
-		mesh$2.receiveShadow = true;
+
+		// geometry-block
+		for ( var d = 0; d < discrete; d++ ) {
+
+			var position = new Float32Array( AMOUNT$1/discrete * 3 );
+
+			var sqr = Math.sqrt(discrete);
+			var offset = { x: (~~( d / sqr ) / sqr ), z: (d % sqr / sqr ) };
+			for ( var i = 0; i < (AMOUNT$1/discrete); i++ ) {
+				i3 = i * 3;
+				position[i3 + 0] =  ~~( i / ( TEXTURE_HEIGHT$1 / sqr ) ) / ( TEXTURE_WIDTH$1 ) + offset.x;
+				position[i3 + 1] =    ( i % ( TEXTURE_HEIGHT$1 / sqr ) ) / ( TEXTURE_HEIGHT$1 ) + offset.z;
+				// if ( i == (TEXTURE_HEIGHT/sqr -1) || i == 0 )
+				// 	console.log( "x: " + position[i3 + 0]*TEXTURE_WIDTH, "z: " + position[i3 + 1]*TEXTURE_HEIGHT, "i: " + i, "ind: " + (position[i3 + 1]*TEXTURE_HEIGHT + TEXTURE_HEIGHT*position[i3 + 0]*TEXTURE_WIDTH) )
+			}
+
+			var geometry = new THREE.BufferGeometry();
+			geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
+
+			mesh$2 = new THREE.Points( geometry, renderShader );
+			mesh$2.customDistanceMaterial = distanceShader;
+			mesh$2.castShadow = true;
+			mesh$2.receiveShadow = true;
+
+			mesh$2.rpos = new THREE.Vector3(
+				(dim / sqr / 2) - offset.z*( dim / sqr  ), // x global mesh position
+				0,
+				(dim / sqr / 2) - offset.x*( dim / sqr  ) //  z global mesh position
+			);
+
+			meshes.push( mesh$2 );
+		}
+	}
+
+
+	// depth-sort discrete blocks to (sorta) fix transparency artifacts (see what I did there? \o/)
+	function sortDepth() {
+	 	dists = [];
+		for ( var i = 0; i < discrete; i++ ) {
+			dists.push( [meshes[i].rpos.distanceTo(_camera$3.position), i] );
+		}
+		dists.sort( function(a,b) {
+			return (b[0] - a[0]);
+		});
+		var order = 1;
+		for ( var i = 0; i < discrete; i++ ) {
+			meshes[dists[i][1]].renderOrder = order++;
+		}
 	}
 
 	function update$5() {
+		sortDepth();
 		_color1.setStyle(options.color1);
 		_color2.setStyle(options.color2);
-		mesh$2.material.uniforms.texturePosition.value = rtt.texture;
-		mesh$2.customDistanceMaterial.uniforms.texturePosition.value = rtt.texture;
-		mesh$2.material.uniforms.textureDefaultPosition.value = defaultPosition.texture;
-		mesh$2.material.uniforms.camera.value = _camera$3.position.clone();
+		distanceShader.uniforms.texturePosition.value = rtt.texture;
+		renderShader.uniforms.texturePosition.value = rtt.texture;
+		renderShader.uniforms.textureDefaultPosition.value = defaultPosition.texture;
+		renderShader.uniforms.camera.value = _camera$3.position.clone();
 	}
 
 	// import-block
 	var w, h;
 	var renderer, scene, camera, controls;
 	var origin = new THREE.Vector3();
-	var stPos = new THREE.Vector3( 0, 200, 0);
+	var stPos = new THREE.Vector3( 0, 200, -0.1);
 	var isGPU = true;
 
 	function start() {
@@ -1403,7 +1440,7 @@ void main () {
 	  isGPU = true;
 
 	  renderer.setSize( window.innerWidth, window.innerHeight );
-	  renderer.sortObjects = false;
+	  renderer.sortObjects = true;
 	  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 	  renderer.shadowMap.enabled = true;
 	  renderer.setPixelRatio( window.devicePixelRatio );
@@ -1430,7 +1467,9 @@ void main () {
 	  init$5( renderer, camera );
 	  init$6( camera );
 
-	  scene.add( mesh$2 );
+	  for ( var i = 0; i < discrete; i++ ) {
+	    scene.add( meshes[i] );
+	  }
 	  scene.add( mesh$1 );
 	  scene.add( mesh );
 
@@ -1438,11 +1477,15 @@ void main () {
 	}
 
 	function restart() {
-	  scene.remove( mesh$2 );
+	  for ( var i = 0; i < discrete; i++ ) {
+	    scene.remove( meshes[i] );
+	  }
 	  update('restart', false);
 	  init$5( renderer, camera );
 	  init$6( camera );
-	  scene.add( mesh$2 );
+	  for ( var i = 0; i < discrete; i++ ) {
+	    scene.add( meshes[i] );
+	  }
 	}
 
 	function update$6() {

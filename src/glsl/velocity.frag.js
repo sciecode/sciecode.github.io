@@ -122,13 +122,9 @@ void main() {
     float x = ( dim/2.0 + pos.x ) / dim;
     float z = ( dim/2.0 + pos.z ) / dim;
 
-    //pos.x += 3.0*cos(x*PI/8.0 + PI*9.2*z)*rand.x*1.0;
-    //pos.y += cos(x*PI/2.0 + PI*4.2*z + PI*time)*sin(x*PI + PI*2.0*5.0*z + PI*time)*4.0 + rand.y*2.5 ;
-    //pos.z += cos(z*PI*7.2 + PI*2.7*x)*sin(x*PI*1.5 + PI*time)*2.5 + rand.z*1.0;
-
     float res = 7.6;
     pos.x += rand.x*1.0;
-    pos.y = cnoise( vec3(x*res, z*res/2.0, time) ) * 8.0 + rand.y*2.5;
+    pos.y = cnoise( vec3(x*res, z*res/2.0, time) ) * 8.0 + rand.y*1.0;
     pos.z += rand.z*1.0;
 
     vec3 offset = (pos - cur);

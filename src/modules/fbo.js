@@ -59,7 +59,7 @@ function init( renderer, camera ) {
 
 	_copyShader = new THREE.RawShaderMaterial({
 		uniforms: {
-			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_WIDTH, TEXTURE_HEIGHT ) },
+			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 			texture: { type: 't', value: undef }
 		},
 		vertexShader: shaderParse( quad_vert ),
@@ -68,7 +68,7 @@ function init( renderer, camera ) {
 
 	_positionShader = new THREE.RawShaderMaterial({
 		uniforms: {
-			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_WIDTH, TEXTURE_HEIGHT ) },
+			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 			texturePosition: { type: 't', value: undef },
 			textureVelocity: { type: 't', value: undef }
 		},
@@ -76,13 +76,14 @@ function init( renderer, camera ) {
 		fragmentShader: shaderParse( position_frag ),
 		blending: THREE.NoBlending,
 		transparent: false,
+		depthTest: false,
 		depthWrite: false,
 		depthTest: false
 	});
 
 	_velocityShader = new THREE.RawShaderMaterial({
 		uniforms: {
-			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_WIDTH, TEXTURE_HEIGHT ) },
+			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 			textureRandom: { type: 't', value: randomTexture.texture },
 			texturePosition: { type: 't', value: undef },
 			textureVelocity: { type: 't', value: undef },
@@ -107,13 +108,14 @@ function init( renderer, camera ) {
 	_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), _copyShader );
 	_scene.add( _mesh );
 
-	_vtt = new THREE.WebGLRenderTarget( TEXTURE_WIDTH, TEXTURE_HEIGHT, {
+	_vtt = new THREE.WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
 		wrapS: THREE.ClampToEdgeWrapping,
 		wrapT: THREE.ClampToEdgeWrapping,
 		minFilter: THREE.NearestFilter,
 		magFilter: THREE.NearestFilter,
 		format: THREE.RGBAFormat,
 		type: THREE.FloatType,
+		depthTest: false,
 		depthBuffer: false,
 		stencilBuffer: false
 	});
@@ -122,13 +124,14 @@ function init( renderer, camera ) {
 	_copyTexture(_createVelocityTexture(), _vtt);
 	_copyTexture(_vtt, _vtt2);
 
-	_rtt = new THREE.WebGLRenderTarget( TEXTURE_WIDTH, TEXTURE_HEIGHT, {
+	_rtt = new THREE.WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
 		wrapS: THREE.ClampToEdgeWrapping,
 		wrapT: THREE.ClampToEdgeWrapping,
 		minFilter: THREE.NearestFilter,
 		magFilter: THREE.NearestFilter,
 		format: THREE.RGBAFormat,
 		type: THREE.FloatType,
+		depthTest: false,
 		depthWrite: false,
 		depthBuffer: false,
 		stencilBuffer: false
@@ -187,7 +190,7 @@ function _createRandomTexture() {
 		}
 	}
 	var tmp = {};
-	tmp.texture = new THREE.DataTexture( randomData, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
+	tmp.texture = new THREE.DataTexture( randomData, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
 	tmp.texture.needsUpdate = true;
@@ -206,7 +209,7 @@ function _createPositionTexture() {
 			var time = life;
 			var res = 7.6;
 			data[x*TEXTURE_HEIGHT*4 + z*4] = dim/2 - dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
-			data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = noise( xNorm*res, zNorm*res/2, time)*8 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*2.5;
+			data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = noise( xNorm*res, zNorm*res/2, time)*8 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*1.0;
 			data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = dim/2 - dim*(z/TEXTURE_HEIGHT) + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
 
 			// data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
@@ -215,7 +218,7 @@ function _createPositionTexture() {
 		}
 	}
 	var tmp = {};
-	tmp.texture = new THREE.DataTexture( data, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
+	tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
 	tmp.texture.needsUpdate = true;
@@ -234,7 +237,7 @@ function _createDefaultPositionTexture() {
 		}
 	}
 	var tmp = {};
-	tmp.texture = new THREE.DataTexture( data, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
+	tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
 	tmp.texture.needsUpdate = true;
@@ -245,7 +248,7 @@ function _createDefaultPositionTexture() {
 
 function _createVelocityTexture() {
 	var tmp = {};
-	tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType );
+	tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
 	tmp.texture.needsUpdate = true;

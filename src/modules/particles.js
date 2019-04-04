@@ -13,11 +13,19 @@ import distance_frag from '../glsl/distance.frag.js'
 // define-block
 var undef;
 var mesh;
+var meshes;
+var dists;
 var set;
 
 var _color1;
 var _color2;
 var _camera;
+
+var renderShader;
+var distanceShader;
+
+var i3;
+var discrete = 16;
 
 var TEXTURE_WIDTH;
 var TEXTURE_HEIGHT;
@@ -26,6 +34,7 @@ var AMOUNT;
 function init( camera ) {
 
 	_camera = camera;
+	meshes = [];
 
 	set = {
 		befEnlargementNear: 34.0,
@@ -46,24 +55,12 @@ function init( camera ) {
 	TEXTURE_HEIGHT = settings.options.TEXTURE_HEIGHT;
 	AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
-	_color1 = new THREE.Color(settings.options.color1);
-	_color2 = new THREE.Color(settings.options.color2);
 
-	var position = new Float32Array(AMOUNT * 3);
-	var i3;
-	for(var i = 0; i < AMOUNT; i++ ) {
-		i3 = i * 3;
-		position[i3 + 0] = (i % TEXTURE_WIDTH) / TEXTURE_WIDTH;
-		position[i3 + 1] = ~~(i / TEXTURE_WIDTH) / TEXTURE_HEIGHT;
-	}
-	var geometry = new THREE.BufferGeometry();
-	geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
-
-	var renderShader = new THREE.ShaderMaterial( {
+	// material-block
+	renderShader = new THREE.ShaderMaterial( {
 		uniforms: THREE.UniformsUtils.merge([
 			THREE.UniformsLib.shadowmap,
 			THREE.UniformsLib.lights,
-			THREE.UniformsLib.fog,
 			{
 				textureDefaultPosition: { type: "t", value: fbo.defaultPosition },
 				texturePosition: { type: "t", value: null },
@@ -93,7 +90,6 @@ function init( camera ) {
 		vertexShader: shaderParse( render_vert ),
 		fragmentShader: shaderParse( render_frag ),
 		precision: "highp",
-		fog: true,
 		lights: true,
 		transparent: true,
 		blending: THREE.NormalBlending,
@@ -102,14 +98,15 @@ function init( camera ) {
 		depthWrite: false,
 	});
 
+	_color1 = new THREE.Color(settings.options.color1);
+	_color2 = new THREE.Color(settings.options.color2);
+
 	renderShader.uniforms.color1.value = _color1;
 	renderShader.uniforms.color2.value = _color2;
 	renderShader.uniforms.dim.value = fbo.dim;
 	renderShader.uniforms.sizeRatio.value = settings.options.sizeRatio;
 
-	mesh = new THREE.Points( geometry, renderShader );
-
-	mesh.customDistanceMaterial = new THREE.ShaderMaterial( {
+	distanceShader = new THREE.ShaderMaterial( {
 		uniforms: {
 			lightPos: { type: 'v3', value: lights.mesh.position },
 			texturePosition: { type: 't', value: null }
@@ -122,17 +119,64 @@ function init( camera ) {
 		blending: THREE.NoBlending
 	} );
 
-	mesh.castShadow = true;
-	mesh.receiveShadow = true;
+
+	// geometry-block
+	for ( var d = 0; d < discrete; d++ ) {
+
+		var position = new Float32Array( AMOUNT/discrete * 3 );
+
+		var sqr = Math.sqrt(discrete);
+		var offset = { x: (~~( d / sqr ) / sqr ), z: (d % sqr / sqr ) }
+		for ( var i = 0; i < (AMOUNT/discrete); i++ ) {
+			i3 = i * 3;
+			position[i3 + 0] =  ~~( i / ( TEXTURE_HEIGHT / sqr ) ) / ( TEXTURE_WIDTH ) + offset.x;
+			position[i3 + 1] =    ( i % ( TEXTURE_HEIGHT / sqr ) ) / ( TEXTURE_HEIGHT ) + offset.z;
+			// if ( i == (TEXTURE_HEIGHT/sqr -1) || i == 0 )
+			// 	console.log( "x: " + position[i3 + 0]*TEXTURE_WIDTH, "z: " + position[i3 + 1]*TEXTURE_HEIGHT, "i: " + i, "ind: " + (position[i3 + 1]*TEXTURE_HEIGHT + TEXTURE_HEIGHT*position[i3 + 0]*TEXTURE_WIDTH) )
+		}
+
+		var geometry = new THREE.BufferGeometry();
+		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
+
+		mesh = new THREE.Points( geometry, renderShader );
+		mesh.customDistanceMaterial = distanceShader;
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+
+		mesh.rpos = new THREE.Vector3(
+			(fbo.dim / sqr / 2) - offset.z*( fbo.dim / sqr  ), // x global mesh position
+			0,
+			(fbo.dim / sqr / 2) - offset.x*( fbo.dim / sqr  ) //  z global mesh position
+		);
+
+		meshes.push( mesh );
+	}
+}
+
+
+// depth-sort discrete blocks to (sorta) fix transparency artifacts (see what I did there? \o/)
+function sortDepth() {
+ 	dists = [];
+	for ( var i = 0; i < discrete; i++ ) {
+		dists.push( [meshes[i].rpos.distanceTo(_camera.position), i] );
+	}
+	dists.sort( function(a,b) {
+		return (b[0] - a[0]);
+	});
+	var order = 1;
+	for ( var i = 0; i < discrete; i++ ) {
+		meshes[dists[i][1]].renderOrder = order++;
+	}
 }
 
 function update() {
+	sortDepth();
 	_color1.setStyle(settings.options.color1);
 	_color2.setStyle(settings.options.color2);
-	mesh.material.uniforms.texturePosition.value = fbo.rtt.texture;
-	mesh.customDistanceMaterial.uniforms.texturePosition.value = fbo.rtt.texture;
-	mesh.material.uniforms.textureDefaultPosition.value = fbo.defaultPosition.texture;
-	mesh.material.uniforms.camera.value = _camera.position.clone();
+	distanceShader.uniforms.texturePosition.value = fbo.rtt.texture;
+	renderShader.uniforms.texturePosition.value = fbo.rtt.texture;
+	renderShader.uniforms.textureDefaultPosition.value = fbo.defaultPosition.texture;
+	renderShader.uniforms.camera.value = _camera.position.clone();
 }
 
-export { mesh, init, update };
+export { discrete, meshes, init, update };

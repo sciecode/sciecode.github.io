@@ -35,7 +35,6 @@ uniform vec3 color2;
 
 #include <common>
 #include <packing>
-#include <fog_pars_fragment>
 #include <bsdfs>
 
 #ifdef USE_SHADOW
@@ -71,10 +70,6 @@ void main() {
   float alpha = vAlpha;
 
   gl_FragColor = vec4( outgoingLight , alpha );
-
-  //chunk(fog_fragment);
-
-  //gl_FragColor.a *= 1.0 - smoothstep(0.0, 0.19, clamp( fogFactor, 0.0, 1.0 ) );
 
 }
 `;

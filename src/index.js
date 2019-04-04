@@ -12,7 +12,7 @@ var undef;
 var w, h;
 var renderer, scene, camera, controls;
 var origin = new THREE.Vector3();
-var stPos = new THREE.Vector3( 0, 200, 0);
+var stPos = new THREE.Vector3( 0, 200, -0.1);
 var isGPU = true;
 
 function start() {
@@ -31,7 +31,7 @@ function start() {
   isGPU = true;
 
   renderer.setSize( window.innerWidth, window.innerHeight );
-  renderer.sortObjects = false;
+  renderer.sortObjects = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.shadowMap.enabled = true;
   renderer.setPixelRatio( window.devicePixelRatio );
@@ -58,7 +58,9 @@ function start() {
   fbo.init( renderer, camera );
   particles.init( camera );
 
-  scene.add( particles.mesh );
+  for ( var i = 0; i < particles.discrete; i++ ) {
+    scene.add( particles.meshes[i] );
+  }
   scene.add( lights.mesh );
   scene.add( floor.mesh );
 
@@ -66,11 +68,15 @@ function start() {
 }
 
 function restart() {
-  scene.remove( particles.mesh );
+  for ( var i = 0; i < particles.discrete; i++ ) {
+    scene.remove( particles.meshes[i] );
+  }
   settings.update('restart', false);
   fbo.init( renderer, camera );
   particles.init( camera );
-  scene.add( particles.mesh );
+  for ( var i = 0; i < particles.discrete; i++ ) {
+    scene.add( particles.meshes[i] );
+  }
 }
 
 function update() {

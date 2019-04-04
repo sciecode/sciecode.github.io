@@ -286,6 +286,10 @@ body.hid #brand {
   position: relative;
 }
 
+#quality_value span.pn {
+  font-weight: 600;
+}
+
 #quality_value::after {
   content: '';
   position:absolute;

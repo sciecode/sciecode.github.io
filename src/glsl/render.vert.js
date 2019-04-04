@@ -30,7 +30,6 @@ varying vec3 vNormal;
 varying vec3 pos;
 
 //chunk(common);
-//chunk(fog_pars_vertex);
 //chunk(shadowmap_pars_vertex);
 
 float diameter;
@@ -43,7 +42,6 @@ void main() {
     vNormal = pos - def;
 
     float zRatio = (pos.z + dim/2.0 ) / dim;
-    float xRatio = (pos.x + dim/2.0 ) / dim;
 
     ratio = zRatio;
 
@@ -53,18 +51,21 @@ void main() {
     float focalLength = length(camera);
 		float dist = focalLength + mvPosition.z;
 
-		float size = pow(abs(sizeRatio*1.3), 1.3);
+		float size = pow(abs(sizeRatio*1.5), 1.2);
+
+    float aftEnlargementMax =  130.0 + ( (focalLength-150.0)/100.00 * 60.0);
+    float befEnlargementMax =  130.0 + ( (focalLength-150.0)/100.00 * 60.0);
 
 		if ( dist < 0.0 ) {
-			diameter = size*( 1.0 + aftEnlargementFactor*smoothstep(aftEnlargementNear, aftEnlargementFar, abs(dist) ) );
+			diameter = size*( 1.0 + aftEnlargementFactor*smoothstep(aftEnlargementNear, aftEnlargementMax, abs(dist) ) );
 			vAlpha = aftOpacityBase + (1.0 - aftOpacityBase)*(1.0 - smoothstep(aftOpacityNear, aftOpacityFar, abs(dist) ) );
 		}
 		else {
-			diameter = size*( 1.0 + befEnlargementFactor*smoothstep(befEnlargementNear, befEnlargementFar, abs(dist) ) );
+			diameter = size*( 1.0 + befEnlargementFactor*smoothstep(befEnlargementNear, befEnlargementMax, abs(dist) ) );
 			vAlpha = befOpacityBase + (1.0 - befOpacityBase)*(1.0 - smoothstep(befOpacityNear, befOpacityFar, abs(dist) ) );
 		}
 
-    gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * diameter;
+    gl_PointSize = ( 1.27 - 0.3 * clamp( length(mvPosition.xyz) / 600.0 , 0.0, 1.0 ) ) * diameter;
 
     // gl_PointSize = diameter;
     //gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * sizeRatio * 1.5 ;
@@ -73,6 +74,5 @@ void main() {
     focalDirection = (gl_Position.xyz / gl_Position.w).xy;
 
     //chunk(shadowmap_vertex);
-    //chunk(fog_vertex);
 }
 `;

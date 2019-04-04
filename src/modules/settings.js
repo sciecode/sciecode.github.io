@@ -6,11 +6,11 @@ var options = {
 	color1: "#2095cc",
 	color2: "#20cc2e",
 	TEXTURE_WIDTH: 256,
-	TEXTURE_HEIGHT: 256,
+	TEXTURE_HEIGHT: 512,
 	quality: 1,
 	motionBlur: true,
 	useShadow: false,
-	sizeRatio: 1.6,
+	sizeRatio: 1.35,
 	restart: false
 }
 
@@ -21,8 +21,8 @@ function reset() {
 	options.color1 = "#2095cc";
 	options.color2 = "#20cc2e";
 	options.TEXTURE_WIDTH = 256;
-	options.TEXTURE_HEIGHT = 256;
-	options.sizeRatio = 1.6;
+	options.TEXTURE_HEIGHT = 512;
+	options.sizeRatio = 1.35;
 	options.motionBlur = true;
 	options.restart = false;
 }

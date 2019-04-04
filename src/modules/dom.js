@@ -181,7 +181,7 @@ function init ( camera, controls ) {
       this.classList.add("selected");
       quality_list.classList.remove("vis");
       quality_value.classList.remove("vis");
-      quality_value.innerHTML = this.innerHTML + "<span class=\"caret\"></span>";
+      quality_value.innerHTML = this.innerHTML + " <span class=\"pn\">" + (65)*Math.pow(2, this.dataset.quality) +"k</span><span class=\"caret\"></span>";
       changeQuality( this.dataset.quality );
     }, false);
     qualities[i].addEventListener('transitionend', function () {
@@ -246,18 +246,17 @@ function update() {
       sumTime += elapsedTime;
 
       t = sumTime / 3500;
+
+      let xpos = easeInOutQuint( t,  0,  130 );
+      let ypos = easeInOutQuart( t, 200, -90 );
+      let zpos = easeInOutQuart( t,  0, -110 );
+      _camera.position.set( xpos, ypos, zpos );
     }
     else {
       t = 1;
       edExp = true;
       startUI();
     }
-
-    let xpos = easeInOutQuint( t,   0, -110, 1 );
-    let ypos = easeInOutQuart( t, 200,  -90, 1 );
-    let zpos = easeInOutQuart( t,   0,  130, 1 );
-    _camera.position.set( xpos, ypos, zpos );
-
   }
 
   if (ball > 130 || ball < 0)
