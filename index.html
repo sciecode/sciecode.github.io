@@ -7,6 +7,16 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-139328415-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-139328415-1');
+	</script>
+
+
   <link rel="stylesheet" type="text/css" href="css/waves.css">
 
   <script src="js/three.min.js"></script>
@@ -109,7 +119,9 @@
   <div id="overlay">
     <h2 id="experience">Experiment</h2>
     <h4 id="intro"><span class="bold">OceanGL</span> was conceptualized to simulate elastic systems under the effect of viscuous fluids. <br /> <br /> This means we want you to have fun with some <span class="bold">particles</span>.</h4>
-    <h4 id="st_btn">start experience</h4>
+		<h4 id="st_notice" class="hidden error">Hardware Acceleration not enabled or GPU not available.</h4>
+		<h4 id="st_steps" class="hidden">Try enabling GPU renderer under your browser.</h4>
+		<h4 id="st_btn">start experience</h4>
   </div>
 </body>
 <script src="js/bundle.js"></script>

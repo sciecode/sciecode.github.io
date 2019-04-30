@@ -1,7 +1,5 @@
-(function (factory) {
-	typeof define === 'function' && define.amd ? define(factory) :
-	factory();
-}(function () { 'use strict';
+(function () {
+	'use strict';
 
 	// define-block
 	var options = {
@@ -385,6 +383,21 @@
 	  var inactives = document.querySelectorAll(".inactive");
 	  for ( var i = 0; i < inactives.length; i++ )
 	  inactives[i].classList.remove("inactive");
+	}
+
+	function showError() {
+		var intro = document.getElementById("intro");
+		var btn = document.getElementById("st_btn");
+		var notice = document.getElementById("st_notice");
+		var steps = document.getElementById("st_steps");
+		var body = document.getElementsByTagName("BODY")[0];
+
+		intro.classList.add("hidden");
+		btn.classList.add("hidden");
+		notice.classList.remove("hidden");
+		steps.classList.remove("hidden");
+
+		body.classList.remove("hid");
 	}
 
 	function update$2() {
@@ -1425,16 +1438,19 @@ void main () {
 	var isGPU = true;
 
 	function start() {
+
+		// init-renderer-block
 	  try {
 	    renderer = new THREE.WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
 	  }
 	  catch(err) {
-	    console.log("OceanGL Err: Hardware Acceleration not enable or GPU acceleration not available.");
+	    console.error("OceanGL: Hardware Acceleration not enabled or GPU not available.");
 	    isGPU = false;
 	  }
 
 	  if ( !isGPU || !WEBGL.isWebGLAvailable() ) {
-	    console.log("OceanGL Warn: Initialization aborted.");
+	    console.warn("OceanGL: Initialization aborted.");
+			showError();
 	    return;
 	  }
 	  isGPU = true;
@@ -1512,4 +1528,4 @@ void main () {
 
 	start();
 
-}));
+}());

@@ -27,6 +27,10 @@ canvas {
   height: 100%
 }
 
+.hidden {
+	display: none;
+}
+
 #brand.nodelay {
   transition: none;
   transition-delay: 0s;
@@ -153,9 +157,58 @@ body.hid #brand {
   color: #f3f4f6;
 }
 
+#st_notice.error {
+  font-weight: 700;
+  color: #c14343;
+}
+
+#st_notice {
+  position: fixed;
+  font-size: 17.5px;
+  line-height: 1.48;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: subpixel-antialiased;
+  font-family: 'Open Sans', sans-serif;
+  z-index: 21;
+  text-shadow: 1px 1px rgba(0,0,0,0.4);
+  pointer-events: none;
+  user-select: none;
+  /* letter-spacing: 1px; */
+  top: 48vh;
+  width: 550px;
+  left: calc(50vw - 275px);
+  margin: 0px auto;
+  font-weight: 400;
+  text-align: center;
+  /* text-transform: uppercase; */
+  color: #f3f4f6;
+}
+
+#st_steps {
+	position: fixed;
+  font-size: 16.5px;
+  line-height: 1.48;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: subpixel-antialiased;
+  font-family: 'Open Sans', sans-serif;
+  z-index: 21;
+  text-shadow: 1px 1px rgba(0,0,0,0.4);
+  pointer-events: none;
+  user-select: none;
+  /* letter-spacing: 1px; */
+  top: 53vh;
+  width: 550px;
+  left: calc(50vw - 275px);
+  margin: 0px auto;
+  font-weight: 400;
+  text-align: center;
+  /* text-transform: uppercase; */
+  color: #f3f4f6;
+}
+
+
 .bold {
   font-weight: 700;
-  /* letter-spacing: .3px; */
   color: #4CAF50;
 }
 

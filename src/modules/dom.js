@@ -235,6 +235,21 @@ function startUI() {
   inactives[i].classList.remove("inactive");
 }
 
+function showError() {
+	var intro = document.getElementById("intro");
+	var btn = document.getElementById("st_btn");
+	var notice = document.getElementById("st_notice");
+	var steps = document.getElementById("st_steps");
+	var body = document.getElementsByTagName("BODY")[0];
+
+	intro.classList.add("hidden");
+	btn.classList.add("hidden");
+	notice.classList.remove("hidden");
+	steps.classList.remove("hidden");
+
+	body.classList.remove("hid");
+}
+
 function update() {
   var t;
   if ( stExp && !edExp ) {
@@ -272,4 +287,4 @@ function update() {
   fluid_ball.style.transform = "translateX("+ ball +"px) translateY(-20px)";
 }
 
-export { init, update };
+export { init, update, showError };

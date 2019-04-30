@@ -16,16 +16,19 @@ var stPos = new THREE.Vector3( 0, 200, -0.1);
 var isGPU = true;
 
 function start() {
+
+	// init-renderer-block
   try {
     renderer = new THREE.WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
   }
   catch(err) {
-    console.log("OceanGL Err: Hardware Acceleration not enable or GPU acceleration not available.");
+    console.error("OceanGL: Hardware Acceleration not enabled or GPU not available.");
     isGPU = false;
   }
 
   if ( !isGPU || !WEBGL.isWebGLAvailable() ) {
-    console.log("OceanGL Warn: Initialization aborted.");
+    console.warn("OceanGL: Initialization aborted.");
+		dom.showError();
     return;
   }
   isGPU = true;
