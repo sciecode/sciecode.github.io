@@ -200,7 +200,12 @@ function init ( camera, controls ) {
 
   body.classList.remove("hid");
 
-	changeQuality( 1 );
+	if ( !settings.options.mobile ) {
+		changeQuality( 1 );
+	}
+	else {
+		changeQuality( 0 );
+	}
 }
 
 function changeQuality( val ) {

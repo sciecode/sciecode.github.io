@@ -2,7 +2,7 @@
 	'use strict';
 
 	// define-block
-	var md = new MobileDetect(window.navigator.userAgent);
+	var md = new MobileDetect(window.navigator.userAgent).phone();
 
 	var options = {
 		radius: 30,
@@ -17,7 +17,7 @@
 		useShadow: false,
 		sizeRatio: 1.35,
 		restart: false,
-		mobile: ( md.phone() == null ) ? false : true,
+		mobile: ( md == null ) ? false : true,
 		precision: "lowp",
 	};
 
@@ -355,7 +355,12 @@
 
 	  body.classList.remove("hid");
 
-		changeQuality$1( 1 );
+		if ( !options.mobile ) {
+			changeQuality$1( 1 );
+		}
+		else {
+			changeQuality$1( 0 );
+		}
 	}
 
 	function changeQuality$1( val ) {
