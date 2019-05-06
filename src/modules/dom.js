@@ -44,7 +44,7 @@ var ball = 0;
 var direction = 1;
 var amount = 1;
 
-async function init ( camera, controls ) {
+function init ( camera, controls ) {
 
   _camera = camera;
   _controls = controls;
@@ -199,6 +199,8 @@ async function init ( camera, controls ) {
   }, false);
 
   body.classList.remove("hid");
+
+	changeQuality( 1 );
 }
 
 function changeQuality( val ) {

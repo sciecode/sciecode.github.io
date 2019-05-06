@@ -2,7 +2,7 @@
 var undef;
 var mesh = undef;
 
-async function init() {
+function init() {
 	mesh = new THREE.Object3D();
 	mesh.position.set(0, 190, 0);
 

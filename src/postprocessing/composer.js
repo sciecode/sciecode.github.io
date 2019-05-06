@@ -9,7 +9,7 @@ var savePass = undef;
 var blendPass = undef;
 var composer = undef;
 
-async function init( renderer, scene, camera, width, height ) {
+function init( renderer, scene, camera, width, height ) {
 	composer = new THREE.EffectComposer( renderer );
 	composer.setSize( width, height );
 

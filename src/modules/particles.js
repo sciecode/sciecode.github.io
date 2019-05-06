@@ -31,7 +31,7 @@ var TEXTURE_WIDTH;
 var TEXTURE_HEIGHT;
 var AMOUNT;
 
-async function init( camera ) {
+function init( camera ) {
 
 	_camera = camera;
 	meshes = [];

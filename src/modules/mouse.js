@@ -9,7 +9,7 @@ var speed = new THREE.Vector3();
 var raycaster = new THREE.Raycaster();
 var plane3d = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ) );
 
-async function init( camera ) {
+function init( camera ) {
   _camera = camera;
 }
 

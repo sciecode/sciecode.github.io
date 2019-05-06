@@ -30,7 +30,6 @@ function reset() {
 
 function changeQuality( val ) {
 	if ( val ) {
-		if ( options.quality == val ) return;
 		options.quality = val;
 	}
 	if (options.quality == 0) {
@@ -59,7 +58,7 @@ function changeQuality( val ) {
 	}
 
 	options.restart = true;
-	
+
 }
 
 function update( prop, val ) {

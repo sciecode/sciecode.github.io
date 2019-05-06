@@ -5,7 +5,7 @@ import { options } from './settings.js'
 var undef;
 var mesh = undef;
 
-async function init() {
+function init() {
   var geometry = new THREE.PlaneGeometry(4000, 4000, 10, 10);
   var _material = new THREE.MeshStandardMaterial( {
     roughness: 0.7,

@@ -20,7 +20,6 @@
 
 	function changeQuality( val ) {
 		if ( val ) {
-			if ( options.quality == val ) return;
 			options.quality = val;
 		}
 		if (options.quality == 0) {
@@ -49,7 +48,7 @@
 		}
 
 		options.restart = true;
-		
+
 	}
 
 	function update( prop, val ) {
@@ -66,7 +65,7 @@
 	var blendPass = undef;
 	var composer = undef;
 
-	async function init( renderer, scene, camera, width, height ) {
+	function init( renderer, scene, camera, width, height ) {
 		composer = new THREE.EffectComposer( renderer );
 		composer.setSize( width, height );
 
@@ -119,7 +118,7 @@
 	var undef$1;
 	var mesh = undef$1;
 
-	async function init$1() {
+	function init$1() {
 	  var geometry = new THREE.PlaneGeometry(4000, 4000, 10, 10);
 	  var _material = new THREE.MeshStandardMaterial( {
 	    roughness: 0.7,
@@ -199,7 +198,7 @@
 	var direction = 1;
 	var amount = 1;
 
-	async function init$2 ( camera, controls ) {
+	function init$2 ( camera, controls ) {
 
 	  _camera = camera;
 	  _controls = controls;
@@ -352,6 +351,8 @@
 	  }, false);
 
 	  body.classList.remove("hid");
+
+		changeQuality$1( 1 );
 	}
 
 	function changeQuality$1( val ) {
@@ -444,7 +445,7 @@
 	var undef$3;
 	var mesh$1 = undef$3;
 
-	async function init$3() {
+	function init$3() {
 		mesh$1 = new THREE.Object3D();
 		mesh$1.position.set(0, 190, 0);
 
@@ -479,7 +480,7 @@
 	var raycaster = new THREE.Raycaster();
 	var plane3d = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ) );
 
-	async function init$4( camera ) {
+	function init$4( camera ) {
 	  _camera$1 = camera;
 	}
 
@@ -821,7 +822,7 @@ void main() {
 	var randomTexture;
 	var defaultPosition;
 
-	async function init$5( renderer, camera ) {
+	function init$5( renderer, camera ) {
 
 		init$4( camera );
 
@@ -1278,7 +1279,7 @@ void main () {
 	var TEXTURE_HEIGHT$1;
 	var AMOUNT$1;
 
-	async function init$6( camera ) {
+	function init$6( camera ) {
 
 		_camera$3 = camera;
 		meshes = [];
@@ -1435,7 +1436,7 @@ void main () {
 	var stPos = new THREE.Vector3( 0, 200, -0.1);
 	var isGPU = true;
 
-	async function start() {
+	function start() {
 
 		// init-renderer-block
 	  try {
@@ -1474,7 +1475,7 @@ void main () {
 	  controls.update();
 
 	  // initialization-block
-		await load();
+		load();
 
 		var gl = renderer.getContext();
 		var precision = 'lowp';
@@ -1493,37 +1494,32 @@ void main () {
 
 	}
 
-	async function load() {
-
-		await init( renderer, scene, camera, window.innerWidth, window.innerHeight );
-
-		await init$3();
-		await init$1();
-
-		await init$5( renderer, camera );
-		await init$6( camera );
-
-		scene.add( mesh$1 );
-		scene.add( mesh );
+	function load() {
+		init( renderer, scene, camera, window.innerWidth, window.innerHeight );
+		init$3();
+		init$1();
+		init$5( renderer, camera );
+		init$6( camera );
 
 		for ( var i = 0; i < discrete; i++ ) {
 			scene.add( meshes[i] );
 		}
 
-		await init$2( camera, controls );
+		scene.add( mesh$1 );
+		scene.add( mesh );
 
-		restart();
+		init$2( camera, controls );
 	}
 
-	async function restart() {
+	function restart() {
 
 	  for ( var i = 0; i < discrete; i++ ) {
 	    scene.remove( meshes[i] );
 	  }
 
 	  update( 'restart', false );
-	  await init$5( renderer, camera );
-	  await init$6( camera );
+	  init$5( renderer, camera );
+	  init$6( camera );
 
 	  for ( var i = 0; i < discrete; i++ ) {
 	    scene.add( meshes[i] );
