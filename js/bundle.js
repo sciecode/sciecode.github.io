@@ -1498,9 +1498,9 @@ void main () {
 		}
 
 		update( 'precision', precision );
-		update( 'restart', true );
 
-	  requestAnimationFrame(update$6); // start
+		setInterval( function(){ requestAnimationFrame( update$6 ); }, 1000); // start
+		
 	}
 
 	function restart() {
@@ -1542,7 +1542,7 @@ void main () {
 	  camera.updateProjectionMatrix();
 	  renderer.setSize( w, h );
 	  setSize( w, h );
-		
+
 	};
 
 	start();

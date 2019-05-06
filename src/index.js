@@ -80,9 +80,9 @@ function start() {
 	}
 
 	settings.update( 'precision', precision );
-	settings.update( 'restart', true );
 
-  requestAnimationFrame(update); // start
+	setInterval( function(){ requestAnimationFrame( update ); }, 1000); // start
+	
 }
 
 function restart() {
@@ -124,7 +124,7 @@ window.onresize = function () {
   camera.updateProjectionMatrix();
   renderer.setSize( w, h );
   postprocessing.setSize( w, h );
-	
+
 };
 
 start();
