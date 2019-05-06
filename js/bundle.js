@@ -356,10 +356,10 @@
 	  body.classList.remove("hid");
 
 		if ( !options.mobile ) {
-			changeQuality$1( 1 );
+			qualities[1].click();
 		}
 		else {
-			changeQuality$1( 0 );
+			qualities[0].click();
 		}
 	}
 

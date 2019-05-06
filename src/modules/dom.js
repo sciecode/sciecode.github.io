@@ -201,10 +201,10 @@ function init ( camera, controls ) {
   body.classList.remove("hid");
 
 	if ( !settings.options.mobile ) {
-		changeQuality( 1 );
+		qualities[1].click();
 	}
 	else {
-		changeQuality( 0 );
+		qualities[0].click();
 	}
 }
 
