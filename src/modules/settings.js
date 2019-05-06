@@ -11,7 +11,8 @@ var options = {
 	motionBlur: true,
 	useShadow: false,
 	sizeRatio: 1.35,
-	restart: false
+	restart: false,
+	precision: "lowp"
 }
 
 function reset() {

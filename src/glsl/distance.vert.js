@@ -1,5 +1,4 @@
 export default /* glsl */`
-precision highp float;
 
 uniform sampler2D texturePosition;
 

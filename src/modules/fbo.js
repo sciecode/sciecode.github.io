@@ -57,21 +57,23 @@ function init( renderer, camera ) {
 	randomTexture = _createRandomTexture();
 	defaultPosition = _createDefaultPositionTexture();
 
-	_copyShader = new THREE.RawShaderMaterial({
+	_copyShader = new THREE.ShaderMaterial({
 		uniforms: {
 			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 			texture: { type: 't', value: undef }
 		},
+		precision: settings.options.precision,
 		vertexShader: shaderParse( quad_vert ),
 		fragmentShader: shaderParse( through_frag ),
 	});
 
-	_positionShader = new THREE.RawShaderMaterial({
+	_positionShader = new THREE.ShaderMaterial({
 		uniforms: {
 			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 			texturePosition: { type: 't', value: undef },
 			textureVelocity: { type: 't', value: undef }
 		},
+		precision: settings.options.precision,
 		vertexShader: shaderParse( quad_vert ),
 		fragmentShader: shaderParse( position_frag ),
 		blending: THREE.NoBlending,
@@ -81,7 +83,7 @@ function init( renderer, camera ) {
 		depthTest: false
 	});
 
-	_velocityShader = new THREE.RawShaderMaterial({
+	_velocityShader = new THREE.ShaderMaterial({
 		uniforms: {
 			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 			textureRandom: { type: 't', value: randomTexture.texture },
@@ -97,6 +99,7 @@ function init( renderer, camera ) {
 			dim: { type: 'f', value: dim },
 			time: { type: 'f', value: 0 },
 		},
+		precision: settings.options.precision,
 		vertexShader: shaderParse( quad_vert ),
 		fragmentShader: shaderParse( velocity_frag ),
 		blending: THREE.NoBlending,
@@ -114,7 +117,7 @@ function init( renderer, camera ) {
 		minFilter: THREE.NearestFilter,
 		magFilter: THREE.NearestFilter,
 		format: THREE.RGBAFormat,
-		type: THREE.FloatType,
+		type: ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) ? THREE.HalfFloatType : THREE.FloatType,
 		depthTest: false,
 		depthBuffer: false,
 		stencilBuffer: false
@@ -130,7 +133,7 @@ function init( renderer, camera ) {
 		minFilter: THREE.NearestFilter,
 		magFilter: THREE.NearestFilter,
 		format: THREE.RGBAFormat,
-		type: THREE.FloatType,
+		type: ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) ? THREE.HalfFloatType : THREE.FloatType,
 		depthTest: false,
 		depthWrite: false,
 		depthBuffer: false,

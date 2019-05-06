@@ -14,7 +14,8 @@
 		motionBlur: true,
 		useShadow: false,
 		sizeRatio: 1.35,
-		restart: false
+		restart: false,
+		precision: "lowp"
 	};
 
 	function changeQuality( val ) {
@@ -605,9 +606,6 @@
 	}
 
 	var quad_vert = /* glsl */`
-precision highp float;
-
-attribute vec3 position;
 
 void main() {
     gl_Position = vec4( position, 1.0 );
@@ -615,7 +613,6 @@ void main() {
 `;
 
 	var through_frag = /* glsl */`
-precision highp float;
 
 uniform vec2 resolution;
 uniform sampler2D texture;
@@ -627,7 +624,6 @@ void main() {
 `;
 
 	var position_frag = /* glsl */`
-precision highp float;
 
 uniform vec2 resolution;
 uniform sampler2D texturePosition;
@@ -648,7 +644,6 @@ void main() {
 `;
 
 	var velocity_frag = /* glsl */`
-precision highp float;
 
 uniform vec2 resolution;
 uniform sampler2D textureRandom;
@@ -840,21 +835,23 @@ void main() {
 		randomTexture = _createRandomTexture();
 		defaultPosition = _createDefaultPositionTexture();
 
-		_copyShader = new THREE.RawShaderMaterial({
+		_copyShader = new THREE.ShaderMaterial({
 			uniforms: {
 				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texture: { type: 't', value: undef$4 }
 			},
+			precision: options.precision,
 			vertexShader: shaderParse( quad_vert ),
 			fragmentShader: shaderParse( through_frag ),
 		});
 
-		_positionShader = new THREE.RawShaderMaterial({
+		_positionShader = new THREE.ShaderMaterial({
 			uniforms: {
 				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texturePosition: { type: 't', value: undef$4 },
 				textureVelocity: { type: 't', value: undef$4 }
 			},
+			precision: options.precision,
 			vertexShader: shaderParse( quad_vert ),
 			fragmentShader: shaderParse( position_frag ),
 			blending: THREE.NoBlending,
@@ -864,7 +861,7 @@ void main() {
 			depthTest: false
 		});
 
-		_velocityShader = new THREE.RawShaderMaterial({
+		_velocityShader = new THREE.ShaderMaterial({
 			uniforms: {
 				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				textureRandom: { type: 't', value: randomTexture.texture },
@@ -880,6 +877,7 @@ void main() {
 				dim: { type: 'f', value: dim },
 				time: { type: 'f', value: 0 },
 			},
+			precision: options.precision,
 			vertexShader: shaderParse( quad_vert ),
 			fragmentShader: shaderParse( velocity_frag ),
 			blending: THREE.NoBlending,
@@ -897,7 +895,7 @@ void main() {
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
 			format: THREE.RGBAFormat,
-			type: THREE.FloatType,
+			type: ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) ? THREE.HalfFloatType : THREE.FloatType,
 			depthTest: false,
 			depthBuffer: false,
 			stencilBuffer: false
@@ -913,7 +911,7 @@ void main() {
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
 			format: THREE.RGBAFormat,
-			type: THREE.FloatType,
+			type: ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) ? THREE.HalfFloatType : THREE.FloatType,
 			depthTest: false,
 			depthWrite: false,
 			depthBuffer: false,
@@ -1056,7 +1054,6 @@ void main() {
 	}
 
 	var render_vert = /* glsl */`
-precision highp float;
 
 uniform sampler2D textureDefaultPosition;
 uniform sampler2D texturePosition;
@@ -1135,7 +1132,6 @@ void main() {
 `;
 
 	var render_frag = /* glsl */`
-precision highp float;
 
 float random (vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233)))*43758.5453123);}
 float noise (in vec2 st) {
@@ -1211,7 +1207,6 @@ void main() {
 `;
 
 	var distance_vert = /* glsl */`
-precision highp float;
 
 uniform sampler2D texturePosition;
 
@@ -1234,7 +1229,6 @@ void main() {
 `;
 
 	var distance_frag = /* glsl */`
-precision highp float;
 
 uniform vec3 lightPos;
 varying vec4 vWorldPosition;
@@ -1338,6 +1332,7 @@ void main () {
 			defines: {
 				USE_SHADOW: options.useShadow
 			},
+			precision: options.precision,
 			vertexShader: shaderParse( render_vert ),
 			fragmentShader: shaderParse( render_frag ),
 			precision: "highp",
@@ -1362,6 +1357,7 @@ void main () {
 				lightPos: { type: 'v3', value: mesh$1.position },
 				texturePosition: { type: 't', value: null }
 			},
+			precision: options.precision,
 			vertexShader: shaderParse( distance_vert ),
 			fragmentShader: shaderParse( distance_frag ),
 			depthTest: true,
@@ -1488,6 +1484,21 @@ void main () {
 	  }
 	  scene.add( mesh$1 );
 	  scene.add( mesh );
+
+		var gl = renderer.getContext();
+		var precision = 'lowp';
+		if ( gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.MEDIUM_FLOAT ).precision > 0 &&
+				     gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT ).precision > 0 ) {
+			precision = 'mediump';
+		}
+		if ( gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.HIGH_FLOAT ).precision > 0 &&
+					gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.HIGH_FLOAT ).precision > 0 ) {
+			precision = 'highp';
+		}
+
+		update( 'precision', precision );
+
+		console.log( options.precision );
 
 	  requestAnimationFrame(update$6); // start
 	}

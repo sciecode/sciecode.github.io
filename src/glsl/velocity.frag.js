@@ -1,5 +1,4 @@
 export default /* glsl */`
-precision highp float;
 
 uniform vec2 resolution;
 uniform sampler2D textureRandom;

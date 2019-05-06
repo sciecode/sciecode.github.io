@@ -87,6 +87,7 @@ function init( camera ) {
 		defines: {
 			USE_SHADOW: settings.options.useShadow
 		},
+		precision: settings.options.precision,
 		vertexShader: shaderParse( render_vert ),
 		fragmentShader: shaderParse( render_frag ),
 		precision: "highp",
@@ -111,6 +112,7 @@ function init( camera ) {
 			lightPos: { type: 'v3', value: lights.mesh.position },
 			texturePosition: { type: 't', value: null }
 		},
+		precision: settings.options.precision,
 		vertexShader: shaderParse( distance_vert ),
 		fragmentShader: shaderParse( distance_frag ),
 		depthTest: true,
