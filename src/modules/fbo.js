@@ -117,7 +117,7 @@ function init( renderer, camera ) {
 		minFilter: THREE.NearestFilter,
 		magFilter: THREE.NearestFilter,
 		format: THREE.RGBAFormat,
-		type: ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) ? THREE.HalfFloatType : THREE.FloatType,
+		type: settings.options.mobile ? THREE.HalfFloatType : THREE.FloatType,
 		depthTest: false,
 		depthBuffer: false,
 		stencilBuffer: false
@@ -133,7 +133,7 @@ function init( renderer, camera ) {
 		minFilter: THREE.NearestFilter,
 		magFilter: THREE.NearestFilter,
 		format: THREE.RGBAFormat,
-		type: ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) ? THREE.HalfFloatType : THREE.FloatType,
+		type: settings.options.mobile ? THREE.HalfFloatType : THREE.FloatType,
 		depthTest: false,
 		depthWrite: false,
 		depthBuffer: false,

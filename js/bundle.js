@@ -2,6 +2,8 @@
 	'use strict';
 
 	// define-block
+	var md = new MobileDetect(window.navigator.userAgent);
+
 	var options = {
 		radius: 30,
 		viscosity: 0.12,
@@ -15,7 +17,8 @@
 		useShadow: false,
 		sizeRatio: 1.35,
 		restart: false,
-		precision: "lowp"
+		mobile: ( md.phone() == null ) ? false : true,
+		precision: "lowp",
 	};
 
 	function changeQuality( val ) {
@@ -898,7 +901,7 @@ void main() {
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
 			format: THREE.RGBAFormat,
-			type: ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) ? THREE.HalfFloatType : THREE.FloatType,
+			type: options.mobile ? THREE.HalfFloatType : THREE.FloatType,
 			depthTest: false,
 			depthBuffer: false,
 			stencilBuffer: false
@@ -914,7 +917,7 @@ void main() {
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
 			format: THREE.RGBAFormat,
-			type: ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) ? THREE.HalfFloatType : THREE.FloatType,
+			type: options.mobile ? THREE.HalfFloatType : THREE.FloatType,
 			depthTest: false,
 			depthWrite: false,
 			depthBuffer: false,

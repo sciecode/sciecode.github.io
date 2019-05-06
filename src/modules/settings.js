@@ -1,4 +1,6 @@
 // define-block
+var md = new MobileDetect(window.navigator.userAgent);
+
 var options = {
 	radius: 30,
 	viscosity: 0.12,
@@ -12,7 +14,8 @@ var options = {
 	useShadow: false,
 	sizeRatio: 1.35,
 	restart: false,
-	precision: "lowp"
+	mobile: ( md.phone() == null ) ? false : true,
+	precision: "lowp",
 }
 
 function reset() {
