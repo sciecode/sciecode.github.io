@@ -441,66 +441,6 @@ body.hid #brand {
   /* color: white; */
 }
 
-/* #quality ul {
-list-style: none;
-margin: 0px;
-padding: 0px;
-box-sizing: border-box;
-}
-
-#quality ul li {
-float: left;
-width: calc(100% / 4);
-list-style: none;
-color: #949494;
-margin: 0px;
-padding: 0px;
-overflow: hidden;
-border: 1px solid rgba(148, 148, 148, 0.05);
-border-left: none;
-transition: 0.6s ease;
-}
-
-#quality ul li:hover {
-background-color: rgba(30,30,30,1);
-}
-
-#quality li:first-child {
-border-left: 1px solid rgba(148, 148, 148, 0.05);
-border-top-left-radius: 5px;
-border-bottom-left-radius: 5px;
-}
-
-#quality li:last-child {
-border-top-right-radius: 5px;
-border-bottom-right-radius: 5px;
-}
-
-#quality .qualities {
-display: block;
-font-family: 'Open Sans', sans-serif;
-font-weight: 600; font-size: 12.5px;
-text-decoration: none; color: #949494;
-line-height: 25px; text-align: center;
-text-rendering: optimizeLegibility;
--webkit-font-smoothing: subpixel-antialiased;
-text-shadow: 1px 1px #000000;
-transition: 0.8s ease;
-background-color: rgba(0,0,0,0.4);
-}
-
-#quality .qualities:hover {
-color: #e4e5e6;
-}
-
-#quality .qualities.selected {
-color: #e4e5e6;
-}
-
-#quality .qualities.recommended {
-color: #dde276;
-} */
-
 /* === [FOOTER] === */
 
 #footer {
@@ -1164,4 +1104,68 @@ input[type=range] {
   transition: opacity 0.4s linear 0.6s, transform 0.6s ease 0.6s;
   transform: scale(0);
   opacity: 0;
+}
+
+@media screen and (max-width: 700px) {
+  #brand {
+		font-size: 30px;
+	}
+
+	.brandPos {
+		color: #f3f4f6;
+		left: calc(50vw - 70px);
+		top: 3vh;
+		transform-origin: center;
+		transform: scale(1.2);
+	}
+
+	.brandInit {
+	  top: calc(35vh - 75px);
+	  left: calc(50vw - 70px);
+	  transform: scale(2.1);
+	}
+
+	#experience {
+		top: 32vh;
+	}
+
+	#intro {
+		width: 100%;
+		top: 40vh;
+		left: 0;
+		padding: 2vw;
+	}
+
+	#st_btn {
+		top: 74vh;
+	}
+
+	#st_notice {
+		width: 100%;
+		top: 43vh;
+		left: 0;
+		padding: 2vw;
+	}
+
+	#st_steps {
+		width: 100%;
+		top: 56vh;
+		left: 0;
+		padding: 2vw;
+	}
+
+	#quality {
+		top: 8vh;
+		left: 0;
+		width: 100%;
+
+	}
+
+	#settings {
+		top: 13vh;
+		left: 2vw;
+		width: 96vw;
+	}
+
+
 }
