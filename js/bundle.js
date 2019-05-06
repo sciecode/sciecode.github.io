@@ -1515,15 +1515,15 @@ void main () {
 		restart();
 	}
 
-	function restart() {
+	async function restart() {
 
 	  for ( var i = 0; i < discrete; i++ ) {
 	    scene.remove( meshes[i] );
 	  }
 
 	  update( 'restart', false );
-	  init$5( renderer, camera );
-	  init$6( camera );
+	  await init$5( renderer, camera );
+	  await init$6( camera );
 
 	  for ( var i = 0; i < discrete; i++ ) {
 	    scene.add( meshes[i] );

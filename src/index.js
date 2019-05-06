@@ -95,15 +95,15 @@ async function load() {
 	restart();
 }
 
-function restart() {
+async function restart() {
 
   for ( var i = 0; i < particles.discrete; i++ ) {
     scene.remove( particles.meshes[i] );
   }
 
   settings.update( 'restart', false );
-  fbo.init( renderer, camera );
-  particles.init( camera );
+  await fbo.init( renderer, camera );
+  await particles.init( camera );
 
   for ( var i = 0; i < particles.discrete; i++ ) {
     scene.add( particles.meshes[i] );
