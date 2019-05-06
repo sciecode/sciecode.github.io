@@ -57,7 +57,9 @@ function changeQuality( val ) {
 		options.TEXTURE_HEIGHT = 1024;
 		options.sizeRatio = 1.0;
 	}
+
 	options.restart = true;
+	
 }
 
 function update( prop, val ) {

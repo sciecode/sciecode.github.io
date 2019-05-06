@@ -47,7 +47,9 @@
 			options.TEXTURE_HEIGHT = 1024;
 			options.sizeRatio = 1.0;
 		}
+
 		options.restart = true;
+		
 	}
 
 	function update( prop, val ) {
@@ -1492,20 +1494,25 @@ void main () {
 	}
 
 	async function load() {
+
 		await init( renderer, scene, camera, window.innerWidth, window.innerHeight );
+
 		await init$3();
 		await init$1();
+
 		await init$5( renderer, camera );
 		await init$6( camera );
+
+		scene.add( mesh$1 );
+		scene.add( mesh );
 
 		for ( var i = 0; i < discrete; i++ ) {
 			scene.add( meshes[i] );
 		}
 
-		scene.add( mesh$1 );
-		scene.add( mesh );
-
 		await init$2( camera, controls );
+
+		restart();
 	}
 
 	function restart() {

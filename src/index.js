@@ -74,20 +74,25 @@ async function start() {
 }
 
 async function load() {
+
 	await postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
+
 	await lights.init();
 	await floor.init();
+
 	await fbo.init( renderer, camera );
 	await particles.init( camera );
+
+	scene.add( lights.mesh );
+	scene.add( floor.mesh );
 
 	for ( var i = 0; i < particles.discrete; i++ ) {
 		scene.add( particles.meshes[i] );
 	}
 
-	scene.add( lights.mesh );
-	scene.add( floor.mesh );
-
 	await dom.init( camera, controls );
+
+	restart();
 }
 
 function restart() {
