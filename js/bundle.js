@@ -1439,8 +1439,6 @@ void main () {
 
 	function start() {
 
-		mobileConsole.init();
-
 		// init-renderer-block
 	  try {
 	    renderer = new THREE.WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
