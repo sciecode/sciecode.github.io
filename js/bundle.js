@@ -536,6 +536,10 @@
 
 	function init$4( camera ) {
 	  _camera$1 = camera;
+
+		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+		document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+		document.addEventListener( 'touchmove', onDocumentTouchMove, false );
 	}
 
 	function update$3(dt) {
@@ -551,25 +555,24 @@
 	  speed.y = 0;
 	}
 
-	window.onmousemove = function (evt) {
+	function onDocumentMouseMove( evt ) {
 	  mouse.x = (evt.pageX / window.innerWidth) * 2 - 1;
 	  mouse.y = -(evt.pageY / window.innerHeight) * 2 + 1;
-	};
+	}
 
-	// window.ontouchstart = function (evt) {
-	// 	if ( event.touches.length === 1 ) {
-	// 		event.preventDefault();
-	// 		mouse.x = (evt.touches[0].pageX / window.innerWidth) * 2 - 1;
-	// 		mouse.y = -(evt.touches[0].pageY / window.innerHeight) * 2 + 1;
-	// 	}
-	// }
-
-	window.ontouchmove = function (evt) {
+	function onDocumentTouchStart( evt ) {
 		if ( evt.touches.length === 1 ) {
 			mouse.x = (evt.touches[0].pageX / window.innerWidth) * 2 - 1;
 			mouse.y = -(evt.touches[0].pageY / window.innerHeight) * 2 + 1;
 		}
-	};
+	}
+
+	function onDocumentTouchMove( evt ) {
+		if ( evt.touches.length === 1 ) {
+			mouse.x = (evt.touches[0].pageX / window.innerWidth) * 2 - 1;
+			mouse.y = -(evt.touches[0].pageY / window.innerHeight) * 2 + 1;
+		}
+	}
 
 	function replaceThreeChunkFn(a, b) {
 	  return THREE.ShaderChunk[b] + '\n';
