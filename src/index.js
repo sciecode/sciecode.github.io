@@ -64,6 +64,7 @@ function start() {
   for ( var i = 0; i < particles.discrete; i++ ) {
     scene.add( particles.meshes[i] );
   }
+
   scene.add( lights.mesh );
   scene.add( floor.mesh );
 
@@ -79,24 +80,31 @@ function start() {
 	}
 
 	settings.update( 'precision', precision );
+	settings.update( 'restart', true );
 
   requestAnimationFrame(update); // start
 }
 
 function restart() {
+
   for ( var i = 0; i < particles.discrete; i++ ) {
     scene.remove( particles.meshes[i] );
   }
-  settings.update('restart', false);
+
+  settings.update( 'restart', false );
   fbo.init( renderer, camera );
   particles.init( camera );
+
   for ( var i = 0; i < particles.discrete; i++ ) {
     scene.add( particles.meshes[i] );
   }
+
 }
 
 function update() {
+
   if ( settings.options.restart ) restart();
+
   requestAnimationFrame(update);
 
   dom.update();
@@ -108,6 +116,7 @@ function update() {
 }
 
 window.onresize = function () {
+
   if (!isGPU) return;
   w = window.innerWidth;
   h = window.innerHeight;
@@ -115,6 +124,7 @@ window.onresize = function () {
   camera.updateProjectionMatrix();
   renderer.setSize( w, h );
   postprocessing.setSize( w, h );
+	
 };
 
 start();

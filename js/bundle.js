@@ -1482,6 +1482,7 @@ void main () {
 	  for ( var i = 0; i < discrete; i++ ) {
 	    scene.add( meshes[i] );
 	  }
+
 	  scene.add( mesh$1 );
 	  scene.add( mesh );
 
@@ -1497,24 +1498,31 @@ void main () {
 		}
 
 		update( 'precision', precision );
+		update( 'restart', true );
 
 	  requestAnimationFrame(update$6); // start
 	}
 
 	function restart() {
+
 	  for ( var i = 0; i < discrete; i++ ) {
 	    scene.remove( meshes[i] );
 	  }
-	  update('restart', false);
+
+	  update( 'restart', false );
 	  init$5( renderer, camera );
 	  init$6( camera );
+
 	  for ( var i = 0; i < discrete; i++ ) {
 	    scene.add( meshes[i] );
 	  }
+
 	}
 
 	function update$6() {
+
 	  if ( options.restart ) restart();
+
 	  requestAnimationFrame(update$6);
 
 	  update$2();
@@ -1526,6 +1534,7 @@ void main () {
 	}
 
 	window.onresize = function () {
+
 	  if (!isGPU) return;
 	  w = window.innerWidth;
 	  h = window.innerHeight;
@@ -1533,6 +1542,7 @@ void main () {
 	  camera.updateProjectionMatrix();
 	  renderer.setSize( w, h );
 	  setSize( w, h );
+		
 	};
 
 	start();
