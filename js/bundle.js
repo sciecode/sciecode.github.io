@@ -1498,8 +1498,6 @@ void main () {
 
 		update( 'precision', precision );
 
-		console.log( options.precision );
-
 	  requestAnimationFrame(update$6); // start
 	}
 
