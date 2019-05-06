@@ -44,7 +44,7 @@ var ball = 0;
 var direction = 1;
 var amount = 1;
 
-function init ( camera, controls ) {
+async function init ( camera, controls ) {
 
   _camera = camera;
   _controls = controls;

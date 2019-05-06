@@ -64,7 +64,7 @@
 	var blendPass = undef;
 	var composer = undef;
 
-	function init( renderer, scene, camera, width, height ) {
+	async function init( renderer, scene, camera, width, height ) {
 		composer = new THREE.EffectComposer( renderer );
 		composer.setSize( width, height );
 
@@ -117,7 +117,7 @@
 	var undef$1;
 	var mesh = undef$1;
 
-	function init$1() {
+	async function init$1() {
 	  var geometry = new THREE.PlaneGeometry(4000, 4000, 10, 10);
 	  var _material = new THREE.MeshStandardMaterial( {
 	    roughness: 0.7,
@@ -197,7 +197,7 @@
 	var direction = 1;
 	var amount = 1;
 
-	function init$2 ( camera, controls ) {
+	async function init$2 ( camera, controls ) {
 
 	  _camera = camera;
 	  _controls = controls;
@@ -442,7 +442,7 @@
 	var undef$3;
 	var mesh$1 = undef$3;
 
-	function init$3() {
+	async function init$3() {
 		mesh$1 = new THREE.Object3D();
 		mesh$1.position.set(0, 190, 0);
 
@@ -477,7 +477,7 @@
 	var raycaster = new THREE.Raycaster();
 	var plane3d = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ) );
 
-	function init$4( camera ) {
+	async function init$4( camera ) {
 	  _camera$1 = camera;
 	}
 
@@ -819,7 +819,7 @@ void main() {
 	var randomTexture;
 	var defaultPosition;
 
-	function init$5( renderer, camera ) {
+	async function init$5( renderer, camera ) {
 
 		init$4( camera );
 
@@ -1276,7 +1276,7 @@ void main () {
 	var TEXTURE_HEIGHT$1;
 	var AMOUNT$1;
 
-	function init$6( camera ) {
+	async function init$6( camera ) {
 
 		_camera$3 = camera;
 		meshes = [];
@@ -1472,19 +1472,7 @@ void main () {
 	  controls.update();
 
 	  // initialization-block
-	  await init( renderer, scene, camera, window.innerWidth, window.innerHeight );
-	  await init$2( camera, controls );
-	  await init$3();
-	  await init$1();
-	  await init$5( renderer, camera );
-	  await init$6( camera );
-
-	  for ( var i = 0; i < discrete; i++ ) {
-	    await scene.add( meshes[i] );
-	  }
-
-	  await scene.add( mesh$1 );
-	  await scene.add( mesh );
+		await load();
 
 		var gl = renderer.getContext();
 		var precision = 'lowp';
@@ -1503,18 +1491,35 @@ void main () {
 
 	}
 
-	async function restart() {
+	async function load() {
+		await init( renderer, scene, camera, window.innerWidth, window.innerHeight );
+		await init$3();
+		await init$1();
+		await init$5( renderer, camera );
+		await init$6( camera );
+
+		for ( var i = 0; i < discrete; i++ ) {
+			scene.add( meshes[i] );
+		}
+
+		scene.add( mesh$1 );
+		scene.add( mesh );
+
+		await init$2( camera, controls );
+	}
+
+	function restart() {
 
 	  for ( var i = 0; i < discrete; i++ ) {
-	    await scene.remove( meshes[i] );
+	    scene.remove( meshes[i] );
 	  }
 
 	  update( 'restart', false );
-	  await init$5( renderer, camera );
-	  await init$6( camera );
+	  init$5( renderer, camera );
+	  init$6( camera );
 
 	  for ( var i = 0; i < discrete; i++ ) {
-	    await scene.add( meshes[i] );
+	    scene.add( meshes[i] );
 	  }
 
 	}

@@ -41,7 +41,7 @@ var life = 0;
 var randomTexture;
 var defaultPosition;
 
-function init( renderer, camera ) {
+async function init( renderer, camera ) {
 
 	mouse.init( camera );
 

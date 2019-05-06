@@ -54,19 +54,7 @@ async function start() {
   controls.update();
 
   // initialization-block
-  await postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
-  await dom.init( camera, controls );
-  await lights.init();
-  await floor.init();
-  await fbo.init( renderer, camera );
-  await particles.init( camera );
-
-  for ( var i = 0; i < particles.discrete; i++ ) {
-    await scene.add( particles.meshes[i] );
-  }
-
-  await scene.add( lights.mesh );
-  await scene.add( floor.mesh );
+	await load();
 
 	var gl = renderer.getContext();
 	var precision = 'lowp';
@@ -85,18 +73,35 @@ async function start() {
 
 }
 
-async function restart() {
+async function load() {
+	await postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
+	await lights.init();
+	await floor.init();
+	await fbo.init( renderer, camera );
+	await particles.init( camera );
+
+	for ( var i = 0; i < particles.discrete; i++ ) {
+		scene.add( particles.meshes[i] );
+	}
+
+	scene.add( lights.mesh );
+	scene.add( floor.mesh );
+
+	await dom.init( camera, controls );
+}
+
+function restart() {
 
   for ( var i = 0; i < particles.discrete; i++ ) {
-    await scene.remove( particles.meshes[i] );
+    scene.remove( particles.meshes[i] );
   }
 
   settings.update( 'restart', false );
-  await fbo.init( renderer, camera );
-  await particles.init( camera );
+  fbo.init( renderer, camera );
+  particles.init( camera );
 
   for ( var i = 0; i < particles.discrete; i++ ) {
-    await scene.add( particles.meshes[i] );
+    scene.add( particles.meshes[i] );
   }
 
 }
