@@ -824,7 +824,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 				break;
 
-				case 1:	// two-fingered touch: dolly-pan
+				case 4:	// two-fingered touch: dolly-pan
 
 				if ( scope.enableZoom === false && scope.enablePan === false ) return;
 
@@ -866,7 +866,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 				break;
 
-				case 1: // two-fingered touch: dolly-pan
+				case 4: // two-fingered touch: dolly-pan
 
 				if ( scope.enableZoom === false && scope.enablePan === false ) return;
 				if ( state !== STATE.TOUCH_DOLLY_PAN ) return; // is this needed?
