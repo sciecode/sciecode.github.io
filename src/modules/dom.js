@@ -290,6 +290,15 @@ function startUI() {
 }
 
 function showError() {
+	var videocontainer = document.getElementById("video-container");
+	var video = document.createElement("VIDEO");
+	video.src = './media/loop.mp4';
+	video.loop = true;
+	video.autoplay = true;
+	video.muted = true;
+
+	videocontainer.appendChild( video );
+
 	var intro = document.getElementById("intro");
 	var btn = document.getElementById("st_btn");
 	var notice = document.getElementById("st_notice");

@@ -2,9 +2,9 @@
   "name": "oceanGL",
   "version": "1.2.1",
   "description": "GPGPU elastic-viscuous particles WebGL simulation",
-  "main": "src/index.js",
+  "main": "src/oceangl.js",
   "scripts": {
-    "build": "rollup src/index.js --file js/bundle.js --format iife --name \"oceanGL\""
+    "build": "rollup src/oceangl.js --file js/bundle.js --format iife --name \"oceanGL\""
   },
   "author": "sciecode",
   "license": "MIT",

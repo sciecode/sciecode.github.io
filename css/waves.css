@@ -18,13 +18,25 @@
 body {
   margin: 0;
   overflow: hidden;
-  background-color: #0d121b;
+  background-color: #090d13;
   user-select: none;
 }
 
 canvas {
   width: 100%;
-  height: 100%
+  height: 100%;
+}
+
+#video-container video {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	min-width: 100%;
+	min-height: 100%;
+	width: auto;
+	height: 100%;
+	z-index: -100;
+	transform: translateX(-50%) translateY(-50%);
 }
 
 .hidden {
@@ -157,11 +169,6 @@ body.hid #brand {
   color: #f3f4f6;
 }
 
-#st_notice.error {
-  font-weight: 700;
-  color: #c14343;
-}
-
 #st_notice {
   position: fixed;
   font-size: 17.5px;
@@ -181,7 +188,7 @@ body.hid #brand {
   font-weight: 400;
   text-align: center;
   /* text-transform: uppercase; */
-  color: #f3f4f6;
+  /* color: #f3f4f6; */
 }
 
 #st_steps {
