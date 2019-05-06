@@ -565,8 +565,7 @@
 	// }
 
 	window.ontouchmove = function (evt) {
-		if ( event.touches.length === 1 ) {
-			event.preventDefault();
+		if ( evt.touches.length === 1 ) {
 			mouse.x = (evt.touches[0].pageX / window.innerWidth) * 2 - 1;
 			mouse.y = -(evt.touches[0].pageY / window.innerHeight) * 2 + 1;
 		}
