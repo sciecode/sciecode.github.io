@@ -15,7 +15,7 @@ var origin = new THREE.Vector3();
 var stPos = new THREE.Vector3( 0, 200, -0.1);
 var isGPU = true;
 
-function start() {
+async function start() {
 
 	// init-renderer-block
   try {
@@ -54,19 +54,19 @@ function start() {
   controls.update();
 
   // initialization-block
-  postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
-  dom.init( camera, controls );
-  lights.init();
-  floor.init();
-  fbo.init( renderer, camera );
-  particles.init( camera );
+  await postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
+  await dom.init( camera, controls );
+  await lights.init();
+  await floor.init();
+  await fbo.init( renderer, camera );
+  await particles.init( camera );
 
   for ( var i = 0; i < particles.discrete; i++ ) {
-    scene.add( particles.meshes[i] );
+    await scene.add( particles.meshes[i] );
   }
 
-  scene.add( lights.mesh );
-  scene.add( floor.mesh );
+  await scene.add( lights.mesh );
+  await scene.add( floor.mesh );
 
 	var gl = renderer.getContext();
 	var precision = 'lowp';
@@ -85,18 +85,18 @@ function start() {
 
 }
 
-function restart() {
+async function restart() {
 
   for ( var i = 0; i < particles.discrete; i++ ) {
-    scene.remove( particles.meshes[i] );
+    await scene.remove( particles.meshes[i] );
   }
 
   settings.update( 'restart', false );
-  fbo.init( renderer, camera );
-  particles.init( camera );
+  await fbo.init( renderer, camera );
+  await particles.init( camera );
 
   for ( var i = 0; i < particles.discrete; i++ ) {
-    scene.add( particles.meshes[i] );
+    await scene.add( particles.meshes[i] );
   }
 
 }

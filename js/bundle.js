@@ -1433,7 +1433,7 @@ void main () {
 	var stPos = new THREE.Vector3( 0, 200, -0.1);
 	var isGPU = true;
 
-	function start() {
+	async function start() {
 
 		// init-renderer-block
 	  try {
@@ -1472,19 +1472,19 @@ void main () {
 	  controls.update();
 
 	  // initialization-block
-	  init( renderer, scene, camera, window.innerWidth, window.innerHeight );
-	  init$2( camera, controls );
-	  init$3();
-	  init$1();
-	  init$5( renderer, camera );
-	  init$6( camera );
+	  await init( renderer, scene, camera, window.innerWidth, window.innerHeight );
+	  await init$2( camera, controls );
+	  await init$3();
+	  await init$1();
+	  await init$5( renderer, camera );
+	  await init$6( camera );
 
 	  for ( var i = 0; i < discrete; i++ ) {
-	    scene.add( meshes[i] );
+	    await scene.add( meshes[i] );
 	  }
 
-	  scene.add( mesh$1 );
-	  scene.add( mesh );
+	  await scene.add( mesh$1 );
+	  await scene.add( mesh );
 
 		var gl = renderer.getContext();
 		var precision = 'lowp';
@@ -1503,18 +1503,18 @@ void main () {
 
 	}
 
-	function restart() {
+	async function restart() {
 
 	  for ( var i = 0; i < discrete; i++ ) {
-	    scene.remove( meshes[i] );
+	    await scene.remove( meshes[i] );
 	  }
 
 	  update( 'restart', false );
-	  init$5( renderer, camera );
-	  init$6( camera );
+	  await init$5( renderer, camera );
+	  await init$6( camera );
 
 	  for ( var i = 0; i < discrete; i++ ) {
-	    scene.add( meshes[i] );
+	    await scene.add( meshes[i] );
 	  }
 
 	}
