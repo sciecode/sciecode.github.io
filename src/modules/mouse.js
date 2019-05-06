@@ -31,4 +31,20 @@ window.onmousemove = function (evt) {
   mouse.y = -(evt.pageY / window.innerHeight) * 2 + 1;
 }
 
+window.ontouchstart = function (evt) {
+	if ( event.touches.length === 1 ) {
+		event.preventDefault();
+		mouse.x = (evt.touches[0].pageX / window.innerWidth) * 2 - 1;
+		mouse.y = -(evt.touches[0].pageY / window.innerHeight) * 2 + 1;
+	}
+}
+
+window.ontouchmove = function (evt) {
+	if ( event.touches.length === 1 ) {
+		event.preventDefault();
+		mouse.x = (evt.touches[0].pageX / window.innerWidth) * 2 - 1;
+		mouse.y = -(evt.touches[0].pageY / window.innerHeight) * 2 + 1;
+	}
+}
+
 export { position, prev, speed, init, update };

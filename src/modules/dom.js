@@ -93,6 +93,16 @@ function init ( camera, controls ) {
     radValue.innerHTML = this.value;
   }, false);
 
+	radSlider.addEventListener("touchmove", function(e) {
+    settings.update('radius', this.value);
+    inside = document.getElementById("ball_sphere_inside");
+    inside.style.transform = "scale("+ settings.options.radius/50; +")";
+    var radValue = document.getElementById("rad_value");
+    radValue.innerHTML = this.value;
+    radValue = document.getElementById("rad_title_value");
+    radValue.innerHTML = this.value;
+  }, false);
+
   visSlider.addEventListener("mousemove", function(e) {
     settings.update('viscosity', this.value/100);
     var visValue = document.getElementById("vis_value");
@@ -104,7 +114,26 @@ function init ( camera, controls ) {
     fluid_box.style.border = "2px solid rgba(78, 177, "+ (219 - 140*settings.options.viscosity/0.3 )+", 1)";
   }, false);
 
+	visSlider.addEventListener("touchmove", function(e) {
+		settings.update('viscosity', this.value/100);
+		var visValue = document.getElementById("vis_value");
+		visValue.innerHTML = this.value;
+		visValue = document.getElementById("vis_title_value");
+		visValue.innerHTML = this.value;
+		var fluid_box = document.getElementById("fluid_box");
+		fluid_box.style.background = "rgba(78, 177, "+ (219 - 140*settings.options.viscosity/0.3 )+","+ (0.2 + 0.2*settings.options.viscosity/0.3)  + ")";
+		fluid_box.style.border = "2px solid rgba(78, 177, "+ (219 - 140*settings.options.viscosity/0.3 )+", 1)";
+	}, false);
+
   elaSlider.addEventListener("mousemove", function(e) {
+    settings.update('elasticity', this.value/1000);
+    var elaValue = document.getElementById("ela_value");
+    elaValue.innerHTML = this.value;
+    elaValue = document.getElementById("ela_title_value");
+    elaValue.innerHTML = this.value;
+  }, false);
+
+	elaSlider.addEventListener("touchmove", function(e) {
     settings.update('elasticity', this.value/1000);
     var elaValue = document.getElementById("ela_value");
     elaValue.innerHTML = this.value;
@@ -122,6 +151,15 @@ function init ( camera, controls ) {
     col1.style.background = "#" + col.getHexString();
   }, false);
 
+	color1.addEventListener("touchmove", function(e) {
+		var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
+		floor.update();
+		settings.update('color1', "#" + col.getHexString() );
+		var col1 = document.getElementById("color1_value");
+		col1.style.background = "#" + col.getHexString();
+		col1 = document.getElementById("color1_box");
+		col1.style.background = "#" + col.getHexString();
+	}, false);
 
   color2.addEventListener("mousemove", function(e) {
     var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
@@ -131,6 +169,15 @@ function init ( camera, controls ) {
     col2 = document.getElementById("color2_box");
     col2.style.background = "#" + col.getHexString();
   }, false);
+
+	color2.addEventListener("touchmove", function(e) {
+		var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
+		settings.update('color2', "#" + col.getHexString() );
+		var col2 = document.getElementById("color2_value");
+		col2.style.background = "#" + col.getHexString();
+		col2 = document.getElementById("color2_box");
+		col2.style.background = "#" + col.getHexString();
+	}, false);
 
   stBtn.addEventListener("click", function(e) {
     startExperience();
