@@ -81,8 +81,8 @@ function start() {
 
 	settings.update( 'precision', precision );
 
-	setInterval( function(){ requestAnimationFrame( update ); }, 1000); // start
-	
+	requestAnimationFrame( update ); // start
+
 }
 
 function restart() {

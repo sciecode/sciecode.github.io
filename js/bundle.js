@@ -1499,8 +1499,8 @@ void main () {
 
 		update( 'precision', precision );
 
-		setInterval( function(){ requestAnimationFrame( update$6 ); }, 1000); // start
-		
+		requestAnimationFrame( update$6 ); // start
+
 	}
 
 	function restart() {
