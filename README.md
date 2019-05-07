@@ -1,4 +1,4 @@
-## oceanGL - [demo](https://sciecode.github.io/)
+## • [Atomize](https://sciecode.github.io/) • 
 
 This experiment was inspired by Edan Kwan's [The Spirit](http://edankwan.com/experiments/the-spirit/).
 

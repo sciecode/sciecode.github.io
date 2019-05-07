@@ -22,12 +22,12 @@ function start() {
     renderer = new THREE.WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
   }
   catch(err) {
-    console.error("OceanGL: Hardware Acceleration not enabled or GPU not available.");
+    console.error("• Atomize •: Hardware Acceleration not enabled or GPU not available.");
     isGPU = false;
   }
 
   if ( !isGPU || !WEBGL.isWebGLAvailable() ) {
-    console.warn("OceanGL: Initialization aborted.");
+    console.warn("• Atomize •: Initialization aborted.");
 		dom.showError();
     return;
   }

@@ -10,12 +10,12 @@
 		elasticity: 0.015,
 		color1: "#2095cc",
 		color2: "#20cc2e",
-		TEXTURE_WIDTH: 256,
+		TEXTURE_WIDTH: 512,
 		TEXTURE_HEIGHT: 512,
-		quality: 1,
+		quality: 2,
 		motionBlur: true,
-		useShadow: false,
-		sizeRatio: 1.35,
+		useShadow: true,
+		sizeRatio: 1.15,
 		restart: false,
 		mobile: ( md == null ) ? false : true,
 		precision: "lowp",
@@ -29,13 +29,13 @@
 			options.useShadow = false;
 			options.TEXTURE_WIDTH = 256;
 			options.TEXTURE_HEIGHT = 256;
-			options.sizeRatio = 1.65;
+			options.sizeRatio = 1.32;
 		}
 		if (options.quality == 1) {
 			options.useShadow = false;
 			options.TEXTURE_WIDTH = 256;
 			options.TEXTURE_HEIGHT = 512;
-			options.sizeRatio = 1.35;
+			options.sizeRatio = 1.25;
 		}
 		if (options.quality == 2) {
 			options.useShadow = true;
@@ -402,7 +402,7 @@
 	  body.classList.remove("hid");
 
 		if ( !options.mobile ) {
-			qualities[1].click();
+			qualities[2].click();
 		}
 		else {
 			qualities[0].click();
@@ -1524,12 +1524,12 @@ void main () {
 	    renderer = new THREE.WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
 	  }
 	  catch(err) {
-	    console.error("OceanGL: Hardware Acceleration not enabled or GPU not available.");
+	    console.error("• Atomize •: Hardware Acceleration not enabled or GPU not available.");
 	    isGPU = false;
 	  }
 
 	  if ( !isGPU || !WEBGL.isWebGLAvailable() ) {
-	    console.warn("OceanGL: Initialization aborted.");
+	    console.warn("• Atomize •: Initialization aborted.");
 			showError();
 	    return;
 	  }

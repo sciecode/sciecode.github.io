@@ -248,7 +248,7 @@ function init ( camera, controls ) {
   body.classList.remove("hid");
 
 	if ( !settings.options.mobile ) {
-		qualities[1].click();
+		qualities[2].click();
 	}
 	else {
 		qualities[0].click();

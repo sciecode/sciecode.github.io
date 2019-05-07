@@ -7,12 +7,12 @@ var options = {
 	elasticity: 0.015,
 	color1: "#2095cc",
 	color2: "#20cc2e",
-	TEXTURE_WIDTH: 256,
+	TEXTURE_WIDTH: 512,
 	TEXTURE_HEIGHT: 512,
-	quality: 1,
+	quality: 2,
 	motionBlur: true,
-	useShadow: false,
-	sizeRatio: 1.35,
+	useShadow: true,
+	sizeRatio: 1.15,
 	restart: false,
 	mobile: ( md == null ) ? false : true,
 	precision: "lowp",
@@ -24,9 +24,9 @@ function reset() {
 	options.elasticity = 0.015;
 	options.color1 = "#2095cc";
 	options.color2 = "#20cc2e";
-	options.TEXTURE_WIDTH = 256;
+	options.TEXTURE_WIDTH = 512;
 	options.TEXTURE_HEIGHT = 512;
-	options.sizeRatio = 1.35;
+	options.sizeRatio = 1.15;
 	options.motionBlur = true;
 	options.restart = false;
 }
@@ -39,13 +39,13 @@ function changeQuality( val ) {
 		options.useShadow = false;
 		options.TEXTURE_WIDTH = 256;
 		options.TEXTURE_HEIGHT = 256;
-		options.sizeRatio = 1.65;
+		options.sizeRatio = 1.32;
 	}
 	if (options.quality == 1) {
 		options.useShadow = false;
 		options.TEXTURE_WIDTH = 256;
 		options.TEXTURE_HEIGHT = 512;
-		options.sizeRatio = 1.35;
+		options.sizeRatio = 1.25;
 	}
 	if (options.quality == 2) {
 		options.useShadow = true;

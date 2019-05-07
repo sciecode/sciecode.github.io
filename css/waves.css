@@ -104,7 +104,7 @@ body.hid #brand {
 #brand {
   position: fixed;
   transition: 1s ease 0.5s;
-  font-size: 50px;
+  font-size: 44px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: subpixel-antialiased;
   font-family: 'Raleway', sans-serif;
@@ -114,16 +114,20 @@ body.hid #brand {
   letter-spacing: 1px;
 }
 
+#brand span {
+	font-size: 30px;
+}
+
 .brandPos {
   color: #f3f4f6;
   left: 4%;
-  top: 3vh;
+  top: 2.5vh;
   transform-origin: center;
   transform: scale(1.0);
 }
 
 .brandInit {
-  top: calc(35vh - 75px);
+  top: calc(37vh - 75px);
   left: calc(50vw - 112px);
   transform: scale(2.1);
 }
@@ -1115,19 +1119,23 @@ input[type=range] {
 
 @media screen and (max-width: 700px) {
   #brand {
-		font-size: 30px;
+		font-size: 26px;
+	}
+
+	#brand span {
+		font-size: 20px;
 	}
 
 	.brandPos {
 		color: #f3f4f6;
-		left: calc(50vw - 70px);
+		left: calc(50vw - 75px);
 		top: 3vh;
 		transform-origin: center;
 		transform: scale(1.2);
 	}
 
 	.brandInit {
-	  top: calc(35vh - 75px);
+	  top: calc(37vh - 75px);
 	  left: calc(50vw - 70px);
 	  transform: scale(2.1);
 	}

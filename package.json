@@ -1,10 +1,10 @@
 {
-  "name": "oceanGL",
+  "name": "Atomize",
   "version": "1.2.1",
   "description": "GPGPU elastic-viscuous particles WebGL simulation",
-  "main": "src/oceangl.js",
+  "main": "src/atomize.js",
   "scripts": {
-    "build": "rollup src/oceangl.js --file js/bundle.js --format iife --name \"oceanGL\""
+    "build": "rollup src/atomize.js --file js/bundle.js --format iife"
   },
   "author": "sciecode",
   "license": "MIT",
