@@ -1,7 +1,6 @@
 // import-block
 import * as mouse from './mouse.js';
 import * as settings from './settings.js';
-import { shaderParse } from '../helpers/shaderParse.js';
 import { noise } from '../helpers/noise.js';
 
 // shader-import-block
@@ -63,8 +62,8 @@ function init( renderer, camera ) {
 			texture: { type: 't', value: undef }
 		},
 		precision: settings.options.precision,
-		vertexShader: shaderParse( quad_vert ),
-		fragmentShader: shaderParse( through_frag ),
+		vertexShader: quad_vert,
+		fragmentShader: through_frag,
 	});
 
 	_positionShader = new THREE.ShaderMaterial({
@@ -74,8 +73,8 @@ function init( renderer, camera ) {
 			textureVelocity: { type: 't', value: undef }
 		},
 		precision: settings.options.precision,
-		vertexShader: shaderParse( quad_vert ),
-		fragmentShader: shaderParse( position_frag ),
+		vertexShader: quad_vert,
+		fragmentShader: position_frag,
 		blending: THREE.NoBlending,
 		transparent: false,
 		depthTest: false,
@@ -100,8 +99,8 @@ function init( renderer, camera ) {
 			time: { type: 'f', value: 0 },
 		},
 		precision: settings.options.precision,
-		vertexShader: shaderParse( quad_vert ),
-		fragmentShader: shaderParse( velocity_frag ),
+		vertexShader: quad_vert,
+		fragmentShader: velocity_frag,
 		blending: THREE.NoBlending,
 		transparent: false,
 		depthWrite: false,
@@ -264,7 +263,6 @@ function update() {
 	cur = Date.now();
 	var offset = cur - prev;
 	prev = cur;
-
 
 	life += Math.min(offset/(1200), 1/8);
 

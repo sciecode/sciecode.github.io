@@ -2,7 +2,6 @@
 import * as settings from './settings.js';
 import * as lights from './lights.js';
 import * as fbo from './fbo.js'
-import { shaderParse } from '../helpers/shaderParse.js';
 
 // shader-import-block
 import render_vert from '../glsl/render.vert.js'
@@ -13,7 +12,6 @@ import distance_frag from '../glsl/distance.frag.js'
 // define-block
 var undef;
 var mesh;
-var meshes;
 var dists;
 var set;
 
@@ -25,7 +23,6 @@ var renderShader;
 var distanceShader;
 
 var i3;
-var discrete = 16;
 
 var TEXTURE_WIDTH;
 var TEXTURE_HEIGHT;
@@ -34,21 +31,20 @@ var AMOUNT;
 function init( camera ) {
 
 	_camera = camera;
-	meshes = [];
 
 	set = {
 		befEnlargementNear: 34.0,
 		befEnlargementFar: 129.0,
-		befEnlargementFactor: 11,
+		befEnlargementFactor: 5.2,
 		aftEnlargementNear: 34.0,
 		aftEnlargementFar: 129.0,
-		aftEnlargementFactor: 5,
+		aftEnlargementFactor: 1.8,
 		befOpacityNear: 0.0,
 		befOpacityFar: 79.0,
-		befOpacityBase: 0.035,
+		befOpacityBase: 0.35,
 		aftOpacityNear: 0.0,
 		aftOpacityFar: 79.0,
-		aftOpacityBase: 0.035
+		aftOpacityBase: 0.35
 	}
 
 	TEXTURE_WIDTH = settings.options.TEXTURE_WIDTH;
@@ -88,13 +84,13 @@ function init( camera ) {
 			USE_SHADOW: settings.options.useShadow
 		},
 		precision: settings.options.precision,
-		vertexShader: shaderParse( render_vert ),
-		fragmentShader: shaderParse( render_frag ),
+		vertexShader:  render_vert,
+		fragmentShader: render_frag,
 		precision: "highp",
 		lights: true,
 		transparent: true,
 		blending: THREE.NormalBlending,
-		// blending: THREE.AdditiveBlending,
+		blending: THREE.AdditiveBlending,
 		depthTest: false,
 		depthWrite: false,
 	});
@@ -113,72 +109,41 @@ function init( camera ) {
 			texturePosition: { type: 't', value: null }
 		},
 		precision: settings.options.precision,
-		vertexShader: shaderParse( distance_vert ),
-		fragmentShader: shaderParse( distance_frag ),
-		depthTest: true,
-		depthWrite: true,
+		vertexShader:  distance_vert,
+		fragmentShader:  distance_frag,
+		depthTest: false,
+		depthWrite: false,
 		side: THREE.BackSide,
 		blending: THREE.NoBlending
 	} );
 
 
 	// geometry-block
-	for ( var d = 0; d < discrete; d++ ) {
-
-		var position = new Float32Array( AMOUNT/discrete * 3 );
-
-		var sqr = Math.sqrt(discrete);
-		var offset = { x: (~~( d / sqr ) / sqr ), z: (d % sqr / sqr ) }
-		for ( var i = 0; i < (AMOUNT/discrete); i++ ) {
-			i3 = i * 3;
-			position[i3 + 0] =  ~~( i / ( TEXTURE_HEIGHT / sqr ) ) / ( TEXTURE_WIDTH ) + offset.x;
-			position[i3 + 1] =    ( i % ( TEXTURE_HEIGHT / sqr ) ) / ( TEXTURE_HEIGHT ) + offset.z;
-			// if ( i == (TEXTURE_HEIGHT/sqr -1) || i == 0 )
-			// 	console.log( "x: " + position[i3 + 0]*TEXTURE_WIDTH, "z: " + position[i3 + 1]*TEXTURE_HEIGHT, "i: " + i, "ind: " + (position[i3 + 1]*TEXTURE_HEIGHT + TEXTURE_HEIGHT*position[i3 + 0]*TEXTURE_WIDTH) )
-		}
-
-		var geometry = new THREE.BufferGeometry();
-		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
-
-		mesh = new THREE.Points( geometry, renderShader );
-		mesh.customDistanceMaterial = distanceShader;
-		mesh.castShadow = true;
-		mesh.receiveShadow = true;
-
-		mesh.rpos = new THREE.Vector3(
-			(fbo.dim / sqr / 2) - offset.z*( fbo.dim / sqr  ), // x global mesh position
-			0,
-			(fbo.dim / sqr / 2) - offset.x*( fbo.dim / sqr  ) //  z global mesh position
-		);
-
-		meshes.push( mesh );
+	var position = new Float32Array( AMOUNT * 3 );
+	for ( var i = 0; i < (AMOUNT); i++ ) {
+		i3 = i * 3;
+		position[i3 + 0] =  ~~( i / ( TEXTURE_HEIGHT ) ) / ( TEXTURE_WIDTH );
+		position[i3 + 1] =    ( i % ( TEXTURE_HEIGHT ) ) / ( TEXTURE_HEIGHT );
 	}
+
+	var geometry = new THREE.BufferGeometry();
+	geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
+
+	mesh = new THREE.Points( geometry, renderShader );
+	mesh.customDistanceMaterial = distanceShader;
+	mesh.castShadow = true;
+	mesh.receiveShadow = true;
+
 }
 
-
-// depth-sort discrete blocks to (sorta) fix transparency artifacts (see what I did there? \o/)
-function sortDepth() {
- 	dists = [];
-	for ( var i = 0; i < discrete; i++ ) {
-		dists.push( [meshes[i].rpos.distanceTo(_camera.position), i] );
-	}
-	dists.sort( function(a,b) {
-		return (b[0] - a[0]);
-	});
-	var order = 1;
-	for ( var i = 0; i < discrete; i++ ) {
-		meshes[dists[i][1]].renderOrder = order++;
-	}
-}
 
 function update() {
-	sortDepth();
 	_color1.setStyle(settings.options.color1);
 	_color2.setStyle(settings.options.color2);
 	distanceShader.uniforms.texturePosition.value = fbo.rtt.texture;
 	renderShader.uniforms.texturePosition.value = fbo.rtt.texture;
 	renderShader.uniforms.textureDefaultPosition.value = fbo.defaultPosition.texture;
-	renderShader.uniforms.camera.value = _camera.position.clone();
+	renderShader.uniforms.camera.value = _camera.position;
 }
 
-export { discrete, meshes, init, update };
+export { mesh, init, update };

@@ -80,10 +80,7 @@ function load() {
 	fbo.init( renderer, camera );
 	particles.init( camera );
 
-	for ( var i = 0; i < particles.discrete; i++ ) {
-		scene.add( particles.meshes[i] );
-	}
-
+	scene.add( particles.mesh );
 	scene.add( lights.mesh );
 	scene.add( floor.mesh );
 
@@ -92,17 +89,13 @@ function load() {
 
 function restart() {
 
-  for ( var i = 0; i < particles.discrete; i++ ) {
-    scene.remove( particles.meshes[i] );
-  }
+	scene.remove( particles.mesh );
 
   settings.update( 'restart', false );
   fbo.init( renderer, camera );
   particles.init( camera );
 
-  for ( var i = 0; i < particles.discrete; i++ ) {
-    scene.add( particles.meshes[i] );
-  }
+  scene.add( particles.mesh );
 
 }
 

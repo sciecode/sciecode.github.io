@@ -3,7 +3,7 @@ export default /* glsl */`
 uniform vec3 lightPos;
 varying vec4 vWorldPosition;
 
-//chunk(common);
+#include <common>
 
 vec4 pack1K ( float depth ) {
 

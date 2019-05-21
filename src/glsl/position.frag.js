@@ -11,9 +11,10 @@ void main() {
 
     vec3 pos = texture2D( texturePosition, uv ).xyz;
     vec3 vel = texture2D( textureVelocity, uv ).xyz;
+		float life = texture2D( textureVelocity, uv ).w;
 
     pos += vel;
 
-    gl_FragColor = vec4( pos, 1.0 );
+    gl_FragColor = vec4( pos, life );
 }
 `;

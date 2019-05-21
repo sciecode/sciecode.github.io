@@ -15,7 +15,7 @@
 		quality: 2,
 		motionBlur: true,
 		useShadow: true,
-		sizeRatio: 1.15,
+		sizeRatio: 1.32,
 		restart: false,
 		mobile: ( md == null ) ? false : true,
 		precision: "lowp",
@@ -29,25 +29,25 @@
 			options.useShadow = false;
 			options.TEXTURE_WIDTH = 256;
 			options.TEXTURE_HEIGHT = 256;
-			options.sizeRatio = 1.32;
+			options.sizeRatio = 1.89;
 		}
 		if (options.quality == 1) {
 			options.useShadow = false;
 			options.TEXTURE_WIDTH = 256;
 			options.TEXTURE_HEIGHT = 512;
-			options.sizeRatio = 1.25;
+			options.sizeRatio = 1.46;
 		}
 		if (options.quality == 2) {
 			options.useShadow = true;
 			options.TEXTURE_WIDTH = 512;
 			options.TEXTURE_HEIGHT = 512;
-			options.sizeRatio = 1.15;
+			options.sizeRatio = 1.32;
 		}
 		if (options.quality == 3) {
 			options.useShadow = true;
 			options.TEXTURE_WIDTH = 512;
 			options.TEXTURE_HEIGHT = 1024;
-			options.sizeRatio = 1.0;
+			options.sizeRatio = 1.1;
 		}
 
 		options.restart = true;
@@ -583,14 +583,6 @@
 		}
 	}
 
-	function replaceThreeChunkFn(a, b) {
-	  return THREE.ShaderChunk[b] + '\n';
-	}
-
-	function shaderParse(glsl) {
-	  return glsl.replace(/\/\/\s?chunk\(\s?(\w+)\s?\);/g, replaceThreeChunkFn);
-	}
-
 	// Ported from Stefan Gustavson's java implementation
 	// http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
 	// Read Stefan's excellent paper for details on how this code works.
@@ -653,15 +645,6 @@
 	  var gi110 = perm[X+1+perm[Y+1+perm[Z]]] % 12;
 	  var gi111 = perm[X+1+perm[Y+1+perm[Z+1]]] % 12;
 
-	  // The gradients of each corner are now:
-	  // g000 = grad3[gi000];
-	  // g001 = grad3[gi001];
-	  // g010 = grad3[gi010];
-	  // g011 = grad3[gi011];
-	  // g100 = grad3[gi100];
-	  // g101 = grad3[gi101];
-	  // g110 = grad3[gi110];
-	  // g111 = grad3[gi111];
 	  // Calculate noise contributions from each of the eight corners
 	  var n000= dot(grad3[gi000], x, y, z);
 	  var n100= dot(grad3[gi100], x-1, y, z);
@@ -720,10 +703,11 @@ void main() {
 
     vec3 pos = texture2D( texturePosition, uv ).xyz;
     vec3 vel = texture2D( textureVelocity, uv ).xyz;
+		float life = texture2D( textureVelocity, uv ).w;
 
     pos += vel;
 
-    gl_FragColor = vec4( pos, 1.0 );
+    gl_FragColor = vec4( pos, life );
 }
 `;
 
@@ -860,7 +844,7 @@ void main() {
 
     if ( dist.x <= 1.0 ) {
         vel += offset*elasticity*1.0 - vel * viscosity;
-        vel += (normalize(cur - (mousePrev + (mousePosition - mousePrev) * dist.y ) ) * mix(7.0, 0.1, dist.x ) + rand * 0.02 );
+        vel += ( normalize( cur - ( mousePrev + ( mousePosition - mousePrev ) * dist.y ) ) * mix( 7.0, 0.1, dist.x ) + rand * 0.02 );
     }
     else {
         vel += offset*elasticity - vel * viscosity;
@@ -925,8 +909,8 @@ void main() {
 				texture: { type: 't', value: undef$4 }
 			},
 			precision: options.precision,
-			vertexShader: shaderParse( quad_vert ),
-			fragmentShader: shaderParse( through_frag ),
+			vertexShader: quad_vert,
+			fragmentShader: through_frag,
 		});
 
 		_positionShader = new THREE.ShaderMaterial({
@@ -936,8 +920,8 @@ void main() {
 				textureVelocity: { type: 't', value: undef$4 }
 			},
 			precision: options.precision,
-			vertexShader: shaderParse( quad_vert ),
-			fragmentShader: shaderParse( position_frag ),
+			vertexShader: quad_vert,
+			fragmentShader: position_frag,
 			blending: THREE.NoBlending,
 			transparent: false,
 			depthTest: false,
@@ -962,8 +946,8 @@ void main() {
 				time: { type: 'f', value: 0 },
 			},
 			precision: options.precision,
-			vertexShader: shaderParse( quad_vert ),
-			fragmentShader: shaderParse( velocity_frag ),
+			vertexShader: quad_vert,
+			fragmentShader: velocity_frag,
 			blending: THREE.NoBlending,
 			transparent: false,
 			depthWrite: false,
@@ -1127,7 +1111,6 @@ void main() {
 		var offset = cur - prev$1;
 		prev$1 = cur;
 
-
 		life += Math.min(offset/(1200), 1/8);
 
 		update$3( offset/1000 );
@@ -1161,14 +1144,17 @@ uniform float aftOpacityNear;
 uniform float aftOpacityFar;
 uniform float aftOpacityBase;
 
+
 varying float ratio;
 varying float vAlpha;
 varying vec2 focalDirection;
 varying vec3 vNormal;
 varying vec3 pos;
 
-//chunk(common);
-//chunk(shadowmap_pars_vertex);
+#include <common>
+#ifdef USE_SHADOW
+	#include <shadowmap_pars_vertex>
+#endif
 
 float diameter;
 
@@ -1205,49 +1191,16 @@ void main() {
 
     gl_PointSize = ( 1.27 - 0.3 * clamp( length(mvPosition.xyz) / 600.0 , 0.0, 1.0 ) ) * diameter;
 
-    // gl_PointSize = diameter;
-    //gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * sizeRatio * 1.5 ;
-
     gl_Position = projectionMatrix * mvPosition;
     focalDirection = (gl_Position.xyz / gl_Position.w).xy;
 
-    //chunk(shadowmap_vertex);
+		#ifdef USE_SHADOW
+    	#include <shadowmap_vertex>
+		#endif
 }
 `;
 
 	var render_frag = /* glsl */`
-
-float random (vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233)))*43758.5453123);}
-float noise (in vec2 st) {
-  vec2 i = floor(st);
-  vec2 f = fract(st);
-
-  // Four corners in 2D of a tile
-  float a = random(i);
-  float b = random(i + vec2(1.0, 0.0));
-  float c = random(i + vec2(0.0, 1.0));
-  float d = random(i + vec2(1.0, 1.0));
-
-  // Smooth Interpolation
-
-  // Cubic Hermine Curve.  Same as SmoothStep()
-  vec2 u = f*f*(3.0-2.0*f);
-  // u = smoothstep(0.,1.,f);
-
-  return mix(a, b, u.x) +
-          (c - a)* u.y * (1.0 - u.x) +
-          (d - b) * u.x * u.y;
-}
-
-varying float ratio;
-varying float vAlpha;
-varying vec2 focalDirection;
-varying vec3 vNormal;
-varying vec3 pos;
-
-uniform vec3 lightPos;
-uniform vec3 color1;
-uniform vec3 color2;
 
 #include <common>
 #include <packing>
@@ -1259,6 +1212,15 @@ uniform vec3 color2;
 	#include <shadowmask_pars_fragment>
 #endif
 
+uniform vec3 lightPos;
+uniform vec3 color1;
+uniform vec3 color2;
+
+varying float ratio;
+varying float vAlpha;
+varying vec2 focalDirection;
+varying vec3 vNormal;
+varying vec3 pos;
 
 void main() {
 
@@ -1266,17 +1228,14 @@ void main() {
 	float len = length(toCenter);
 	if (len > 0.8) discard;
 
-  vec3 outgoingLight = mix(color2, color1, mix(0.0, 1.0, ratio));
+  vec3 outgoingLight = mix(color2, color1, mix(0.0, 1.0, ratio))*1.0;
   vec3 light = normalize(lightPos-pos);
 
-  float luminosity = smoothstep(0.0,1.0,(max( 0.0, dot( vNormal, light) ) ) );
-  outgoingLight *= 0.75 + luminosity*0.35;
-
-	luminosity = smoothstep(0.3,1.0, max( 0.0, vNormal.y/8.0 ) );
-	outgoingLight *= 0.85 + luminosity*0.25;
+  float luminosity = smoothstep(0.2,1.0,(max( 0.0, dot( vNormal, vec3(0.0,1.0,0.0)) ) ) );
+  outgoingLight *= 0.15 + luminosity*0.1;
 
   luminosity = smoothstep(0.88,1.0,(max( 0.0, dot( vec3(0.0,1.0,0.0), light) ) ) );
-  outgoingLight *= 0.55 + luminosity*0.55;
+  outgoingLight *= 0.25 + luminosity*0.75;
 
 	#ifdef USE_SHADOW
     float shadow = smoothstep(0.0, 0.2, getShadowMask());
@@ -1285,7 +1244,7 @@ void main() {
 
   float alpha = vAlpha;
 
-  gl_FragColor = vec4( outgoingLight , alpha );
+  gl_FragColor = vec4( outgoingLight , 1.0 );
 
 }
 `;
@@ -1317,7 +1276,7 @@ void main() {
 uniform vec3 lightPos;
 varying vec4 vWorldPosition;
 
-//chunk(common);
+#include <common>
 
 vec4 pack1K ( float depth ) {
 
@@ -1342,8 +1301,6 @@ void main () {
 	// define-block
 	var undef$5;
 	var mesh$2;
-	var meshes;
-	var dists;
 	var set;
 
 	var _color1;
@@ -1354,7 +1311,6 @@ void main () {
 	var distanceShader;
 
 	var i3;
-	var discrete = 16;
 
 	var TEXTURE_WIDTH$1;
 	var TEXTURE_HEIGHT$1;
@@ -1363,21 +1319,20 @@ void main () {
 	function init$6( camera ) {
 
 		_camera$3 = camera;
-		meshes = [];
 
 		set = {
 			befEnlargementNear: 34.0,
 			befEnlargementFar: 129.0,
-			befEnlargementFactor: 11,
+			befEnlargementFactor: 5.2,
 			aftEnlargementNear: 34.0,
 			aftEnlargementFar: 129.0,
-			aftEnlargementFactor: 5,
+			aftEnlargementFactor: 1.8,
 			befOpacityNear: 0.0,
 			befOpacityFar: 79.0,
-			befOpacityBase: 0.035,
+			befOpacityBase: 0.35,
 			aftOpacityNear: 0.0,
 			aftOpacityFar: 79.0,
-			aftOpacityBase: 0.035
+			aftOpacityBase: 0.35
 		};
 
 		TEXTURE_WIDTH$1 = options.TEXTURE_WIDTH;
@@ -1417,13 +1372,13 @@ void main () {
 				USE_SHADOW: options.useShadow
 			},
 			precision: options.precision,
-			vertexShader: shaderParse( render_vert ),
-			fragmentShader: shaderParse( render_frag ),
+			vertexShader:  render_vert,
+			fragmentShader: render_frag,
 			precision: "highp",
 			lights: true,
 			transparent: true,
 			blending: THREE.NormalBlending,
-			// blending: THREE.AdditiveBlending,
+			blending: THREE.AdditiveBlending,
 			depthTest: false,
 			depthWrite: false,
 		});
@@ -1442,72 +1397,41 @@ void main () {
 				texturePosition: { type: 't', value: null }
 			},
 			precision: options.precision,
-			vertexShader: shaderParse( distance_vert ),
-			fragmentShader: shaderParse( distance_frag ),
-			depthTest: true,
-			depthWrite: true,
+			vertexShader:  distance_vert,
+			fragmentShader:  distance_frag,
+			depthTest: false,
+			depthWrite: false,
 			side: THREE.BackSide,
 			blending: THREE.NoBlending
 		} );
 
 
 		// geometry-block
-		for ( var d = 0; d < discrete; d++ ) {
-
-			var position = new Float32Array( AMOUNT$1/discrete * 3 );
-
-			var sqr = Math.sqrt(discrete);
-			var offset = { x: (~~( d / sqr ) / sqr ), z: (d % sqr / sqr ) };
-			for ( var i = 0; i < (AMOUNT$1/discrete); i++ ) {
-				i3 = i * 3;
-				position[i3 + 0] =  ~~( i / ( TEXTURE_HEIGHT$1 / sqr ) ) / ( TEXTURE_WIDTH$1 ) + offset.x;
-				position[i3 + 1] =    ( i % ( TEXTURE_HEIGHT$1 / sqr ) ) / ( TEXTURE_HEIGHT$1 ) + offset.z;
-				// if ( i == (TEXTURE_HEIGHT/sqr -1) || i == 0 )
-				// 	console.log( "x: " + position[i3 + 0]*TEXTURE_WIDTH, "z: " + position[i3 + 1]*TEXTURE_HEIGHT, "i: " + i, "ind: " + (position[i3 + 1]*TEXTURE_HEIGHT + TEXTURE_HEIGHT*position[i3 + 0]*TEXTURE_WIDTH) )
-			}
-
-			var geometry = new THREE.BufferGeometry();
-			geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
-
-			mesh$2 = new THREE.Points( geometry, renderShader );
-			mesh$2.customDistanceMaterial = distanceShader;
-			mesh$2.castShadow = true;
-			mesh$2.receiveShadow = true;
-
-			mesh$2.rpos = new THREE.Vector3(
-				(dim / sqr / 2) - offset.z*( dim / sqr  ), // x global mesh position
-				0,
-				(dim / sqr / 2) - offset.x*( dim / sqr  ) //  z global mesh position
-			);
-
-			meshes.push( mesh$2 );
+		var position = new Float32Array( AMOUNT$1 * 3 );
+		for ( var i = 0; i < (AMOUNT$1); i++ ) {
+			i3 = i * 3;
+			position[i3 + 0] =  ~~( i / ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_WIDTH$1 );
+			position[i3 + 1] =    ( i % ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_HEIGHT$1 );
 		}
+
+		var geometry = new THREE.BufferGeometry();
+		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
+
+		mesh$2 = new THREE.Points( geometry, renderShader );
+		mesh$2.customDistanceMaterial = distanceShader;
+		mesh$2.castShadow = true;
+		mesh$2.receiveShadow = true;
+
 	}
 
-
-	// depth-sort discrete blocks to (sorta) fix transparency artifacts (see what I did there? \o/)
-	function sortDepth() {
-	 	dists = [];
-		for ( var i = 0; i < discrete; i++ ) {
-			dists.push( [meshes[i].rpos.distanceTo(_camera$3.position), i] );
-		}
-		dists.sort( function(a,b) {
-			return (b[0] - a[0]);
-		});
-		var order = 1;
-		for ( var i = 0; i < discrete; i++ ) {
-			meshes[dists[i][1]].renderOrder = order++;
-		}
-	}
 
 	function update$5() {
-		sortDepth();
 		_color1.setStyle(options.color1);
 		_color2.setStyle(options.color2);
 		distanceShader.uniforms.texturePosition.value = rtt.texture;
 		renderShader.uniforms.texturePosition.value = rtt.texture;
 		renderShader.uniforms.textureDefaultPosition.value = defaultPosition.texture;
-		renderShader.uniforms.camera.value = _camera$3.position.clone();
+		renderShader.uniforms.camera.value = _camera$3.position;
 	}
 
 	// import-block
@@ -1582,10 +1506,7 @@ void main () {
 		init$5( renderer, camera );
 		init$6( camera );
 
-		for ( var i = 0; i < discrete; i++ ) {
-			scene.add( meshes[i] );
-		}
-
+		scene.add( mesh$2 );
 		scene.add( mesh$1 );
 		scene.add( mesh );
 
@@ -1594,17 +1515,13 @@ void main () {
 
 	function restart() {
 
-	  for ( var i = 0; i < discrete; i++ ) {
-	    scene.remove( meshes[i] );
-	  }
+		scene.remove( mesh$2 );
 
 	  update( 'restart', false );
 	  init$5( renderer, camera );
 	  init$6( camera );
 
-	  for ( var i = 0; i < discrete; i++ ) {
-	    scene.add( meshes[i] );
-	  }
+	  scene.add( mesh$2 );
 
 	}
 

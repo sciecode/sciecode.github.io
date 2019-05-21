@@ -63,15 +63,6 @@ function noise(x, y, z) {
   var gi110 = perm[X+1+perm[Y+1+perm[Z]]] % 12;
   var gi111 = perm[X+1+perm[Y+1+perm[Z+1]]] % 12;
 
-  // The gradients of each corner are now:
-  // g000 = grad3[gi000];
-  // g001 = grad3[gi001];
-  // g010 = grad3[gi010];
-  // g011 = grad3[gi011];
-  // g100 = grad3[gi100];
-  // g101 = grad3[gi101];
-  // g110 = grad3[gi110];
-  // g111 = grad3[gi111];
   // Calculate noise contributions from each of the eight corners
   var n000= dot(grad3[gi000], x, y, z);
   var n100= dot(grad3[gi100], x-1, y, z);

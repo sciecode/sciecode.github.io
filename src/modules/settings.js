@@ -12,7 +12,7 @@ var options = {
 	quality: 2,
 	motionBlur: true,
 	useShadow: true,
-	sizeRatio: 1.15,
+	sizeRatio: 1.32,
 	restart: false,
 	mobile: ( md == null ) ? false : true,
 	precision: "lowp",
@@ -26,7 +26,7 @@ function reset() {
 	options.color2 = "#20cc2e";
 	options.TEXTURE_WIDTH = 512;
 	options.TEXTURE_HEIGHT = 512;
-	options.sizeRatio = 1.15;
+	options.sizeRatio = 1.32;
 	options.motionBlur = true;
 	options.restart = false;
 }
@@ -39,25 +39,25 @@ function changeQuality( val ) {
 		options.useShadow = false;
 		options.TEXTURE_WIDTH = 256;
 		options.TEXTURE_HEIGHT = 256;
-		options.sizeRatio = 1.32;
+		options.sizeRatio = 1.89;
 	}
 	if (options.quality == 1) {
 		options.useShadow = false;
 		options.TEXTURE_WIDTH = 256;
 		options.TEXTURE_HEIGHT = 512;
-		options.sizeRatio = 1.25;
+		options.sizeRatio = 1.46;
 	}
 	if (options.quality == 2) {
 		options.useShadow = true;
 		options.TEXTURE_WIDTH = 512;
 		options.TEXTURE_HEIGHT = 512;
-		options.sizeRatio = 1.15;
+		options.sizeRatio = 1.32;
 	}
 	if (options.quality == 3) {
 		options.useShadow = true;
 		options.TEXTURE_WIDTH = 512;
 		options.TEXTURE_HEIGHT = 1024;
-		options.sizeRatio = 1.0;
+		options.sizeRatio = 1.1;
 	}
 
 	options.restart = true;

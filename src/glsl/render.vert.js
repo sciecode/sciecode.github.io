@@ -22,14 +22,17 @@ uniform float aftOpacityNear;
 uniform float aftOpacityFar;
 uniform float aftOpacityBase;
 
+
 varying float ratio;
 varying float vAlpha;
 varying vec2 focalDirection;
 varying vec3 vNormal;
 varying vec3 pos;
 
-//chunk(common);
-//chunk(shadowmap_pars_vertex);
+#include <common>
+#ifdef USE_SHADOW
+	#include <shadowmap_pars_vertex>
+#endif
 
 float diameter;
 
@@ -66,12 +69,11 @@ void main() {
 
     gl_PointSize = ( 1.27 - 0.3 * clamp( length(mvPosition.xyz) / 600.0 , 0.0, 1.0 ) ) * diameter;
 
-    // gl_PointSize = diameter;
-    //gl_PointSize = ( 1.27 - 0.2 * clamp( length(mvPosition.xyz) / 400.0 , 0.0, 1.0 ) ) * sizeRatio * 1.5 ;
-
     gl_Position = projectionMatrix * mvPosition;
     focalDirection = (gl_Position.xyz / gl_Position.w).xy;
 
-    //chunk(shadowmap_vertex);
+		#ifdef USE_SHADOW
+    	#include <shadowmap_vertex>
+		#endif
 }
 `;
