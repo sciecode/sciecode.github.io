@@ -10,6 +10,7 @@ var blendPass = undef;
 var composer = undef;
 
 function init( renderer, scene, camera, width, height ) {
+
 	composer = new THREE.EffectComposer( renderer );
 	composer.setSize( width, height );
 
@@ -37,23 +38,32 @@ function init( renderer, scene, camera, width, height ) {
 
 	composer.addPass( bloomPass );
 	composer.addPass( copyPass );
+
 }
 
 function render() {
+
 	if ( options.motionBlur ) {
+
 		blendPass.enabled = true;
 		savePass.enabled = true;
+
 	} else {
+
 		blendPass.enabled = false;
 		savePass.enabled = false;
+
 	}
 	composer.render();
+
 }
 
 function setSize( width, height ) {
+
 	SCREEN_WIDTH = width;
 	SCREEN_HEIGHT = height;
 	composer.setSize( width, height );
+
 }
 
 export { init, setSize, render };

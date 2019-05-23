@@ -3,8 +3,9 @@ var undef;
 var mesh = undef;
 
 function init() {
+
 	mesh = new THREE.Object3D();
-	mesh.position.set(0, 190, 0);
+	mesh.position.set( 0, 190, 0 );
 
 	var ambient = new THREE.AmbientLight( 0x333333 );
 	mesh.add( ambient );
@@ -14,7 +15,7 @@ function init() {
 	mesh.add( directionalLight );
 
 	var directionalLight2 = new THREE.DirectionalLight( 0x8bbab4, 0.3 );
-	directionalLight2.position.set( 1, 1, -1 );
+	directionalLight2.position.set( 1, 1, - 1 );
 	mesh.add( directionalLight2 );
 
 	var pointLight = new THREE.PointLight( 0x999999, 1, 1600 );
@@ -25,6 +26,7 @@ function init() {
 	pointLight.shadow.mapSize.width = 2048;
 	pointLight.shadow.mapSize.height = 1024;
 	mesh.add( pointLight );
+
 }
 
 export { init, mesh };

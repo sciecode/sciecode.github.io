@@ -1,5 +1,5 @@
 // define-block
-var md = new MobileDetect(window.navigator.userAgent).mobile();
+var md = new MobileDetect( window.navigator.userAgent ).mobile();
 
 var options = {
 	radius: 30,
@@ -16,9 +16,10 @@ var options = {
 	restart: false,
 	mobile: ( md == null ) ? false : true,
 	precision: "lowp",
-}
+};
 
 function reset() {
+
 	options.radius = 30;
 	options.viscosity = 0.12;
 	options.elasticity = 0.015;
@@ -29,35 +30,47 @@ function reset() {
 	options.sizeRatio = 1.32;
 	options.motionBlur = true;
 	options.restart = false;
+
 }
 
 function changeQuality( val ) {
+
 	if ( val ) {
+
 		options.quality = val;
+
 	}
-	if (options.quality == 0) {
+	if ( options.quality == 0 ) {
+
 		options.useShadow = false;
 		options.TEXTURE_WIDTH = 256;
 		options.TEXTURE_HEIGHT = 256;
 		options.sizeRatio = 1.89;
+
 	}
-	if (options.quality == 1) {
+	if ( options.quality == 1 ) {
+
 		options.useShadow = false;
 		options.TEXTURE_WIDTH = 256;
 		options.TEXTURE_HEIGHT = 512;
 		options.sizeRatio = 1.46;
+
 	}
-	if (options.quality == 2) {
+	if ( options.quality == 2 ) {
+
 		options.useShadow = true;
 		options.TEXTURE_WIDTH = 512;
 		options.TEXTURE_HEIGHT = 512;
 		options.sizeRatio = 1.32;
+
 	}
-	if (options.quality == 3) {
+	if ( options.quality == 3 ) {
+
 		options.useShadow = true;
 		options.TEXTURE_WIDTH = 512;
 		options.TEXTURE_HEIGHT = 1024;
 		options.sizeRatio = 1.1;
+
 	}
 
 	options.restart = true;
@@ -65,7 +78,9 @@ function changeQuality( val ) {
 }
 
 function update( prop, val ) {
-	options[prop] = val;
+
+	options[ prop ] = val;
+
 }
 
 export { options, reset, changeQuality, update };

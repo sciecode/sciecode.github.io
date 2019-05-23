@@ -2,7 +2,7 @@
 	'use strict';
 
 	// define-block
-	var md = new MobileDetect(window.navigator.userAgent).mobile();
+	var md = new MobileDetect( window.navigator.userAgent ).mobile();
 
 	var options = {
 		radius: 30,
@@ -22,32 +22,43 @@
 	};
 
 	function changeQuality( val ) {
+
 		if ( val ) {
+
 			options.quality = val;
+
 		}
-		if (options.quality == 0) {
+		if ( options.quality == 0 ) {
+
 			options.useShadow = false;
 			options.TEXTURE_WIDTH = 256;
 			options.TEXTURE_HEIGHT = 256;
 			options.sizeRatio = 1.89;
+
 		}
-		if (options.quality == 1) {
+		if ( options.quality == 1 ) {
+
 			options.useShadow = false;
 			options.TEXTURE_WIDTH = 256;
 			options.TEXTURE_HEIGHT = 512;
 			options.sizeRatio = 1.46;
+
 		}
-		if (options.quality == 2) {
+		if ( options.quality == 2 ) {
+
 			options.useShadow = true;
 			options.TEXTURE_WIDTH = 512;
 			options.TEXTURE_HEIGHT = 512;
 			options.sizeRatio = 1.32;
+
 		}
-		if (options.quality == 3) {
+		if ( options.quality == 3 ) {
+
 			options.useShadow = true;
 			options.TEXTURE_WIDTH = 512;
 			options.TEXTURE_HEIGHT = 1024;
 			options.sizeRatio = 1.1;
+
 		}
 
 		options.restart = true;
@@ -55,7 +66,9 @@
 	}
 
 	function update( prop, val ) {
-		options[prop] = val;
+
+		options[ prop ] = val;
+
 	}
 
 	// import-block
@@ -69,6 +82,7 @@
 	var composer = undef;
 
 	function init( renderer, scene, camera, width, height ) {
+
 		composer = new THREE.EffectComposer( renderer );
 		composer.setSize( width, height );
 
@@ -96,23 +110,32 @@
 
 		composer.addPass( bloomPass );
 		composer.addPass( copyPass );
+
 	}
 
 	function render() {
+
 		if ( options.motionBlur ) {
+
 			blendPass.enabled = true;
 			savePass.enabled = true;
+
 		} else {
+
 			blendPass.enabled = false;
 			savePass.enabled = false;
+
 		}
 		composer.render();
+
 	}
 
 	function setSize( width, height ) {
+
 		SCREEN_WIDTH = width;
 		SCREEN_HEIGHT = height;
 		composer.setSize( width, height );
+
 	}
 
 	// import-block
@@ -122,28 +145,32 @@
 	var mesh = undef$1;
 
 	function init$1() {
-	  var geometry = new THREE.PlaneGeometry(4000, 4000, 10, 10);
-	  var _material = new THREE.MeshStandardMaterial( {
-	    roughness: 0.7,
-	    metalness: 1.0,
-	    dithering: true,
-	    color: 0x1b2738,
-	    emissive: 0x000000
-	  });
-	  var floor = mesh =  new THREE.Mesh( geometry, _material );
-	  floor.rotation.x = -1.57;
-	  floor.position.y = -55;
-	  floor.receiveShadow = true;
+
+		var geometry = new THREE.PlaneGeometry( 4000, 4000, 10, 10 );
+		var _material = new THREE.MeshStandardMaterial( {
+			roughness: 0.7,
+			metalness: 1.0,
+			dithering: true,
+			color: 0x1b2738,
+			emissive: 0x000000
+		} );
+		var floor = mesh = new THREE.Mesh( geometry, _material );
+		floor.rotation.x = - 1.57;
+		floor.position.y = - 55;
+		floor.receiveShadow = true;
+
 	}
 
 	function update$1() {
-	  var c1 = {}, c2 = {};
 
-	  mesh.material.color.getHSL( c1 );
+		var c1 = {}, c2 = {};
 
-	  var C = new THREE.Color( options.color1 );
-	  C.getHSL( c2 );
-	  mesh.material.color.setHSL( (c2.h+0.045%1) , c1.s, c1.l );
+		mesh.material.color.getHSL( c1 );
+
+		var C = new THREE.Color( options.color1 );
+		C.getHSL( c2 );
+		mesh.material.color.setHSL( ( c2.h + 0.045 % 1 ), c1.s, c1.l );
+
 	}
 
 	// accelerating from zero velocity
@@ -201,307 +228,378 @@
 	var direction = 1;
 	var amount = 1;
 
-	function init$2 ( camera, controls ) {
+	function init$2( camera, controls ) {
 
-	  _camera = camera;
-	  _controls = controls;
+		_camera = camera;
+		_controls = controls;
 
-	  body = document.getElementsByTagName("BODY")[0];
+		body = document.getElementsByTagName( "BODY" )[ 0 ];
 
-	  notice = document.getElementById("noticeText");
+		notice = document.getElementById( "noticeText" );
 
-	  qualities = document.getElementsByClassName("qualities");
-	  quality_list = document.getElementById("quality_list");
-	  quality_value = document.getElementById("quality_value");
-	  caret = document.querySelector(".caret");
+		qualities = document.getElementsByClassName( "qualities" );
+		quality_list = document.getElementById( "quality_list" );
+		quality_value = document.getElementById( "quality_value" );
+		caret = document.querySelector( ".caret" );
 
-	  settings_items = document.getElementsByClassName("settings_items");
-	  menu = document.getElementById("settings_menu");
+		settings_items = document.getElementsByClassName( "settings_items" );
+		menu = document.getElementById( "settings_menu" );
 
-	  mbCheckbox = document.getElementById("mb_value");
+		mbCheckbox = document.getElementById( "mb_value" );
 
-	  color1 = document.getElementById("color1_slider");
-	  color2 = document.getElementById("color2_slider");
+		color1 = document.getElementById( "color1_slider" );
+		color2 = document.getElementById( "color2_slider" );
 
-	  elaSlider = document.getElementById("ela_slider");
-	  visSlider = document.getElementById("vis_slider");
-	  radSlider = document.getElementById("rad_slider");
+		elaSlider = document.getElementById( "ela_slider" );
+		visSlider = document.getElementById( "vis_slider" );
+		radSlider = document.getElementById( "rad_slider" );
 
-	  inside = document.getElementById("ball_sphere_inside");
+		inside = document.getElementById( "ball_sphere_inside" );
 
-	  brand = document.getElementById("brand");
+		brand = document.getElementById( "brand" );
 
-	  overlay = document.getElementById("overlay");
+		overlay = document.getElementById( "overlay" );
 
-	  fluid_ball = document.getElementById("fluid_ball");
+		fluid_ball = document.getElementById( "fluid_ball" );
 
-	  stBtn = document.getElementById("st_btn");
+		stBtn = document.getElementById( "st_btn" );
 
-	  // eventListeners-block
-	  inside.style.transform = "scale("+ options.radius/50;
-	  radSlider.addEventListener("mousemove", function(e) {
-	    update('radius', this.value);
-	    inside = document.getElementById("ball_sphere_inside");
-	    inside.style.transform = "scale("+ options.radius/50;    var radValue = document.getElementById("rad_value");
-	    radValue.innerHTML = this.value;
-	    radValue = document.getElementById("rad_title_value");
-	    radValue.innerHTML = this.value;
-	  }, false);
+		// eventListeners-block
+		inside.style.transform = "scale(" + options.radius / 50;
+		radSlider.addEventListener( "mousemove", function ( ) {
 
-		radSlider.addEventListener("touchmove", function(e) {
-	    update('radius', this.value);
-	    inside = document.getElementById("ball_sphere_inside");
-	    inside.style.transform = "scale("+ options.radius/50;    var radValue = document.getElementById("rad_value");
-	    radValue.innerHTML = this.value;
-	    radValue = document.getElementById("rad_title_value");
-	    radValue.innerHTML = this.value;
-	  }, false);
+			update( 'radius', this.value );
+			inside = document.getElementById( "ball_sphere_inside" );
+			inside.style.transform = "scale(" + options.radius / 50;		var radValue = document.getElementById( "rad_value" );
+			radValue.innerHTML = this.value;
+			radValue = document.getElementById( "rad_title_value" );
+			radValue.innerHTML = this.value;
 
-	  visSlider.addEventListener("mousemove", function(e) {
-	    update('viscosity', this.value/100);
-	    var visValue = document.getElementById("vis_value");
-	    visValue.innerHTML = this.value;
-	    visValue = document.getElementById("vis_title_value");
-	    visValue.innerHTML = this.value;
-	    var fluid_box = document.getElementById("fluid_box");
-	    fluid_box.style.background = "rgba(78, 177, "+ (219 - 140*options.viscosity/0.3 )+","+ (0.2 + 0.2*options.viscosity/0.3)  + ")";
-	    fluid_box.style.border = "2px solid rgba(78, 177, "+ (219 - 140*options.viscosity/0.3 )+", 1)";
-	  }, false);
+		}, false );
 
-		visSlider.addEventListener("touchmove", function(e) {
-			update('viscosity', this.value/100);
-			var visValue = document.getElementById("vis_value");
+		radSlider.addEventListener( "touchmove", function ( ) {
+
+			update( 'radius', this.value );
+			inside = document.getElementById( "ball_sphere_inside" );
+			inside.style.transform = "scale(" + options.radius / 50;		var radValue = document.getElementById( "rad_value" );
+			radValue.innerHTML = this.value;
+			radValue = document.getElementById( "rad_title_value" );
+			radValue.innerHTML = this.value;
+
+		}, false );
+
+		visSlider.addEventListener( "mousemove", function ( ) {
+
+			update( 'viscosity', this.value / 100 );
+			var visValue = document.getElementById( "vis_value" );
 			visValue.innerHTML = this.value;
-			visValue = document.getElementById("vis_title_value");
+			visValue = document.getElementById( "vis_title_value" );
 			visValue.innerHTML = this.value;
-			var fluid_box = document.getElementById("fluid_box");
-			fluid_box.style.background = "rgba(78, 177, "+ (219 - 140*options.viscosity/0.3 )+","+ (0.2 + 0.2*options.viscosity/0.3)  + ")";
-			fluid_box.style.border = "2px solid rgba(78, 177, "+ (219 - 140*options.viscosity/0.3 )+", 1)";
-		}, false);
+			var fluid_box = document.getElementById( "fluid_box" );
+			fluid_box.style.background = "rgba(78, 177, " + ( 219 - 140 * options.viscosity / 0.3 ) + "," + ( 0.2 + 0.2 * options.viscosity / 0.3 ) + ")";
+			fluid_box.style.border = "2px solid rgba(78, 177, " + ( 219 - 140 * options.viscosity / 0.3 ) + ", 1)";
 
-	  elaSlider.addEventListener("mousemove", function(e) {
-	    update('elasticity', this.value/1000);
-	    var elaValue = document.getElementById("ela_value");
-	    elaValue.innerHTML = this.value;
-	    elaValue = document.getElementById("ela_title_value");
-	    elaValue.innerHTML = this.value;
-	  }, false);
+		}, false );
 
-		elaSlider.addEventListener("touchmove", function(e) {
-	    update('elasticity', this.value/1000);
-	    var elaValue = document.getElementById("ela_value");
-	    elaValue.innerHTML = this.value;
-	    elaValue = document.getElementById("ela_title_value");
-	    elaValue.innerHTML = this.value;
-	  }, false);
+		visSlider.addEventListener( "touchmove", function ( ) {
 
-	  color1.addEventListener("mousemove", function(e) {
-	    var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
-	    update$1();
-	    update('color1', "#" + col.getHexString() );
-	    var col1 = document.getElementById("color1_value");
-	    col1.style.background = "#" + col.getHexString();
-	    col1 = document.getElementById("color1_box");
-	    col1.style.background = "#" + col.getHexString();
-	  }, false);
+			update( 'viscosity', this.value / 100 );
+			var visValue = document.getElementById( "vis_value" );
+			visValue.innerHTML = this.value;
+			visValue = document.getElementById( "vis_title_value" );
+			visValue.innerHTML = this.value;
+			var fluid_box = document.getElementById( "fluid_box" );
+			fluid_box.style.background = "rgba(78, 177, " + ( 219 - 140 * options.viscosity / 0.3 ) + "," + ( 0.2 + 0.2 * options.viscosity / 0.3 ) + ")";
+			fluid_box.style.border = "2px solid rgba(78, 177, " + ( 219 - 140 * options.viscosity / 0.3 ) + ", 1)";
 
-		color1.addEventListener("touchmove", function(e) {
-			var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
+		}, false );
+
+		elaSlider.addEventListener( "mousemove", function ( ) {
+
+			update( 'elasticity', this.value / 1000 );
+			var elaValue = document.getElementById( "ela_value" );
+			elaValue.innerHTML = this.value;
+			elaValue = document.getElementById( "ela_title_value" );
+			elaValue.innerHTML = this.value;
+
+		}, false );
+
+		elaSlider.addEventListener( "touchmove", function ( ) {
+
+			update( 'elasticity', this.value / 1000 );
+			var elaValue = document.getElementById( "ela_value" );
+			elaValue.innerHTML = this.value;
+			elaValue = document.getElementById( "ela_title_value" );
+			elaValue.innerHTML = this.value;
+
+		}, false );
+
+		color1.addEventListener( "mousemove", function ( ) {
+
+			var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 			update$1();
-			update('color1', "#" + col.getHexString() );
-			var col1 = document.getElementById("color1_value");
+			update( 'color1', "#" + col.getHexString() );
+			var col1 = document.getElementById( "color1_value" );
 			col1.style.background = "#" + col.getHexString();
-			col1 = document.getElementById("color1_box");
+			col1 = document.getElementById( "color1_box" );
 			col1.style.background = "#" + col.getHexString();
-		}, false);
 
-	  color2.addEventListener("mousemove", function(e) {
-	    var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
-	    update('color2', "#" + col.getHexString() );
-	    var col2 = document.getElementById("color2_value");
-	    col2.style.background = "#" + col.getHexString();
-	    col2 = document.getElementById("color2_box");
-	    col2.style.background = "#" + col.getHexString();
-	  }, false);
+		}, false );
 
-		color2.addEventListener("touchmove", function(e) {
-			var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
-			update('color2', "#" + col.getHexString() );
-			var col2 = document.getElementById("color2_value");
+		color1.addEventListener( "touchmove", function ( ) {
+
+			var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+			update$1();
+			update( 'color1', "#" + col.getHexString() );
+			var col1 = document.getElementById( "color1_value" );
+			col1.style.background = "#" + col.getHexString();
+			col1 = document.getElementById( "color1_box" );
+			col1.style.background = "#" + col.getHexString();
+
+		}, false );
+
+		color2.addEventListener( "mousemove", function ( ) {
+
+			var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+			update( 'color2', "#" + col.getHexString() );
+			var col2 = document.getElementById( "color2_value" );
 			col2.style.background = "#" + col.getHexString();
-			col2 = document.getElementById("color2_box");
+			col2 = document.getElementById( "color2_box" );
 			col2.style.background = "#" + col.getHexString();
-		}, false);
 
-	  stBtn.addEventListener("click", function(e) {
-	    startExperience();
-	  }, false);
+		}, false );
 
-	  mbCheckbox.addEventListener("click", function(e) {
-	    update('motionBlur', !options.motionBlur );
+		color2.addEventListener( "touchmove", function ( ) {
 
-	    var mbValue = document.getElementById("motion_blur_title_value");
+			var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+			update( 'color2', "#" + col.getHexString() );
+			var col2 = document.getElementById( "color2_value" );
+			col2.style.background = "#" + col.getHexString();
+			col2 = document.getElementById( "color2_box" );
+			col2.style.background = "#" + col.getHexString();
 
-	    this.classList.toggle("disabled");
-	    mbValue.classList.toggle("disabled");
+		}, false );
 
-	    if ( options.motionBlur ) {
-	      this.innerHTML = "Enabled";
-	      mbValue.innerHTML = "Enabled";
-	    }
-	    else {
-	      this.innerHTML = "Disabled";
-	      mbValue.innerHTML = "Disabled";
-	    }
+		stBtn.addEventListener( "click", function ( ) {
 
-	  }, false);
+			startExperience();
 
-	  menu.addEventListener("click", function(e) {
-	    this.classList.toggle("menu_active");
-	    var set = document.getElementById("settings");
-	    set.classList.toggle("final_settings");
-	  }, false);
+		}, false );
 
-	  for (var i = 0; i < settings_items.length; i++) {
-	    settings_items[i].addEventListener("click", function(e) {
-	      for (var i = 0; i < settings_items.length; i++) {
-	        settings_items[i].classList.remove("selected_item");
-	      }
-	      this.classList.add("selected_item");
-	    }, false);
-	  }
+		mbCheckbox.addEventListener( "click", function ( ) {
 
-	  for (var i = 0; i < qualities.length; i++) {
-	    qualities[i].addEventListener("click", function(e) {
-	      e.preventDefault();
-	      if ( this.dataset.quality == options.quality ) return;
-	      for (var i = 0; i < qualities.length; i++) {
-	        qualities[i].classList.remove("selected");
-	        qualities[i].classList.remove("recommended");
-	      }
-	      this.classList.add("selected");
-	      quality_list.classList.remove("vis");
-	      quality_value.classList.remove("vis");
-	      quality_value.innerHTML = this.innerHTML + " <span class=\"pn\">" + (65)*Math.pow(2, this.dataset.quality) +"k</span><span class=\"caret\"></span>";
-	      changeQuality$1( this.dataset.quality );
-	    }, false);
-	    qualities[i].addEventListener('transitionend', function () {
-	      var node = this;
-	      setTimeout( function(){
-	        node.classList.remove("recommended");
-	      }, 800);
-	    }, false);
-	  }
+			update( 'motionBlur', ! options.motionBlur );
 
-	  quality_value.addEventListener("click", function(e) {
-	    quality_list.classList.toggle("vis");
-	    this.classList.toggle("vis");
-	    caret.classList.toggle("vis");
-	  }, false);
+			var mbValue = document.getElementById( "motion_blur_title_value" );
 
-	  body.classList.remove("hid");
+			this.classList.toggle( "disabled" );
+			mbValue.classList.toggle( "disabled" );
 
-		if ( !options.mobile ) {
-			qualities[2].click();
+			if ( options.motionBlur ) {
+
+				this.innerHTML = "Enabled";
+				mbValue.innerHTML = "Enabled";
+
+			} else {
+
+				this.innerHTML = "Disabled";
+				mbValue.innerHTML = "Disabled";
+
+			}
+
+		}, false );
+
+		menu.addEventListener( "click", function ( ) {
+
+			this.classList.toggle( "menu_active" );
+			var set = document.getElementById( "settings" );
+			set.classList.toggle( "final_settings" );
+
+		}, false );
+
+		for ( var i = 0; i < settings_items.length; i ++ ) {
+
+			settings_items[ i ].addEventListener( "click", function ( ) {
+
+				for ( var i = 0; i < settings_items.length; i ++ ) {
+
+					settings_items[ i ].classList.remove( "selected_item" );
+
+				}
+				this.classList.add( "selected_item" );
+
+			}, false );
+
 		}
-		else {
-			qualities[0].click();
+
+		for ( var i = 0; i < qualities.length; i ++ ) {
+
+			qualities[ i ].addEventListener( "click", function ( e ) {
+
+				e.preventDefault();
+				if ( this.dataset.quality == options.quality ) return;
+				for ( var i = 0; i < qualities.length; i ++ ) {
+
+					qualities[ i ].classList.remove( "selected" );
+					qualities[ i ].classList.remove( "recommended" );
+
+				}
+				this.classList.add( "selected" );
+				quality_list.classList.remove( "vis" );
+				quality_value.classList.remove( "vis" );
+				quality_value.innerHTML = this.innerHTML + " <span class=\"pn\">" + ( 65 ) * Math.pow( 2, this.dataset.quality ) + "k</span><span class=\"caret\"></span>";
+				changeQuality$1( this.dataset.quality );
+
+			}, false );
+			qualities[ i ].addEventListener( 'transitionend', function () {
+
+				var node = this;
+				setTimeout( function () {
+
+					node.classList.remove( "recommended" );
+
+				}, 800 );
+
+			}, false );
+
 		}
+
+		quality_value.addEventListener( "click", function ( ) {
+
+			quality_list.classList.toggle( "vis" );
+			this.classList.toggle( "vis" );
+			caret.classList.toggle( "vis" );
+
+		}, false );
+
+		body.classList.remove( "hid" );
+
+		if ( ! options.mobile ) {
+
+			qualities[ 2 ].click();
+
+		} else {
+
+			qualities[ 0 ].click();
+
+		}
+
 	}
 
 	function changeQuality$1( val ) {
-	  changeQuality( val );
+
+		changeQuality( val );
+
 	}
 
 
 	function startExperience() {
-	  document.body.classList.remove("starting");
-	  document.body.classList.add("active");
 
-	  brand.classList.remove("nodelay");
-	  brand.classList.remove("brandInit");
-	  overlay.classList.add("invisible");
-	  stExp = true;
-	  prevTime = Date.now();
-	  sumTime = 0;
+		document.body.classList.remove( "starting" );
+		document.body.classList.add( "active" );
+
+		brand.classList.remove( "nodelay" );
+		brand.classList.remove( "brandInit" );
+		overlay.classList.add( "invisible" );
+		stExp = true;
+		prevTime = Date.now();
+		sumTime = 0;
+
 	}
 
 	function startUI() {
-	  _controls.enableZoom = true;
-	  _controls.enableRotate = true;
-	  _controls.maxPolarAngle = Math.PI * 1.8 / 5;
-	  _controls.maxDistance = 250;
-	  _controls.minDistance = 150;
-	  // _controls.minPolarAngle = 0.8;
 
-	  var delays = document.querySelectorAll(".delay");
-	  for ( var i = 0; i < delays.length; i++ )
-	  delays[i].classList.remove("delay");
+		_controls.enableZoom = true;
+		_controls.enableRotate = true;
+		_controls.maxPolarAngle = Math.PI * 1.8 / 5;
+		_controls.maxDistance = 250;
+		_controls.minDistance = 150;
 
-	  var inactives = document.querySelectorAll(".inactive");
-	  for ( var i = 0; i < inactives.length; i++ )
-	  inactives[i].classList.remove("inactive");
+		var delays = document.querySelectorAll( ".delay" );
+		for ( var i = 0; i < delays.length; i ++ )
+			delays[ i ].classList.remove( "delay" );
+
+		var inactives = document.querySelectorAll( ".inactive" );
+		for ( var i = 0; i < inactives.length; i ++ )
+			inactives[ i ].classList.remove( "inactive" );
+
 	}
 
 	function showError() {
-		var videocontainer = document.getElementById("video-container");
-		var video = document.createElement("VIDEO");
-		video.src = './media/loop.mp4';
+
+		var videocontainer = document.getElementById( "video-container" );
+		var video = document.createElement( "VIDEO" );
+		video.src = '.assets/media/loop.mp4';
 		video.loop = true;
 		video.autoplay = true;
 		video.muted = true;
 
 		videocontainer.appendChild( video );
 
-		var intro = document.getElementById("intro");
-		var btn = document.getElementById("st_btn");
-		var notice = document.getElementById("st_notice");
-		var steps = document.getElementById("st_steps");
-		var body = document.getElementsByTagName("BODY")[0];
+		var intro = document.getElementById( "intro" );
+		var btn = document.getElementById( "st_btn" );
+		var notice = document.getElementById( "st_notice" );
+		var steps = document.getElementById( "st_steps" );
+		var body = document.getElementsByTagName( "BODY" )[ 0 ];
 
-		intro.classList.add("hidden");
-		btn.classList.add("hidden");
-		notice.classList.remove("hidden");
-		steps.classList.remove("hidden");
+		intro.classList.add( "hidden" );
+		btn.classList.add( "hidden" );
+		notice.classList.remove( "hidden" );
+		steps.classList.remove( "hidden" );
 
-		body.classList.remove("hid");
+		body.classList.remove( "hid" );
+
 	}
 
 	function update$2() {
-	  var t;
-	  if ( stExp && !edExp ) {
-	    if ( sumTime < 3500 ) {
-	      curTime = Date.now();
-	      var elapsedTime = curTime - prevTime;
-	      prevTime = curTime;
 
-	      sumTime += elapsedTime;
+		var t;
+		if ( stExp && ! edExp ) {
 
-	      t = sumTime / 3500;
+			if ( sumTime < 3500 ) {
 
-	      let xpos = easeInOutQuint( t,  0,  130 );
-	      let ypos = easeInOutQuart( t, 200, -90 );
-	      let zpos = easeInOutQuart( t,  0, -110 );
-	      _camera.position.set( xpos, ypos, zpos );
-	    }
-	    else {
-	      t = 1;
-	      edExp = true;
-	      startUI();
-	    }
-	  }
+				curTime = Date.now();
+				var elapsedTime = curTime - prevTime;
+				prevTime = curTime;
 
-	  if (ball > 130 || ball < 0)
-	  direction *= -1;
-	  if (ball > 35 && ball < 95) {
-	    amount =  1 - 0.6*options.viscosity/0.3;
-	  }
-	  else {
-	    amount = 1.5;
-	  }
+				sumTime += elapsedTime;
 
-	  ball += direction*amount;
-	  fluid_ball.style.transform = "translateX("+ ball +"px) translateY(-20px)";
+				t = sumTime / 3500;
+
+				let xpos = easeInOutQuint( t, 0, 130 );
+				let ypos = easeInOutQuart( t, 200, - 90 );
+				let zpos = easeInOutQuart( t, 0, - 110 );
+				_camera.position.set( xpos, ypos, zpos );
+
+			} else {
+
+				t = 1;
+				edExp = true;
+				startUI();
+
+			}
+
+		}
+
+		if ( ball > 130 || ball < 0 ) {
+
+			direction *= - 1;
+
+		}
+
+		if ( ball > 35 && ball < 95 ) {
+
+			amount = 1 - 0.6 * options.viscosity / 0.3;
+
+		} else {
+
+			amount = 1.5;
+
+		}
+
+		ball += direction * amount;
+		fluid_ball.style.transform = "translateX(" + ball + "px) translateY(-20px)";
+
 	}
 
 	// define-block
@@ -509,8 +607,9 @@
 	var mesh$1 = undef$3;
 
 	function init$3() {
+
 		mesh$1 = new THREE.Object3D();
-		mesh$1.position.set(0, 190, 0);
+		mesh$1.position.set( 0, 190, 0 );
 
 		var ambient = new THREE.AmbientLight( 0x333333 );
 		mesh$1.add( ambient );
@@ -520,7 +619,7 @@
 		mesh$1.add( directionalLight );
 
 		var directionalLight2 = new THREE.DirectionalLight( 0x8bbab4, 0.3 );
-		directionalLight2.position.set( 1, 1, -1 );
+		directionalLight2.position.set( 1, 1, - 1 );
 		mesh$1.add( directionalLight2 );
 
 		var pointLight = new THREE.PointLight( 0x999999, 1, 1600 );
@@ -531,6 +630,7 @@
 		pointLight.shadow.mapSize.width = 2048;
 		pointLight.shadow.mapSize.height = 1024;
 		mesh$1.add( pointLight );
+
 	}
 
 	// define-block
@@ -544,43 +644,59 @@
 	var plane3d = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ) );
 
 	function init$4( camera ) {
-	  _camera$1 = camera;
+
+		_camera$1 = camera;
 
 		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 		document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 		document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+
 	}
 
-	function update$3(dt) {
-	  prev.copy( position );
-	  raycaster.setFromCamera( mouse, _camera$1 );
+	function update$3( ) {
 
-	  raycaster.ray.intersectPlane( plane3d, tmpmouse );
-	  if ( tmpmouse != null ) {
-	    position.copy(tmpmouse);
-	  }
+		prev.copy( position );
+		raycaster.setFromCamera( mouse, _camera$1 );
 
-	  speed.copy( position.clone().sub(prev) );
-	  speed.y = 0;
+		raycaster.ray.intersectPlane( plane3d, tmpmouse );
+		if ( tmpmouse != null ) {
+
+			position.copy( tmpmouse );
+
+		}
+
+		speed.copy( position.clone().sub( prev ) );
+		speed.y = 0;
+
 	}
 
 	function onDocumentMouseMove( evt ) {
-	  mouse.x = (evt.pageX / window.innerWidth) * 2 - 1;
-	  mouse.y = -(evt.pageY / window.innerHeight) * 2 + 1;
+
+		mouse.x = ( evt.pageX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( evt.pageY / window.innerHeight ) * 2 + 1;
+
 	}
 
 	function onDocumentTouchStart( evt ) {
+
 		if ( evt.touches.length === 1 ) {
-			mouse.x = (evt.touches[0].pageX / window.innerWidth) * 2 - 1;
-			mouse.y = -(evt.touches[0].pageY / window.innerHeight) * 2 + 1;
+
+			mouse.x = ( evt.touches[ 0 ].pageX / window.innerWidth ) * 2 - 1;
+			mouse.y = - ( evt.touches[ 0 ].pageY / window.innerHeight ) * 2 + 1;
+
 		}
+
 	}
 
 	function onDocumentTouchMove( evt ) {
+
 		if ( evt.touches.length === 1 ) {
-			mouse.x = (evt.touches[0].pageX / window.innerWidth) * 2 - 1;
-			mouse.y = -(evt.touches[0].pageY / window.innerHeight) * 2 + 1;
+
+			mouse.x = ( evt.touches[ 0 ].pageX / window.innerWidth ) * 2 - 1;
+			mouse.y = - ( evt.touches[ 0 ].pageY / window.innerHeight ) * 2 + 1;
+
 		}
+
 	}
 
 	// Ported from Stefan Gustavson's java implementation
@@ -903,7 +1019,7 @@ void main() {
 		randomTexture = _createRandomTexture();
 		defaultPosition = _createDefaultPositionTexture();
 
-		_copyShader = new THREE.ShaderMaterial({
+		_copyShader = new THREE.ShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texture: { type: 't', value: undef$4 }
@@ -911,9 +1027,9 @@ void main() {
 			precision: options.precision,
 			vertexShader: quad_vert,
 			fragmentShader: through_frag,
-		});
+		} );
 
-		_positionShader = new THREE.ShaderMaterial({
+		_positionShader = new THREE.ShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texturePosition: { type: 't', value: undef$4 },
@@ -924,20 +1040,19 @@ void main() {
 			fragmentShader: position_frag,
 			blending: THREE.NoBlending,
 			transparent: false,
-			depthTest: false,
 			depthWrite: false,
 			depthTest: false
-		});
+		} );
 
-		_velocityShader = new THREE.ShaderMaterial({
+		_velocityShader = new THREE.ShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				textureRandom: { type: 't', value: randomTexture.texture },
 				texturePosition: { type: 't', value: undef$4 },
 				textureVelocity: { type: 't', value: undef$4 },
-				mousePosition: { type: 'v3', value: new THREE.Vector3(0,0,0) },
-				mousePrev: { type: 'v3', value: new THREE.Vector3(0,0,0) },
-				mouseVelocity: { type: 'v3', value: new THREE.Vector3(0,0,0) },
+				mousePosition: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
+				mousePrev: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
+				mouseVelocity: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
 				mouseRadius: { type: 'f', value: options.radius },
 				viscosity: { type: 'f', value: options.viscosity },
 				elasticity: { type: 'f', value: options.elasticity },
@@ -952,7 +1067,7 @@ void main() {
 			transparent: false,
 			depthWrite: false,
 			depthTest: false
-		});
+		} );
 
 		_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), _copyShader );
 		_scene.add( _mesh );
@@ -967,11 +1082,11 @@ void main() {
 			depthTest: false,
 			depthBuffer: false,
 			stencilBuffer: false
-		});
+		} );
 
 		_vtt2 = _vtt.clone();
-		_copyTexture(_createVelocityTexture(), _vtt);
-		_copyTexture(_vtt, _vtt2);
+		_copyTexture( _createVelocityTexture(), _vtt );
+		_copyTexture( _vtt, _vtt2 );
 
 		_rtt = new THREE.WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
 			wrapS: THREE.ClampToEdgeWrapping,
@@ -984,21 +1099,25 @@ void main() {
 			depthWrite: false,
 			depthBuffer: false,
 			stencilBuffer: false
-		});
+		} );
 
 		_rtt2 = _rtt.clone();
-		_copyTexture(_createPositionTexture(), _rtt);
-		_copyTexture(_rtt, _rtt2);
+		_copyTexture( _createPositionTexture(), _rtt );
+		_copyTexture( _rtt, _rtt2 );
+
 	}
 
-	function _copyTexture(input, output) {
+	function _copyTexture( input, output ) {
+
 		_mesh.material = _copyShader;
 		_copyShader.uniforms.texture.value = input.texture;
 		_renderer.setRenderTarget( output );
 		_renderer.render( _scene, _camera$2 );
+
 	}
 
 	function _updatePosition() {
+
 		var tmp = _rtt;
 		_rtt = _rtt2;
 		_rtt2 = tmp;
@@ -1008,9 +1127,11 @@ void main() {
 		_positionShader.uniforms.texturePosition.value = _rtt2.texture;
 		_renderer.setRenderTarget( _rtt );
 		_renderer.render( _scene, _camera$2 );
+
 	}
 
 	function _updateVelocity() {
+
 		var tmp = _vtt;
 		_vtt = _vtt2;
 		_vtt2 = tmp;
@@ -1027,16 +1148,22 @@ void main() {
 		_velocityShader.uniforms.time.value = life;
 		_renderer.setRenderTarget( _vtt );
 		_renderer.render( _scene, _camera$2 );
+
 	}
 
 	function _createRandomTexture() {
+
 		randomData = new Float32Array( AMOUNT * 4 );
-		for(var x = 0; x < TEXTURE_WIDTH; x++) {
-			for(var z= 0; z < TEXTURE_HEIGHT; z++) {
-				randomData[x*TEXTURE_HEIGHT*4 + z*4] = THREE.Math.randFloat(-1, 1);
-				randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1] = THREE.Math.randFloat(-1, 1);
-				randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2] = THREE.Math.randFloat(-1, 1);
+		for ( var x = 0; x < TEXTURE_WIDTH; x ++ ) {
+
+			for ( var z = 0; z < TEXTURE_HEIGHT; z ++ ) {
+
+				randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 ] = THREE.Math.randFloat( - 1, 1 );
+				randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = THREE.Math.randFloat( - 1, 1 );
+				randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 2 ] = THREE.Math.randFloat( - 1, 1 );
+
 			}
+
 		}
 		var tmp = {};
 		tmp.texture = new THREE.DataTexture( randomData, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
@@ -1046,25 +1173,31 @@ void main() {
 		tmp.texture.generateMipmaps = false;
 		tmp.texture.flipY = false;
 		return tmp;
+
 	}
 
 
 	function _createPositionTexture() {
+
 		var data = new Float32Array( AMOUNT * 4 );
-		for(var x = 0; x < TEXTURE_WIDTH; x++) {
-			for(var z= 0; z < TEXTURE_HEIGHT; z++) {
-				var xNorm = x/TEXTURE_WIDTH;
-				var zNorm = z/TEXTURE_HEIGHT;
+		for ( var x = 0; x < TEXTURE_WIDTH; x ++ ) {
+
+			for ( var z = 0; z < TEXTURE_HEIGHT; z ++ ) {
+
+				var xNorm = x / TEXTURE_WIDTH;
+				var zNorm = z / TEXTURE_HEIGHT;
 				var time = life;
 				var res = 7.6;
-				data[x*TEXTURE_HEIGHT*4 + z*4] = dim/2 - dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
-				data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = noise( xNorm*res, zNorm*res/2, time)*8 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*1.0;
-				data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = dim/2 - dim*(z/TEXTURE_HEIGHT) + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
+				data[ x * TEXTURE_HEIGHT * 4 + z * 4 ] = dim / 2 - dim * ( x / TEXTURE_WIDTH ) + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 ];
+				data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = noise( xNorm * res, zNorm * res / 2, time ) * 8 + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] * 1.0;
+				data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 2 ] = dim / 2 - dim * ( z / TEXTURE_HEIGHT ) + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 2 ];
 
 				// data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
 				// data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = Math.sin(xNorm*Math.PI + Math.PI*2.0*5.0*zNorm + Math.PI*time)*3.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*3.5;
 				// data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT) + Math.sin(xNorm*Math.PI*1.5 + Math.PI*time)*5.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
+
 			}
+
 		}
 		var tmp = {};
 		tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
@@ -1074,16 +1207,22 @@ void main() {
 		tmp.texture.generateMipmaps = false;
 		tmp.texture.flipY = false;
 		return tmp;
+
 	}
 
 	function _createDefaultPositionTexture() {
+
 		var data = new Float32Array( AMOUNT * 4 );
-		for(var x = 0; x < TEXTURE_WIDTH; x++) {
-			for(var z= 0; z < TEXTURE_HEIGHT; z++) {
-				data[x*TEXTURE_HEIGHT*4 + z*4] = dim/2 - dim*(x/TEXTURE_WIDTH);
-				data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = 0;
-				data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = dim/2 - dim*(z/TEXTURE_HEIGHT);
+		for ( var x = 0; x < TEXTURE_WIDTH; x ++ ) {
+
+			for ( var z = 0; z < TEXTURE_HEIGHT; z ++ ) {
+
+				data[ x * TEXTURE_HEIGHT * 4 + z * 4 ] = dim / 2 - dim * ( x / TEXTURE_WIDTH );
+				data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = 0;
+				data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 2 ] = dim / 2 - dim * ( z / TEXTURE_HEIGHT );
+
 			}
+
 		}
 		var tmp = {};
 		tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
@@ -1093,9 +1232,11 @@ void main() {
 		tmp.texture.generateMipmaps = false;
 		tmp.texture.flipY = false;
 		return tmp;
+
 	}
 
 	function _createVelocityTexture() {
+
 		var tmp = {};
 		tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 		tmp.texture.minFilter = THREE.NearestFilter;
@@ -1104,20 +1245,23 @@ void main() {
 		tmp.texture.generateMipmaps = false;
 		tmp.texture.flipY = false;
 		return tmp;
+
 	}
 
 	function update$4() {
+
 		cur = Date.now();
 		var offset = cur - prev$1;
 		prev$1 = cur;
 
-		life += Math.min(offset/(1200), 1/8);
+		life += Math.min( offset / ( 1200 ), 1 / 8 );
 
-		update$3( offset/1000 );
+		update$3( );
 
 		_updateVelocity();
 		_updatePosition();
 		rtt = _rtt;
+
 	}
 
 	var render_vert = /* glsl */`
@@ -1342,7 +1486,7 @@ void main () {
 
 		// material-block
 		renderShader = new THREE.ShaderMaterial( {
-			uniforms: THREE.UniformsUtils.merge([
+			uniforms: THREE.UniformsUtils.merge( [
 				THREE.UniformsLib.shadowmap,
 				THREE.UniformsLib.lights,
 				{
@@ -1367,24 +1511,22 @@ void main () {
 					aftOpacityFar: { type: "f", value: set.aftOpacityFar },
 					aftOpacityBase: { type: "f", value: set.aftOpacityBase }
 				}
-			]),
+			] ),
 			defines: {
 				USE_SHADOW: options.useShadow
 			},
 			precision: options.precision,
-			vertexShader:  render_vert,
+			vertexShader: render_vert,
 			fragmentShader: render_frag,
-			precision: "highp",
 			lights: true,
 			transparent: true,
-			blending: THREE.NormalBlending,
 			blending: THREE.AdditiveBlending,
 			depthTest: false,
 			depthWrite: false,
-		});
+		} );
 
-		_color1 = new THREE.Color(options.color1);
-		_color2 = new THREE.Color(options.color2);
+		_color1 = new THREE.Color( options.color1 );
+		_color2 = new THREE.Color( options.color2 );
 
 		renderShader.uniforms.color1.value = _color1;
 		renderShader.uniforms.color2.value = _color2;
@@ -1397,8 +1539,8 @@ void main () {
 				texturePosition: { type: 't', value: null }
 			},
 			precision: options.precision,
-			vertexShader:  distance_vert,
-			fragmentShader:  distance_frag,
+			vertexShader: distance_vert,
+			fragmentShader: distance_frag,
 			depthTest: false,
 			depthWrite: false,
 			side: THREE.BackSide,
@@ -1408,14 +1550,16 @@ void main () {
 
 		// geometry-block
 		var position = new Float32Array( AMOUNT$1 * 3 );
-		for ( var i = 0; i < (AMOUNT$1); i++ ) {
+		for ( var i = 0; i < ( AMOUNT$1 ); i ++ ) {
+
 			i3 = i * 3;
-			position[i3 + 0] =  ~~( i / ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_WIDTH$1 );
-			position[i3 + 1] =    ( i % ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_HEIGHT$1 );
+			position[ i3 + 0 ] = ~ ~ ( i / ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_WIDTH$1 );
+			position[ i3 + 1 ] = ( i % ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_HEIGHT$1 );
+
 		}
 
 		var geometry = new THREE.BufferGeometry();
-		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
+		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
 
 		mesh$2 = new THREE.Points( geometry, renderShader );
 		mesh$2.customDistanceMaterial = distanceShader;
@@ -1426,71 +1570,86 @@ void main () {
 
 
 	function update$5() {
-		_color1.setStyle(options.color1);
-		_color2.setStyle(options.color2);
+
+		_color1.setStyle( options.color1 );
+		_color2.setStyle( options.color2 );
 		distanceShader.uniforms.texturePosition.value = rtt.texture;
 		renderShader.uniforms.texturePosition.value = rtt.texture;
 		renderShader.uniforms.textureDefaultPosition.value = defaultPosition.texture;
 		renderShader.uniforms.camera.value = _camera$3.position;
+
 	}
 
 	// import-block
+
+	// defines-block
 	var w, h;
 	var renderer, scene, camera, controls;
-	var origin = new THREE.Vector3();
-	var stPos = new THREE.Vector3( 0, 200, -0.1);
+	var stPos = new THREE.Vector3( 0, 200, - 0.1 );
 	var isGPU = true;
 
 	function start() {
 
 		// init-renderer-block
-	  try {
-	    renderer = new THREE.WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
-	  }
-	  catch(err) {
-	    console.error("• Atomize •: Hardware Acceleration not enabled or GPU not available.");
-	    isGPU = false;
-	  }
+		try {
 
-	  if ( !isGPU || !WEBGL.isWebGLAvailable() ) {
-	    console.warn("• Atomize •: Initialization aborted.");
+			renderer = new THREE.WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
+
+		} catch ( err ) {
+
+			console.error( "Atomize • Hardware Acceleration not enabled or GPU not available." );
+			isGPU = false;
+
+		}
+
+		if ( ! isGPU || ! WEBGL.isWebGLAvailable() ) {
+
+			console.warn( "Atomize • Initialization aborted." );
 			showError();
-	    return;
-	  }
-	  isGPU = true;
+			return;
 
-	  renderer.setSize( window.innerWidth, window.innerHeight );
-	  renderer.sortObjects = true;
-	  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-	  renderer.shadowMap.enabled = true;
-	  renderer.setPixelRatio( window.devicePixelRatio );
-	  renderer.setClearColor( 0x020406 );
-	  document.body.appendChild( renderer.domElement );
+		}
 
-	  scene = new THREE.Scene();
-	  scene.fog = new THREE.FogExp2( 0x020406 , 0.0013 );
+		isGPU = true;
 
-	  camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
-	  camera.position.copy( stPos );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.setPixelRatio( window.devicePixelRatio );
+		renderer.setClearColor( 0x020406 );
 
-	  controls = new THREE.OrbitControls( camera, renderer.domElement );
-	  controls.enablePan = false;
-	  controls.enableZoom = false;
-	  controls.enableRotate = false;
-	  controls.update();
+		renderer.sortObjects = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		renderer.shadowMap.enabled = true;
 
-	  // initialization-block
+		document.body.appendChild( renderer.domElement );
+
+		scene = new THREE.Scene();
+		scene.fog = new THREE.FogExp2( 0x020406, 0.0013 );
+
+		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+		camera.position.copy( stPos );
+
+		controls = new THREE.OrbitControls( camera, renderer.domElement );
+		controls.enablePan = false;
+		controls.enableZoom = false;
+		controls.enableRotate = false;
+		controls.update();
+
+		// initialization-block
 		load();
 
 		var gl = renderer.getContext();
 		var precision = 'lowp';
 		if ( gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.MEDIUM_FLOAT ).precision > 0 &&
-				     gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT ).precision > 0 ) {
+			gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT ).precision > 0 ) {
+
 			precision = 'mediump';
+
 		}
 		if ( gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.HIGH_FLOAT ).precision > 0 &&
 					gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.HIGH_FLOAT ).precision > 0 ) {
+
 			precision = 'highp';
+
 		}
 
 		update( 'precision', precision );
@@ -1500,6 +1659,7 @@ void main () {
 	}
 
 	function load() {
+
 		init( renderer, scene, camera, window.innerWidth, window.innerHeight );
 		init$3();
 		init$1();
@@ -1511,43 +1671,47 @@ void main () {
 		scene.add( mesh );
 
 		init$2( camera, controls );
+
 	}
 
 	function restart() {
 
 		scene.remove( mesh$2 );
 
-	  update( 'restart', false );
-	  init$5( renderer, camera );
-	  init$6( camera );
+		update( 'restart', false );
+		init$5( renderer, camera );
+		init$6( camera );
 
-	  scene.add( mesh$2 );
+		scene.add( mesh$2 );
 
 	}
 
 	function update$6() {
 
-	  if ( options.restart ) restart();
+		if ( options.restart ) restart();
 
-	  requestAnimationFrame(update$6);
+		requestAnimationFrame( update$6 );
 
-	  update$2();
-	  controls.update();
-	  update$4();
-	  update$5();
-	  render();
+		update$2();
+		controls.update();
+		update$4();
+		update$5();
+		render();
 
 	}
 
 	window.onresize = function () {
 
-	  if (!isGPU) return;
-	  w = window.innerWidth;
-	  h = window.innerHeight;
-	  camera.aspect = w / h;
-	  camera.updateProjectionMatrix();
-	  renderer.setSize( w, h );
-	  setSize( w, h );
+		if ( ! isGPU ) return;
+
+		w = window.innerWidth;
+		h = window.innerHeight;
+
+		camera.aspect = w / h;
+		camera.updateProjectionMatrix();
+
+		renderer.setSize( w, h );
+		setSize( w, h );
 
 	};
 

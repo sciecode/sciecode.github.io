@@ -1,7 +1,7 @@
 // accelerating from zero velocity
-function easeInQuad(t, b, c) { return c*(t/=1)*t + b; }
+function easeInQuad( t, b, c ) { return c*(t/=1)*t + b; }
 // decelerating to zero velocity
-function easeOutQuad(t, b, c) { return -c *(t/=1)*(t-2) + b; }
+function easeOutQuad( t, b, c ) { return -c *(t/=1)*(t-2) + b; }
 // acceleration until halfway, then deceleration
 function easeInOutQuad(t, b, c) {
 	if ((t/=1/2) < 1) return c/2*t*t + b;

@@ -1,18 +1,17 @@
 // import-block
 import * as settings from './settings.js';
 import * as lights from './lights.js';
-import * as fbo from './fbo.js'
+import * as fbo from './fbo.js';
 
 // shader-import-block
-import render_vert from '../glsl/render.vert.js'
-import render_frag from '../glsl/render.frag.js'
-import distance_vert from '../glsl/distance.vert.js'
-import distance_frag from '../glsl/distance.frag.js'
+import render_vert from '../glsl/render.vert.js';
+import render_frag from '../glsl/render.frag.js';
+import distance_vert from '../glsl/distance.vert.js';
+import distance_frag from '../glsl/distance.frag.js';
 
 // define-block
 var undef;
 var mesh;
-var dists;
 var set;
 
 var _color1;
@@ -45,7 +44,7 @@ function init( camera ) {
 		aftOpacityNear: 0.0,
 		aftOpacityFar: 79.0,
 		aftOpacityBase: 0.35
-	}
+	};
 
 	TEXTURE_WIDTH = settings.options.TEXTURE_WIDTH;
 	TEXTURE_HEIGHT = settings.options.TEXTURE_HEIGHT;
@@ -54,7 +53,7 @@ function init( camera ) {
 
 	// material-block
 	renderShader = new THREE.ShaderMaterial( {
-		uniforms: THREE.UniformsUtils.merge([
+		uniforms: THREE.UniformsUtils.merge( [
 			THREE.UniformsLib.shadowmap,
 			THREE.UniformsLib.lights,
 			{
@@ -79,24 +78,22 @@ function init( camera ) {
 				aftOpacityFar: { type: "f", value: set.aftOpacityFar },
 				aftOpacityBase: { type: "f", value: set.aftOpacityBase }
 			}
-		]),
+		] ),
 		defines: {
 			USE_SHADOW: settings.options.useShadow
 		},
 		precision: settings.options.precision,
-		vertexShader:  render_vert,
+		vertexShader: render_vert,
 		fragmentShader: render_frag,
-		precision: "highp",
 		lights: true,
 		transparent: true,
-		blending: THREE.NormalBlending,
 		blending: THREE.AdditiveBlending,
 		depthTest: false,
 		depthWrite: false,
-	});
+	} );
 
-	_color1 = new THREE.Color(settings.options.color1);
-	_color2 = new THREE.Color(settings.options.color2);
+	_color1 = new THREE.Color( settings.options.color1 );
+	_color2 = new THREE.Color( settings.options.color2 );
 
 	renderShader.uniforms.color1.value = _color1;
 	renderShader.uniforms.color2.value = _color2;
@@ -109,8 +106,8 @@ function init( camera ) {
 			texturePosition: { type: 't', value: null }
 		},
 		precision: settings.options.precision,
-		vertexShader:  distance_vert,
-		fragmentShader:  distance_frag,
+		vertexShader: distance_vert,
+		fragmentShader: distance_frag,
 		depthTest: false,
 		depthWrite: false,
 		side: THREE.BackSide,
@@ -120,14 +117,16 @@ function init( camera ) {
 
 	// geometry-block
 	var position = new Float32Array( AMOUNT * 3 );
-	for ( var i = 0; i < (AMOUNT); i++ ) {
+	for ( var i = 0; i < ( AMOUNT ); i ++ ) {
+
 		i3 = i * 3;
-		position[i3 + 0] =  ~~( i / ( TEXTURE_HEIGHT ) ) / ( TEXTURE_WIDTH );
-		position[i3 + 1] =    ( i % ( TEXTURE_HEIGHT ) ) / ( TEXTURE_HEIGHT );
+		position[ i3 + 0 ] = ~ ~ ( i / ( TEXTURE_HEIGHT ) ) / ( TEXTURE_WIDTH );
+		position[ i3 + 1 ] = ( i % ( TEXTURE_HEIGHT ) ) / ( TEXTURE_HEIGHT );
+
 	}
 
 	var geometry = new THREE.BufferGeometry();
-	geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ));
+	geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
 
 	mesh = new THREE.Points( geometry, renderShader );
 	mesh.customDistanceMaterial = distanceShader;
@@ -138,12 +137,14 @@ function init( camera ) {
 
 
 function update() {
-	_color1.setStyle(settings.options.color1);
-	_color2.setStyle(settings.options.color2);
+
+	_color1.setStyle( settings.options.color1 );
+	_color2.setStyle( settings.options.color2 );
 	distanceShader.uniforms.texturePosition.value = fbo.rtt.texture;
 	renderShader.uniforms.texturePosition.value = fbo.rtt.texture;
 	renderShader.uniforms.textureDefaultPosition.value = fbo.defaultPosition.texture;
 	renderShader.uniforms.camera.value = _camera.position;
+
 }
 
 export { mesh, init, update };

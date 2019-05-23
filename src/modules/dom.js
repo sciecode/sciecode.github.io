@@ -1,7 +1,7 @@
 // import-block
 import * as settings from './settings.js';
 import * as floor from './floor.js';
-import { easeInOutQuint , easeInOutQuart } from '../helpers/easing.js';
+import { easeInOutQuint, easeInOutQuart } from '../helpers/easing.js';
 
 // define-block
 var undef;
@@ -44,310 +44,381 @@ var ball = 0;
 var direction = 1;
 var amount = 1;
 
-function init ( camera, controls ) {
+function init( camera, controls ) {
 
-  _camera = camera;
-  _controls = controls;
+	_camera = camera;
+	_controls = controls;
 
-  body = document.getElementsByTagName("BODY")[0];
+	body = document.getElementsByTagName( "BODY" )[ 0 ];
 
-  notice = document.getElementById("noticeText");
+	notice = document.getElementById( "noticeText" );
 
-  qualities = document.getElementsByClassName("qualities");
-  quality_list = document.getElementById("quality_list");
-  quality_value = document.getElementById("quality_value");
-  caret = document.querySelector(".caret");
+	qualities = document.getElementsByClassName( "qualities" );
+	quality_list = document.getElementById( "quality_list" );
+	quality_value = document.getElementById( "quality_value" );
+	caret = document.querySelector( ".caret" );
 
-  settings_items = document.getElementsByClassName("settings_items");
-  menu = document.getElementById("settings_menu");
+	settings_items = document.getElementsByClassName( "settings_items" );
+	menu = document.getElementById( "settings_menu" );
 
-  mbCheckbox = document.getElementById("mb_value");
+	mbCheckbox = document.getElementById( "mb_value" );
 
-  color1 = document.getElementById("color1_slider");
-  color2 = document.getElementById("color2_slider");
+	color1 = document.getElementById( "color1_slider" );
+	color2 = document.getElementById( "color2_slider" );
 
-  elaSlider = document.getElementById("ela_slider");
-  visSlider = document.getElementById("vis_slider");
-  radSlider = document.getElementById("rad_slider");
+	elaSlider = document.getElementById( "ela_slider" );
+	visSlider = document.getElementById( "vis_slider" );
+	radSlider = document.getElementById( "rad_slider" );
 
-  inside = document.getElementById("ball_sphere_inside");
+	inside = document.getElementById( "ball_sphere_inside" );
 
-  brand = document.getElementById("brand");
+	brand = document.getElementById( "brand" );
 
-  overlay = document.getElementById("overlay");
+	overlay = document.getElementById( "overlay" );
 
-  fluid_ball = document.getElementById("fluid_ball");
+	fluid_ball = document.getElementById( "fluid_ball" );
 
-  stBtn = document.getElementById("st_btn");
+	stBtn = document.getElementById( "st_btn" );
 
-  // eventListeners-block
-  inside.style.transform = "scale("+ settings.options.radius/50; +")";
+	// eventListeners-block
+	inside.style.transform = "scale(" + settings.options.radius / 50; + ")";
 
-  radSlider.addEventListener("mousemove", function(e) {
-    settings.update('radius', this.value);
-    inside = document.getElementById("ball_sphere_inside");
-    inside.style.transform = "scale("+ settings.options.radius/50; +")";
-    var radValue = document.getElementById("rad_value");
-    radValue.innerHTML = this.value;
-    radValue = document.getElementById("rad_title_value");
-    radValue.innerHTML = this.value;
-  }, false);
+	radSlider.addEventListener( "mousemove", function ( ) {
 
-	radSlider.addEventListener("touchmove", function(e) {
-    settings.update('radius', this.value);
-    inside = document.getElementById("ball_sphere_inside");
-    inside.style.transform = "scale("+ settings.options.radius/50; +")";
-    var radValue = document.getElementById("rad_value");
-    radValue.innerHTML = this.value;
-    radValue = document.getElementById("rad_title_value");
-    radValue.innerHTML = this.value;
-  }, false);
+		settings.update( 'radius', this.value );
+		inside = document.getElementById( "ball_sphere_inside" );
+		inside.style.transform = "scale(" + settings.options.radius / 50; + ")";
+		var radValue = document.getElementById( "rad_value" );
+		radValue.innerHTML = this.value;
+		radValue = document.getElementById( "rad_title_value" );
+		radValue.innerHTML = this.value;
 
-  visSlider.addEventListener("mousemove", function(e) {
-    settings.update('viscosity', this.value/100);
-    var visValue = document.getElementById("vis_value");
-    visValue.innerHTML = this.value;
-    visValue = document.getElementById("vis_title_value");
-    visValue.innerHTML = this.value;
-    var fluid_box = document.getElementById("fluid_box");
-    fluid_box.style.background = "rgba(78, 177, "+ (219 - 140*settings.options.viscosity/0.3 )+","+ (0.2 + 0.2*settings.options.viscosity/0.3)  + ")";
-    fluid_box.style.border = "2px solid rgba(78, 177, "+ (219 - 140*settings.options.viscosity/0.3 )+", 1)";
-  }, false);
+	}, false );
 
-	visSlider.addEventListener("touchmove", function(e) {
-		settings.update('viscosity', this.value/100);
-		var visValue = document.getElementById("vis_value");
+	radSlider.addEventListener( "touchmove", function ( ) {
+
+		settings.update( 'radius', this.value );
+		inside = document.getElementById( "ball_sphere_inside" );
+		inside.style.transform = "scale(" + settings.options.radius / 50; + ")";
+		var radValue = document.getElementById( "rad_value" );
+		radValue.innerHTML = this.value;
+		radValue = document.getElementById( "rad_title_value" );
+		radValue.innerHTML = this.value;
+
+	}, false );
+
+	visSlider.addEventListener( "mousemove", function ( ) {
+
+		settings.update( 'viscosity', this.value / 100 );
+		var visValue = document.getElementById( "vis_value" );
 		visValue.innerHTML = this.value;
-		visValue = document.getElementById("vis_title_value");
+		visValue = document.getElementById( "vis_title_value" );
 		visValue.innerHTML = this.value;
-		var fluid_box = document.getElementById("fluid_box");
-		fluid_box.style.background = "rgba(78, 177, "+ (219 - 140*settings.options.viscosity/0.3 )+","+ (0.2 + 0.2*settings.options.viscosity/0.3)  + ")";
-		fluid_box.style.border = "2px solid rgba(78, 177, "+ (219 - 140*settings.options.viscosity/0.3 )+", 1)";
-	}, false);
+		var fluid_box = document.getElementById( "fluid_box" );
+		fluid_box.style.background = "rgba(78, 177, " + ( 219 - 140 * settings.options.viscosity / 0.3 ) + "," + ( 0.2 + 0.2 * settings.options.viscosity / 0.3 ) + ")";
+		fluid_box.style.border = "2px solid rgba(78, 177, " + ( 219 - 140 * settings.options.viscosity / 0.3 ) + ", 1)";
 
-  elaSlider.addEventListener("mousemove", function(e) {
-    settings.update('elasticity', this.value/1000);
-    var elaValue = document.getElementById("ela_value");
-    elaValue.innerHTML = this.value;
-    elaValue = document.getElementById("ela_title_value");
-    elaValue.innerHTML = this.value;
-  }, false);
+	}, false );
 
-	elaSlider.addEventListener("touchmove", function(e) {
-    settings.update('elasticity', this.value/1000);
-    var elaValue = document.getElementById("ela_value");
-    elaValue.innerHTML = this.value;
-    elaValue = document.getElementById("ela_title_value");
-    elaValue.innerHTML = this.value;
-  }, false);
+	visSlider.addEventListener( "touchmove", function ( ) {
 
-  color1.addEventListener("mousemove", function(e) {
-    var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
-    floor.update();
-    settings.update('color1', "#" + col.getHexString() );
-    var col1 = document.getElementById("color1_value");
-    col1.style.background = "#" + col.getHexString();
-    col1 = document.getElementById("color1_box");
-    col1.style.background = "#" + col.getHexString();
-  }, false);
+		settings.update( 'viscosity', this.value / 100 );
+		var visValue = document.getElementById( "vis_value" );
+		visValue.innerHTML = this.value;
+		visValue = document.getElementById( "vis_title_value" );
+		visValue.innerHTML = this.value;
+		var fluid_box = document.getElementById( "fluid_box" );
+		fluid_box.style.background = "rgba(78, 177, " + ( 219 - 140 * settings.options.viscosity / 0.3 ) + "," + ( 0.2 + 0.2 * settings.options.viscosity / 0.3 ) + ")";
+		fluid_box.style.border = "2px solid rgba(78, 177, " + ( 219 - 140 * settings.options.viscosity / 0.3 ) + ", 1)";
 
-	color1.addEventListener("touchmove", function(e) {
-		var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
+	}, false );
+
+	elaSlider.addEventListener( "mousemove", function ( ) {
+
+		settings.update( 'elasticity', this.value / 1000 );
+		var elaValue = document.getElementById( "ela_value" );
+		elaValue.innerHTML = this.value;
+		elaValue = document.getElementById( "ela_title_value" );
+		elaValue.innerHTML = this.value;
+
+	}, false );
+
+	elaSlider.addEventListener( "touchmove", function ( ) {
+
+		settings.update( 'elasticity', this.value / 1000 );
+		var elaValue = document.getElementById( "ela_value" );
+		elaValue.innerHTML = this.value;
+		elaValue = document.getElementById( "ela_title_value" );
+		elaValue.innerHTML = this.value;
+
+	}, false );
+
+	color1.addEventListener( "mousemove", function ( ) {
+
+		var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 		floor.update();
-		settings.update('color1', "#" + col.getHexString() );
-		var col1 = document.getElementById("color1_value");
+		settings.update( 'color1', "#" + col.getHexString() );
+		var col1 = document.getElementById( "color1_value" );
 		col1.style.background = "#" + col.getHexString();
-		col1 = document.getElementById("color1_box");
+		col1 = document.getElementById( "color1_box" );
 		col1.style.background = "#" + col.getHexString();
-	}, false);
 
-  color2.addEventListener("mousemove", function(e) {
-    var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
-    settings.update('color2', "#" + col.getHexString() );
-    var col2 = document.getElementById("color2_value");
-    col2.style.background = "#" + col.getHexString();
-    col2 = document.getElementById("color2_box");
-    col2.style.background = "#" + col.getHexString();
-  }, false);
+	}, false );
 
-	color2.addEventListener("touchmove", function(e) {
-		var col = new THREE.Color("hsl("+ this.value +",  73%, 46%)");
-		settings.update('color2', "#" + col.getHexString() );
-		var col2 = document.getElementById("color2_value");
+	color1.addEventListener( "touchmove", function ( ) {
+
+		var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		floor.update();
+		settings.update( 'color1', "#" + col.getHexString() );
+		var col1 = document.getElementById( "color1_value" );
+		col1.style.background = "#" + col.getHexString();
+		col1 = document.getElementById( "color1_box" );
+		col1.style.background = "#" + col.getHexString();
+
+	}, false );
+
+	color2.addEventListener( "mousemove", function ( ) {
+
+		var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		settings.update( 'color2', "#" + col.getHexString() );
+		var col2 = document.getElementById( "color2_value" );
 		col2.style.background = "#" + col.getHexString();
-		col2 = document.getElementById("color2_box");
+		col2 = document.getElementById( "color2_box" );
 		col2.style.background = "#" + col.getHexString();
-	}, false);
 
-  stBtn.addEventListener("click", function(e) {
-    startExperience();
-  }, false);
+	}, false );
 
-  mbCheckbox.addEventListener("click", function(e) {
-    settings.update('motionBlur', !settings.options.motionBlur );
+	color2.addEventListener( "touchmove", function ( ) {
 
-    var mbValue = document.getElementById("motion_blur_title_value");
+		var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		settings.update( 'color2', "#" + col.getHexString() );
+		var col2 = document.getElementById( "color2_value" );
+		col2.style.background = "#" + col.getHexString();
+		col2 = document.getElementById( "color2_box" );
+		col2.style.background = "#" + col.getHexString();
 
-    this.classList.toggle("disabled");
-    mbValue.classList.toggle("disabled");
+	}, false );
 
-    if ( settings.options.motionBlur ) {
-      this.innerHTML = "Enabled";
-      mbValue.innerHTML = "Enabled";
-    }
-    else {
-      this.innerHTML = "Disabled";
-      mbValue.innerHTML = "Disabled";
-    }
+	stBtn.addEventListener( "click", function ( ) {
 
-  }, false);
+		startExperience();
 
-  menu.addEventListener("click", function(e) {
-    this.classList.toggle("menu_active");
-    var set = document.getElementById("settings");
-    set.classList.toggle("final_settings")
-  }, false);
+	}, false );
 
-  for (var i = 0; i < settings_items.length; i++) {
-    settings_items[i].addEventListener("click", function(e) {
-      for (var i = 0; i < settings_items.length; i++) {
-        settings_items[i].classList.remove("selected_item");
-      }
-      this.classList.add("selected_item");
-    }, false);
-  }
+	mbCheckbox.addEventListener( "click", function ( ) {
 
-  for (var i = 0; i < qualities.length; i++) {
-    qualities[i].addEventListener("click", function(e) {
-      e.preventDefault();
-      if ( this.dataset.quality == settings.options.quality ) return;
-      for (var i = 0; i < qualities.length; i++) {
-        qualities[i].classList.remove("selected");
-        qualities[i].classList.remove("recommended");
-      }
-      this.classList.add("selected");
-      quality_list.classList.remove("vis");
-      quality_value.classList.remove("vis");
-      quality_value.innerHTML = this.innerHTML + " <span class=\"pn\">" + (65)*Math.pow(2, this.dataset.quality) +"k</span><span class=\"caret\"></span>";
-      changeQuality( this.dataset.quality );
-    }, false);
-    qualities[i].addEventListener('transitionend', function () {
-      var node = this;
-      setTimeout( function(){
-        node.classList.remove("recommended");
-      }, 800);
-    }, false);
-  }
+		settings.update( 'motionBlur', ! settings.options.motionBlur );
 
-  quality_value.addEventListener("click", function(e) {
-    quality_list.classList.toggle("vis");
-    this.classList.toggle("vis");
-    caret.classList.toggle("vis");
-  }, false);
+		var mbValue = document.getElementById( "motion_blur_title_value" );
 
-  body.classList.remove("hid");
+		this.classList.toggle( "disabled" );
+		mbValue.classList.toggle( "disabled" );
 
-	if ( !settings.options.mobile ) {
-		qualities[2].click();
+		if ( settings.options.motionBlur ) {
+
+			this.innerHTML = "Enabled";
+			mbValue.innerHTML = "Enabled";
+
+		} else {
+
+			this.innerHTML = "Disabled";
+			mbValue.innerHTML = "Disabled";
+
+		}
+
+	}, false );
+
+	menu.addEventListener( "click", function ( ) {
+
+		this.classList.toggle( "menu_active" );
+		var set = document.getElementById( "settings" );
+		set.classList.toggle( "final_settings" );
+
+	}, false );
+
+	for ( var i = 0; i < settings_items.length; i ++ ) {
+
+		settings_items[ i ].addEventListener( "click", function ( ) {
+
+			for ( var i = 0; i < settings_items.length; i ++ ) {
+
+				settings_items[ i ].classList.remove( "selected_item" );
+
+			}
+			this.classList.add( "selected_item" );
+
+		}, false );
+
 	}
-	else {
-		qualities[0].click();
+
+	for ( var i = 0; i < qualities.length; i ++ ) {
+
+		qualities[ i ].addEventListener( "click", function ( e ) {
+
+			e.preventDefault();
+			if ( this.dataset.quality == settings.options.quality ) return;
+			for ( var i = 0; i < qualities.length; i ++ ) {
+
+				qualities[ i ].classList.remove( "selected" );
+				qualities[ i ].classList.remove( "recommended" );
+
+			}
+			this.classList.add( "selected" );
+			quality_list.classList.remove( "vis" );
+			quality_value.classList.remove( "vis" );
+			quality_value.innerHTML = this.innerHTML + " <span class=\"pn\">" + ( 65 ) * Math.pow( 2, this.dataset.quality ) + "k</span><span class=\"caret\"></span>";
+			changeQuality( this.dataset.quality );
+
+		}, false );
+		qualities[ i ].addEventListener( 'transitionend', function () {
+
+			var node = this;
+			setTimeout( function () {
+
+				node.classList.remove( "recommended" );
+
+			}, 800 );
+
+		}, false );
+
 	}
+
+	quality_value.addEventListener( "click", function ( ) {
+
+		quality_list.classList.toggle( "vis" );
+		this.classList.toggle( "vis" );
+		caret.classList.toggle( "vis" );
+
+	}, false );
+
+	body.classList.remove( "hid" );
+
+	if ( ! settings.options.mobile ) {
+
+		qualities[ 2 ].click();
+
+	} else {
+
+		qualities[ 0 ].click();
+
+	}
+
 }
 
 function changeQuality( val ) {
-  settings.changeQuality( val );
+
+	settings.changeQuality( val );
+
 }
 
 
 function startExperience() {
-  document.body.classList.remove("starting");
-  document.body.classList.add("active");
 
-  brand.classList.remove("nodelay");
-  brand.classList.remove("brandInit");
-  overlay.classList.add("invisible");
-  stExp = true;
-  prevTime = Date.now();
-  sumTime = 0;
+	document.body.classList.remove( "starting" );
+	document.body.classList.add( "active" );
+
+	brand.classList.remove( "nodelay" );
+	brand.classList.remove( "brandInit" );
+	overlay.classList.add( "invisible" );
+	stExp = true;
+	prevTime = Date.now();
+	sumTime = 0;
+
 }
 
 function startUI() {
-  _controls.enableZoom = true;
-  _controls.enableRotate = true;
-  _controls.maxPolarAngle = Math.PI * 1.8 / 5;
-  _controls.maxDistance = 250;
-  _controls.minDistance = 150;
-  // _controls.minPolarAngle = 0.8;
 
-  var delays = document.querySelectorAll(".delay");
-  for ( var i = 0; i < delays.length; i++ )
-  delays[i].classList.remove("delay");
+	_controls.enableZoom = true;
+	_controls.enableRotate = true;
+	_controls.maxPolarAngle = Math.PI * 1.8 / 5;
+	_controls.maxDistance = 250;
+	_controls.minDistance = 150;
 
-  var inactives = document.querySelectorAll(".inactive");
-  for ( var i = 0; i < inactives.length; i++ )
-  inactives[i].classList.remove("inactive");
+	var delays = document.querySelectorAll( ".delay" );
+	for ( var i = 0; i < delays.length; i ++ )
+		delays[ i ].classList.remove( "delay" );
+
+	var inactives = document.querySelectorAll( ".inactive" );
+	for ( var i = 0; i < inactives.length; i ++ )
+		inactives[ i ].classList.remove( "inactive" );
+
 }
 
 function showError() {
-	var videocontainer = document.getElementById("video-container");
-	var video = document.createElement("VIDEO");
-	video.src = './media/loop.mp4';
+
+	var videocontainer = document.getElementById( "video-container" );
+	var video = document.createElement( "VIDEO" );
+	video.src = '.assets/media/loop.mp4';
 	video.loop = true;
 	video.autoplay = true;
 	video.muted = true;
 
 	videocontainer.appendChild( video );
 
-	var intro = document.getElementById("intro");
-	var btn = document.getElementById("st_btn");
-	var notice = document.getElementById("st_notice");
-	var steps = document.getElementById("st_steps");
-	var body = document.getElementsByTagName("BODY")[0];
+	var intro = document.getElementById( "intro" );
+	var btn = document.getElementById( "st_btn" );
+	var notice = document.getElementById( "st_notice" );
+	var steps = document.getElementById( "st_steps" );
+	var body = document.getElementsByTagName( "BODY" )[ 0 ];
 
-	intro.classList.add("hidden");
-	btn.classList.add("hidden");
-	notice.classList.remove("hidden");
-	steps.classList.remove("hidden");
+	intro.classList.add( "hidden" );
+	btn.classList.add( "hidden" );
+	notice.classList.remove( "hidden" );
+	steps.classList.remove( "hidden" );
 
-	body.classList.remove("hid");
+	body.classList.remove( "hid" );
+
 }
 
 function update() {
-  var t;
-  if ( stExp && !edExp ) {
-    if ( sumTime < 3500 ) {
-      curTime = Date.now();
-      var elapsedTime = curTime - prevTime;
-      prevTime = curTime;
 
-      sumTime += elapsedTime;
+	var t;
+	if ( stExp && ! edExp ) {
 
-      t = sumTime / 3500;
+		if ( sumTime < 3500 ) {
 
-      let xpos = easeInOutQuint( t,  0,  130 );
-      let ypos = easeInOutQuart( t, 200, -90 );
-      let zpos = easeInOutQuart( t,  0, -110 );
-      _camera.position.set( xpos, ypos, zpos );
-    }
-    else {
-      t = 1;
-      edExp = true;
-      startUI();
-    }
-  }
+			curTime = Date.now();
+			var elapsedTime = curTime - prevTime;
+			prevTime = curTime;
 
-  if (ball > 130 || ball < 0)
-  direction *= -1;
-  if (ball > 35 && ball < 95) {
-    amount =  1 - 0.6*settings.options.viscosity/0.3;
-  }
-  else {
-    amount = 1.5;
-  }
+			sumTime += elapsedTime;
 
-  ball += direction*amount;
-  fluid_ball.style.transform = "translateX("+ ball +"px) translateY(-20px)";
+			t = sumTime / 3500;
+
+			let xpos = easeInOutQuint( t, 0, 130 );
+			let ypos = easeInOutQuart( t, 200, - 90 );
+			let zpos = easeInOutQuart( t, 0, - 110 );
+			_camera.position.set( xpos, ypos, zpos );
+
+		} else {
+
+			t = 1;
+			edExp = true;
+			startUI();
+
+		}
+
+	}
+
+	if ( ball > 130 || ball < 0 ) {
+
+		direction *= - 1;
+
+	}
+
+	if ( ball > 35 && ball < 95 ) {
+
+		amount = 1 - 0.6 * settings.options.viscosity / 0.3;
+
+	} else {
+
+		amount = 1.5;
+
+	}
+
+	ball += direction * amount;
+	fluid_ball.style.transform = "translateX(" + ball + "px) translateY(-20px)";
+
 }
 
 export { init, update, showError };
