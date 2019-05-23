@@ -81,35 +81,41 @@
 	SCREEN_WIDTH,
 	SCREEN_HEIGHT;
 
-	function init( renderer, scene, camera, width, height ) {
+	async function init( renderer, scene, camera, width, height ) {
 
-		composer = new THREE.EffectComposer( renderer );
-		composer.setSize( width, height );
+		return new Promise(resolve => {
 
-		SCREEN_WIDTH = width;
-		SCREEN_HEIGHT = height;
+			composer = new THREE.EffectComposer( renderer );
+			composer.setSize( width, height );
 
-		const renderPass = new THREE.RenderPass( scene, camera );
+			SCREEN_WIDTH = width;
+			SCREEN_HEIGHT = height;
 
-		const renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
-		savePass = new THREE.SavePass( new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, renderTargetParameters ) );
+			const renderPass = new THREE.RenderPass( scene, camera );
 
-		blendPass = new THREE.ShaderPass( THREE.BlendShader, "tDiffuse1" );
+			const renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
+			savePass = new THREE.SavePass( new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, renderTargetParameters ) );
 
-		blendPass.uniforms[ 'tDiffuse2' ].value = savePass.renderTarget.texture;
-		blendPass.uniforms[ 'mixRatio' ].value = 0.25;
+			blendPass = new THREE.ShaderPass( THREE.BlendShader, "tDiffuse1" );
 
-		const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width, height ), 0.2, 0, 0.19 );
-		const copyPass = new THREE.ShaderPass( THREE.CopyShader );
-		copyPass.renderToScreen = true;
+			blendPass.uniforms[ 'tDiffuse2' ].value = savePass.renderTarget.texture;
+			blendPass.uniforms[ 'mixRatio' ].value = 0.25;
 
-		composer.addPass( renderPass );
+			const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width, height ), 0.2, 0, 0.19 );
+			const copyPass = new THREE.ShaderPass( THREE.CopyShader );
+			copyPass.renderToScreen = true;
 
-		composer.addPass( blendPass );
-		composer.addPass( savePass );
+			composer.addPass( renderPass );
 
-		composer.addPass( bloomPass );
-		composer.addPass( copyPass );
+			composer.addPass( blendPass );
+			composer.addPass( savePass );
+
+			composer.addPass( bloomPass );
+			composer.addPass( copyPass );
+
+			resolve( true );
+
+		});
 
 	}
 
@@ -1040,107 +1046,113 @@ void main() {
 
 	const dim = 220;
 
-	function init$5( renderer, camera ) {
+	async function init$5( renderer, camera ) {
 
-		init$4( camera );
+		return new Promise(resolve => {
 
-		TEXTURE_WIDTH = options.TEXTURE_WIDTH;
-		TEXTURE_HEIGHT = options.TEXTURE_HEIGHT;
-		AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
+			init$4( camera );
 
-		_renderer = renderer;
-		_scene = new THREE.Scene();
-		_camera$2 = new THREE.Camera();
-		_camera$2.position.z = 1;
+			TEXTURE_WIDTH = options.TEXTURE_WIDTH;
+			TEXTURE_HEIGHT = options.TEXTURE_HEIGHT;
+			AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
-		randomTexture = _createRandomTexture();
-		defaultPosition = _createDefaultPositionTexture();
+			_renderer = renderer;
+			_scene = new THREE.Scene();
+			_camera$2 = new THREE.Camera();
+			_camera$2.position.z = 1;
 
-		_copyShader = new THREE.ShaderMaterial( {
-			uniforms: {
-				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
-				texture: { type: 't'}
-			},
-			precision: options.precision,
-			vertexShader: quad_vert,
-			fragmentShader: through_frag,
-		} );
+			randomTexture = _createRandomTexture();
+			defaultPosition = _createDefaultPositionTexture();
 
-		_positionShader = new THREE.ShaderMaterial( {
-			uniforms: {
-				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
-				texturePosition: { type: 't' },
-				textureVelocity: { type: 't' }
-			},
-			precision: options.precision,
-			vertexShader: quad_vert,
-			fragmentShader: position_frag,
-			blending: THREE.NoBlending,
-			transparent: false,
-			depthWrite: false,
-			depthTest: false
-		} );
+			_copyShader = new THREE.ShaderMaterial( {
+				uniforms: {
+					resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
+					texture: { type: 't'}
+				},
+				precision: options.precision,
+				vertexShader: quad_vert,
+				fragmentShader: through_frag,
+			} );
 
-		_velocityShader = new THREE.ShaderMaterial( {
-			uniforms: {
-				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
-				textureRandom: { type: 't', value: randomTexture.texture },
-				texturePosition: { type: 't' },
-				textureVelocity: { type: 't' },
-				mousePosition: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
-				mousePrev: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
-				mouseVelocity: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
-				mouseRadius: { type: 'f', value: options.radius },
-				viscosity: { type: 'f', value: options.viscosity },
-				elasticity: { type: 'f', value: options.elasticity },
-				defaultPosition: { type: 't', value: defaultPosition.texture },
-				dim: { type: 'f', value: dim },
-				time: { type: 'f', value: 0 },
-			},
-			precision: options.precision,
-			vertexShader: quad_vert,
-			fragmentShader: velocity_frag,
-			blending: THREE.NoBlending,
-			transparent: false,
-			depthWrite: false,
-			depthTest: false
-		} );
+			_positionShader = new THREE.ShaderMaterial( {
+				uniforms: {
+					resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
+					texturePosition: { type: 't' },
+					textureVelocity: { type: 't' }
+				},
+				precision: options.precision,
+				vertexShader: quad_vert,
+				fragmentShader: position_frag,
+				blending: THREE.NoBlending,
+				transparent: false,
+				depthWrite: false,
+				depthTest: false
+			} );
 
-		_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), _copyShader );
-		_scene.add( _mesh );
+			_velocityShader = new THREE.ShaderMaterial( {
+				uniforms: {
+					resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
+					textureRandom: { type: 't', value: randomTexture.texture },
+					texturePosition: { type: 't' },
+					textureVelocity: { type: 't' },
+					mousePosition: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
+					mousePrev: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
+					mouseVelocity: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
+					mouseRadius: { type: 'f', value: options.radius },
+					viscosity: { type: 'f', value: options.viscosity },
+					elasticity: { type: 'f', value: options.elasticity },
+					defaultPosition: { type: 't', value: defaultPosition.texture },
+					dim: { type: 'f', value: dim },
+					time: { type: 'f', value: 0 },
+				},
+				precision: options.precision,
+				vertexShader: quad_vert,
+				fragmentShader: velocity_frag,
+				blending: THREE.NoBlending,
+				transparent: false,
+				depthWrite: false,
+				depthTest: false
+			} );
 
-		_vtt = new THREE.WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
-			wrapS: THREE.ClampToEdgeWrapping,
-			wrapT: THREE.ClampToEdgeWrapping,
-			minFilter: THREE.NearestFilter,
-			magFilter: THREE.NearestFilter,
-			format: THREE.RGBAFormat,
-			type: options.mobile ? THREE.HalfFloatType : THREE.FloatType,
-			depthTest: false,
-			depthBuffer: false,
-			stencilBuffer: false
-		} );
+			_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), _copyShader );
+			_scene.add( _mesh );
 
-		_vtt2 = _vtt.clone();
-		_copyTexture( _createVelocityTexture(), _vtt );
-		_copyTexture( _vtt, _vtt2 );
+			_vtt = new THREE.WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
+				wrapS: THREE.ClampToEdgeWrapping,
+				wrapT: THREE.ClampToEdgeWrapping,
+				minFilter: THREE.NearestFilter,
+				magFilter: THREE.NearestFilter,
+				format: THREE.RGBAFormat,
+				type: options.mobile ? THREE.HalfFloatType : THREE.FloatType,
+				depthTest: false,
+				depthBuffer: false,
+				stencilBuffer: false
+			} );
 
-		_rtt = new THREE.WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
-			wrapS: THREE.ClampToEdgeWrapping,
-			wrapT: THREE.ClampToEdgeWrapping,
-			minFilter: THREE.NearestFilter,
-			magFilter: THREE.NearestFilter,
-			format: THREE.RGBAFormat,
-			type: options.mobile ? THREE.HalfFloatType : THREE.FloatType,
-			depthTest: false,
-			depthWrite: false,
-			depthBuffer: false,
-			stencilBuffer: false
-		} );
+			_vtt2 = _vtt.clone();
+			_copyTexture( _createVelocityTexture(), _vtt );
+			_copyTexture( _vtt, _vtt2 );
 
-		_rtt2 = _rtt.clone();
-		_copyTexture( _createPositionTexture(), _rtt );
-		_copyTexture( _rtt, _rtt2 );
+			_rtt = new THREE.WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
+				wrapS: THREE.ClampToEdgeWrapping,
+				wrapT: THREE.ClampToEdgeWrapping,
+				minFilter: THREE.NearestFilter,
+				magFilter: THREE.NearestFilter,
+				format: THREE.RGBAFormat,
+				type: options.mobile ? THREE.HalfFloatType : THREE.FloatType,
+				depthTest: false,
+				depthWrite: false,
+				depthBuffer: false,
+				stencilBuffer: false
+			} );
+
+			_rtt2 = _rtt.clone();
+			_copyTexture( _createPositionTexture(), _rtt );
+			_copyTexture( _rtt, _rtt2 );
+
+			resolve( true );
+
+		});
 
 	}
 
@@ -1511,96 +1523,102 @@ void main () {
 		aftOpacityBase: 0.35
 	};
 
-	function init$6( camera ) {
+	async function init$6( camera ) {
 
-		_camera$3 = camera;
+		return new Promise(resolve => {
 
-		TEXTURE_WIDTH$1 = options.TEXTURE_WIDTH;
-		TEXTURE_HEIGHT$1 = options.TEXTURE_HEIGHT;
-		AMOUNT$1 = TEXTURE_WIDTH$1 * TEXTURE_HEIGHT$1;
+			_camera$3 = camera;
+
+			TEXTURE_WIDTH$1 = options.TEXTURE_WIDTH;
+			TEXTURE_HEIGHT$1 = options.TEXTURE_HEIGHT;
+			AMOUNT$1 = TEXTURE_WIDTH$1 * TEXTURE_HEIGHT$1;
 
 
-		// material-block
-		renderShader = new THREE.ShaderMaterial( {
-			uniforms: THREE.UniformsUtils.merge( [
-				THREE.UniformsLib.shadowmap,
-				THREE.UniformsLib.lights,
-				{
-					textureDefaultPosition: { type: "t", value: defaultPosition },
-					texturePosition: { type: "t", value: null },
-					dim: { type: "f", value: 0 },
-					sizeRatio: { type: "f", value: 0 },
+			// material-block
+			renderShader = new THREE.ShaderMaterial( {
+				uniforms: THREE.UniformsUtils.merge( [
+					THREE.UniformsLib.shadowmap,
+					THREE.UniformsLib.lights,
+					{
+						textureDefaultPosition: { type: "t", value: defaultPosition },
+						texturePosition: { type: "t", value: null },
+						dim: { type: "f", value: 0 },
+						sizeRatio: { type: "f", value: 0 },
+						lightPos: { type: 'v3', value: mesh$1.position },
+						color1: { type: 'c' },
+						color2: { type: 'c' },
+						camera: { type: "v3" },
+						befEnlargementNear: { type: "f", value: set.befEnlargementNear },
+						befEnlargementFar: { type: "f", value: set.befEnlargementFar },
+						befEnlargementFactor: { type: "f", value: set.befEnlargementFactor },
+						aftEnlargementNear: { type: "f", value: set.aftEnlargementNear },
+						aftEnlargementFar: { type: "f", value: set.aftEnlargementFar },
+						aftEnlargementFactor: { type: "f", value: set.aftEnlargementFactor },
+						befOpacityNear: { type: "f", value: set.befOpacityNear },
+						befOpacityFar: { type: "f", value: set.befOpacityFar },
+						befOpacityBase: { type: "f", value: set.befOpacityBase },
+						aftOpacityNear: { type: "f", value: set.aftOpacityNear },
+						aftOpacityFar: { type: "f", value: set.aftOpacityFar },
+						aftOpacityBase: { type: "f", value: set.aftOpacityBase }
+					}
+				] ),
+				defines: {
+					USE_SHADOW: options.useShadow
+				},
+				precision: options.precision,
+				vertexShader: render_vert,
+				fragmentShader: render_frag,
+				lights: true,
+				transparent: true,
+				blending: THREE.AdditiveBlending,
+				depthTest: false,
+				depthWrite: false,
+			} );
+
+			_color1 = new THREE.Color( options.color1 );
+			_color2 = new THREE.Color( options.color2 );
+
+			renderShader.uniforms.color1.value = _color1;
+			renderShader.uniforms.color2.value = _color2;
+			renderShader.uniforms.dim.value = dim;
+			renderShader.uniforms.sizeRatio.value = options.sizeRatio;
+
+			distanceShader = new THREE.ShaderMaterial( {
+				uniforms: {
 					lightPos: { type: 'v3', value: mesh$1.position },
-					color1: { type: 'c' },
-					color2: { type: 'c' },
-					camera: { type: "v3" },
-					befEnlargementNear: { type: "f", value: set.befEnlargementNear },
-					befEnlargementFar: { type: "f", value: set.befEnlargementFar },
-					befEnlargementFactor: { type: "f", value: set.befEnlargementFactor },
-					aftEnlargementNear: { type: "f", value: set.aftEnlargementNear },
-					aftEnlargementFar: { type: "f", value: set.aftEnlargementFar },
-					aftEnlargementFactor: { type: "f", value: set.aftEnlargementFactor },
-					befOpacityNear: { type: "f", value: set.befOpacityNear },
-					befOpacityFar: { type: "f", value: set.befOpacityFar },
-					befOpacityBase: { type: "f", value: set.befOpacityBase },
-					aftOpacityNear: { type: "f", value: set.aftOpacityNear },
-					aftOpacityFar: { type: "f", value: set.aftOpacityFar },
-					aftOpacityBase: { type: "f", value: set.aftOpacityBase }
-				}
-			] ),
-			defines: {
-				USE_SHADOW: options.useShadow
-			},
-			precision: options.precision,
-			vertexShader: render_vert,
-			fragmentShader: render_frag,
-			lights: true,
-			transparent: true,
-			blending: THREE.AdditiveBlending,
-			depthTest: false,
-			depthWrite: false,
-		} );
-
-		_color1 = new THREE.Color( options.color1 );
-		_color2 = new THREE.Color( options.color2 );
-
-		renderShader.uniforms.color1.value = _color1;
-		renderShader.uniforms.color2.value = _color2;
-		renderShader.uniforms.dim.value = dim;
-		renderShader.uniforms.sizeRatio.value = options.sizeRatio;
-
-		distanceShader = new THREE.ShaderMaterial( {
-			uniforms: {
-				lightPos: { type: 'v3', value: mesh$1.position },
-				texturePosition: { type: 't', value: null }
-			},
-			precision: options.precision,
-			vertexShader: distance_vert,
-			fragmentShader: distance_frag,
-			depthTest: false,
-			depthWrite: false,
-			side: THREE.BackSide,
-			blending: THREE.NoBlending
-		} );
+					texturePosition: { type: 't', value: null }
+				},
+				precision: options.precision,
+				vertexShader: distance_vert,
+				fragmentShader: distance_frag,
+				depthTest: false,
+				depthWrite: false,
+				side: THREE.BackSide,
+				blending: THREE.NoBlending
+			} );
 
 
-		// geometry-block
-		const position = new Float32Array( AMOUNT$1 * 3 );
-		for ( let i = 0; i < AMOUNT$1 ; i ++ ) {
+			// geometry-block
+			const position = new Float32Array( AMOUNT$1 * 3 );
+			for ( let i = 0; i < AMOUNT$1 ; i ++ ) {
 
-			const i3 = i * 3;
-			position[ i3 + 0 ] = ~ ~ ( i / ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_WIDTH$1 );
-			position[ i3 + 1 ] = ( i % ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_HEIGHT$1 );
+				const i3 = i * 3;
+				position[ i3 + 0 ] = ~ ~ ( i / ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_WIDTH$1 );
+				position[ i3 + 1 ] = ( i % ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_HEIGHT$1 );
 
-		}
+			}
 
-		const geometry = new THREE.BufferGeometry();
-		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
+			const geometry = new THREE.BufferGeometry();
+			geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
 
-		mesh$2 = new THREE.Points( geometry, renderShader );
-		mesh$2.customDistanceMaterial = distanceShader;
-		mesh$2.castShadow = true;
-		mesh$2.receiveShadow = true;
+			mesh$2 = new THREE.Points( geometry, renderShader );
+			mesh$2.customDistanceMaterial = distanceShader;
+			mesh$2.castShadow = true;
+			mesh$2.receiveShadow = true;
+
+			resolve( true );
+
+		});
 
 	}
 
@@ -1620,9 +1638,15 @@ void main () {
 	// import-block
 
 	// defines-block
-	let w, h;
-	let renderer, scene, camera, controls;
-	let isGPU = true;
+	let w, h,
+	renderer, scene, camera, controls,
+
+	isGPU = true,
+	loading = true,
+	fboLoaded = false,
+	particlesLoaded = false,
+	postprocessingLoaded = false,
+	sceneComplete = false;
 
 	const stPos = new THREE.Vector3( 0, 200, - 0.1 );
 
@@ -1650,7 +1674,10 @@ void main () {
 
 		isGPU = true;
 
-		renderer.setSize( window.innerWidth, window.innerHeight );
+		w = window.innerWidth;
+		h = window.innerHeight;
+
+		renderer.setSize( w, h );
 		renderer.setPixelRatio( window.devicePixelRatio );
 		renderer.setClearColor( 0x020406 );
 
@@ -1663,7 +1690,7 @@ void main () {
 		scene = new THREE.Scene();
 		scene.fog = new THREE.FogExp2( 0x020406, 0.0016 );
 
-		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+		camera = new THREE.PerspectiveCamera( 75, w / h, 1, 10000 );
 		camera.position.copy( stPos );
 
 		controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -1671,9 +1698,6 @@ void main () {
 		controls.enableZoom = false;
 		controls.enableRotate = false;
 		controls.update();
-
-		// initialization-block
-		load();
 
 		const gl = renderer.getContext();
 
@@ -1693,23 +1717,31 @@ void main () {
 
 		update( 'precision', precision );
 
-		requestAnimationFrame( update$6 ); // start
+		load();
+		requestAnimationFrame( animate ); // start
 
 	}
 
 	function load() {
 
-		init( renderer, scene, camera, window.innerWidth, window.innerHeight );
 		init$3();
 		init$1();
-		init$5( renderer, camera );
-		init$6( camera );
 
-		scene.add( mesh$2 );
 		scene.add( mesh$1 );
 		scene.add( mesh );
 
+		init$5( renderer, camera ).then( (status) => { fboLoaded = status; } );
+		init$6( camera ).then( (status) => { particlesLoaded = status; } );
+		init( renderer, scene, camera, w, h ).then( (status) => { postprocessingLoaded = status; } );
+
 		init$2( camera, controls );
+
+	}
+
+	function loadParticles() {
+
+		scene.add( mesh$2 );
+		sceneComplete = true;
 
 	}
 
@@ -1725,17 +1757,51 @@ void main () {
 
 	}
 
-	function update$6() {
+	function animate() {
 
 		if ( options.restart ) restart();
 
-		requestAnimationFrame( update$6 );
+		requestAnimationFrame( animate );
+
+		loading = ( ! fboLoaded || ! particlesLoaded || ! postprocessingLoaded );
+
+		if ( ! loading && ! sceneComplete ) {
+
+			loadParticles();
+
+		}
+
+		update$6();
+
+		render$1();
+
+	}
+
+	function update$6() {
 
 		update$2();
-		controls.update();
-		update$4();
-		update$5();
-		render();
+
+		if ( sceneComplete ) {
+
+			controls.update();
+			update$4();
+			update$5();
+
+		}
+
+	}
+
+	function render$1( ) {
+
+		if ( sceneComplete ) {
+
+			render();
+
+		} else {
+
+			renderer.render( scene, camera );
+
+		}
 
 	}
 

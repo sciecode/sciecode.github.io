@@ -38,96 +38,102 @@ const set = {
 	aftOpacityBase: 0.35
 };
 
-function init( camera ) {
+async function init( camera ) {
 
-	_camera = camera;
+	return new Promise(resolve => {
 
-	TEXTURE_WIDTH = settings.options.TEXTURE_WIDTH;
-	TEXTURE_HEIGHT = settings.options.TEXTURE_HEIGHT;
-	AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
+		_camera = camera;
+
+		TEXTURE_WIDTH = settings.options.TEXTURE_WIDTH;
+		TEXTURE_HEIGHT = settings.options.TEXTURE_HEIGHT;
+		AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 
-	// material-block
-	renderShader = new THREE.ShaderMaterial( {
-		uniforms: THREE.UniformsUtils.merge( [
-			THREE.UniformsLib.shadowmap,
-			THREE.UniformsLib.lights,
-			{
-				textureDefaultPosition: { type: "t", value: fbo.defaultPosition },
-				texturePosition: { type: "t", value: null },
-				dim: { type: "f", value: 0 },
-				sizeRatio: { type: "f", value: 0 },
+		// material-block
+		renderShader = new THREE.ShaderMaterial( {
+			uniforms: THREE.UniformsUtils.merge( [
+				THREE.UniformsLib.shadowmap,
+				THREE.UniformsLib.lights,
+				{
+					textureDefaultPosition: { type: "t", value: fbo.defaultPosition },
+					texturePosition: { type: "t", value: null },
+					dim: { type: "f", value: 0 },
+					sizeRatio: { type: "f", value: 0 },
+					lightPos: { type: 'v3', value: lights.mesh.position },
+					color1: { type: 'c' },
+					color2: { type: 'c' },
+					camera: { type: "v3" },
+					befEnlargementNear: { type: "f", value: set.befEnlargementNear },
+					befEnlargementFar: { type: "f", value: set.befEnlargementFar },
+					befEnlargementFactor: { type: "f", value: set.befEnlargementFactor },
+					aftEnlargementNear: { type: "f", value: set.aftEnlargementNear },
+					aftEnlargementFar: { type: "f", value: set.aftEnlargementFar },
+					aftEnlargementFactor: { type: "f", value: set.aftEnlargementFactor },
+					befOpacityNear: { type: "f", value: set.befOpacityNear },
+					befOpacityFar: { type: "f", value: set.befOpacityFar },
+					befOpacityBase: { type: "f", value: set.befOpacityBase },
+					aftOpacityNear: { type: "f", value: set.aftOpacityNear },
+					aftOpacityFar: { type: "f", value: set.aftOpacityFar },
+					aftOpacityBase: { type: "f", value: set.aftOpacityBase }
+				}
+			] ),
+			defines: {
+				USE_SHADOW: settings.options.useShadow
+			},
+			precision: settings.options.precision,
+			vertexShader: render_vert,
+			fragmentShader: render_frag,
+			lights: true,
+			transparent: true,
+			blending: THREE.AdditiveBlending,
+			depthTest: false,
+			depthWrite: false,
+		} );
+
+		_color1 = new THREE.Color( settings.options.color1 );
+		_color2 = new THREE.Color( settings.options.color2 );
+
+		renderShader.uniforms.color1.value = _color1;
+		renderShader.uniforms.color2.value = _color2;
+		renderShader.uniforms.dim.value = fbo.dim;
+		renderShader.uniforms.sizeRatio.value = settings.options.sizeRatio;
+
+		distanceShader = new THREE.ShaderMaterial( {
+			uniforms: {
 				lightPos: { type: 'v3', value: lights.mesh.position },
-				color1: { type: 'c' },
-				color2: { type: 'c' },
-				camera: { type: "v3" },
-				befEnlargementNear: { type: "f", value: set.befEnlargementNear },
-				befEnlargementFar: { type: "f", value: set.befEnlargementFar },
-				befEnlargementFactor: { type: "f", value: set.befEnlargementFactor },
-				aftEnlargementNear: { type: "f", value: set.aftEnlargementNear },
-				aftEnlargementFar: { type: "f", value: set.aftEnlargementFar },
-				aftEnlargementFactor: { type: "f", value: set.aftEnlargementFactor },
-				befOpacityNear: { type: "f", value: set.befOpacityNear },
-				befOpacityFar: { type: "f", value: set.befOpacityFar },
-				befOpacityBase: { type: "f", value: set.befOpacityBase },
-				aftOpacityNear: { type: "f", value: set.aftOpacityNear },
-				aftOpacityFar: { type: "f", value: set.aftOpacityFar },
-				aftOpacityBase: { type: "f", value: set.aftOpacityBase }
-			}
-		] ),
-		defines: {
-			USE_SHADOW: settings.options.useShadow
-		},
-		precision: settings.options.precision,
-		vertexShader: render_vert,
-		fragmentShader: render_frag,
-		lights: true,
-		transparent: true,
-		blending: THREE.AdditiveBlending,
-		depthTest: false,
-		depthWrite: false,
-	} );
-
-	_color1 = new THREE.Color( settings.options.color1 );
-	_color2 = new THREE.Color( settings.options.color2 );
-
-	renderShader.uniforms.color1.value = _color1;
-	renderShader.uniforms.color2.value = _color2;
-	renderShader.uniforms.dim.value = fbo.dim;
-	renderShader.uniforms.sizeRatio.value = settings.options.sizeRatio;
-
-	distanceShader = new THREE.ShaderMaterial( {
-		uniforms: {
-			lightPos: { type: 'v3', value: lights.mesh.position },
-			texturePosition: { type: 't', value: null }
-		},
-		precision: settings.options.precision,
-		vertexShader: distance_vert,
-		fragmentShader: distance_frag,
-		depthTest: false,
-		depthWrite: false,
-		side: THREE.BackSide,
-		blending: THREE.NoBlending
-	} );
+				texturePosition: { type: 't', value: null }
+			},
+			precision: settings.options.precision,
+			vertexShader: distance_vert,
+			fragmentShader: distance_frag,
+			depthTest: false,
+			depthWrite: false,
+			side: THREE.BackSide,
+			blending: THREE.NoBlending
+		} );
 
 
-	// geometry-block
-	const position = new Float32Array( AMOUNT * 3 );
-	for ( let i = 0; i < AMOUNT ; i ++ ) {
+		// geometry-block
+		const position = new Float32Array( AMOUNT * 3 );
+		for ( let i = 0; i < AMOUNT ; i ++ ) {
 
-		const i3 = i * 3;
-		position[ i3 + 0 ] = ~ ~ ( i / ( TEXTURE_HEIGHT ) ) / ( TEXTURE_WIDTH );
-		position[ i3 + 1 ] = ( i % ( TEXTURE_HEIGHT ) ) / ( TEXTURE_HEIGHT );
+			const i3 = i * 3;
+			position[ i3 + 0 ] = ~ ~ ( i / ( TEXTURE_HEIGHT ) ) / ( TEXTURE_WIDTH );
+			position[ i3 + 1 ] = ( i % ( TEXTURE_HEIGHT ) ) / ( TEXTURE_HEIGHT );
 
-	}
+		}
 
-	const geometry = new THREE.BufferGeometry();
-	geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
+		const geometry = new THREE.BufferGeometry();
+		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
 
-	mesh = new THREE.Points( geometry, renderShader );
-	mesh.customDistanceMaterial = distanceShader;
-	mesh.castShadow = true;
-	mesh.receiveShadow = true;
+		mesh = new THREE.Points( geometry, renderShader );
+		mesh.customDistanceMaterial = distanceShader;
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+
+		resolve( true );
+
+	});
 
 }
 

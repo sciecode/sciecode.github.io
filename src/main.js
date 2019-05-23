@@ -8,9 +8,15 @@ import * as fbo from './modules/fbo.js';
 import * as particles from './modules/particles.js';
 
 // defines-block
-let w, h;
-let renderer, scene, camera, controls;
-let isGPU = true;
+let w, h,
+renderer, scene, camera, controls,
+
+isGPU = true,
+loading = true,
+fboLoaded = false,
+particlesLoaded = false,
+postprocessingLoaded = false,
+sceneComplete = false;
 
 const stPos = new THREE.Vector3( 0, 200, - 0.1 );
 
@@ -38,7 +44,10 @@ function start() {
 
 	isGPU = true;
 
-	renderer.setSize( window.innerWidth, window.innerHeight );
+	w = window.innerWidth;
+	h = window.innerHeight;
+
+	renderer.setSize( w, h );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setClearColor( 0x020406 );
 
@@ -51,7 +60,7 @@ function start() {
 	scene = new THREE.Scene();
 	scene.fog = new THREE.FogExp2( 0x020406, 0.0016 );
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+	camera = new THREE.PerspectiveCamera( 75, w / h, 1, 10000 );
 	camera.position.copy( stPos );
 
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -59,9 +68,6 @@ function start() {
 	controls.enableZoom = false;
 	controls.enableRotate = false;
 	controls.update();
-
-	// initialization-block
-	load();
 
 	const gl = renderer.getContext();
 
@@ -81,23 +87,31 @@ function start() {
 
 	settings.update( 'precision', precision );
 
-	requestAnimationFrame( update ); // start
+	load();
+	requestAnimationFrame( animate ); // start
 
 }
 
 function load() {
 
-	postprocessing.init( renderer, scene, camera, window.innerWidth, window.innerHeight );
 	lights.init();
 	floor.init();
-	fbo.init( renderer, camera );
-	particles.init( camera );
 
-	scene.add( particles.mesh );
 	scene.add( lights.mesh );
 	scene.add( floor.mesh );
 
+	fbo.init( renderer, camera ).then( (status) => { fboLoaded = status } );
+	particles.init( camera ).then( (status) => { particlesLoaded = status } );
+	postprocessing.init( renderer, scene, camera, w, h ).then( (status) => { postprocessingLoaded = status } );
+
 	dom.init( camera, controls );
+
+}
+
+function loadParticles() {
+
+	scene.add( particles.mesh );
+	sceneComplete = true;
 
 }
 
@@ -113,17 +127,51 @@ function restart() {
 
 }
 
-function update() {
+function animate() {
 
 	if ( settings.options.restart ) restart();
 
-	requestAnimationFrame( update );
+	requestAnimationFrame( animate );
+
+	loading = ( ! fboLoaded || ! particlesLoaded || ! postprocessingLoaded );
+
+	if ( ! loading && ! sceneComplete ) {
+
+		loadParticles();
+
+	}
+
+	update();
+
+	render();
+
+}
+
+function update() {
 
 	dom.update();
-	controls.update();
-	fbo.update();
-	particles.update();
-	postprocessing.render();
+
+	if ( sceneComplete ) {
+
+		controls.update();
+		fbo.update();
+		particles.update();
+
+	}
+
+}
+
+function render( ) {
+
+	if ( sceneComplete ) {
+
+		postprocessing.render();
+
+	} else {
+
+		renderer.render( scene, camera );
+
+	}
 
 }
 

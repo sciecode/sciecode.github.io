@@ -9,35 +9,41 @@ composer,
 SCREEN_WIDTH,
 SCREEN_HEIGHT;
 
-function init( renderer, scene, camera, width, height ) {
+async function init( renderer, scene, camera, width, height ) {
 
-	composer = new THREE.EffectComposer( renderer );
-	composer.setSize( width, height );
+	return new Promise(resolve => {
 
-	SCREEN_WIDTH = width;
-	SCREEN_HEIGHT = height;
+		composer = new THREE.EffectComposer( renderer );
+		composer.setSize( width, height );
 
-	const renderPass = new THREE.RenderPass( scene, camera );
+		SCREEN_WIDTH = width;
+		SCREEN_HEIGHT = height;
 
-	const renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
-	savePass = new THREE.SavePass( new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, renderTargetParameters ) );
+		const renderPass = new THREE.RenderPass( scene, camera );
 
-	blendPass = new THREE.ShaderPass( THREE.BlendShader, "tDiffuse1" );
+		const renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
+		savePass = new THREE.SavePass( new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, renderTargetParameters ) );
 
-	blendPass.uniforms[ 'tDiffuse2' ].value = savePass.renderTarget.texture;
-	blendPass.uniforms[ 'mixRatio' ].value = 0.25;
+		blendPass = new THREE.ShaderPass( THREE.BlendShader, "tDiffuse1" );
 
-	const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width, height ), 0.2, 0, 0.19 );
-	const copyPass = new THREE.ShaderPass( THREE.CopyShader );
-	copyPass.renderToScreen = true;
+		blendPass.uniforms[ 'tDiffuse2' ].value = savePass.renderTarget.texture;
+		blendPass.uniforms[ 'mixRatio' ].value = 0.25;
 
-	composer.addPass( renderPass );
+		const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width, height ), 0.2, 0, 0.19 );
+		const copyPass = new THREE.ShaderPass( THREE.CopyShader );
+		copyPass.renderToScreen = true;
 
-	composer.addPass( blendPass );
-	composer.addPass( savePass );
+		composer.addPass( renderPass );
 
-	composer.addPass( bloomPass );
-	composer.addPass( copyPass );
+		composer.addPass( blendPass );
+		composer.addPass( savePass );
+
+		composer.addPass( bloomPass );
+		composer.addPass( copyPass );
+
+		resolve( true );
+
+	});
 
 }
 
