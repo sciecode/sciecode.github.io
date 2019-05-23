@@ -1652,7 +1652,7 @@ void main () {
 
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		renderer.setPixelRatio( window.devicePixelRatio );
-		renderer.background = new THREE.Color( 0x020406 );
+		renderer.setClearColor( 0x020406 );
 
 		renderer.sortObjects = false;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -1661,7 +1661,7 @@ void main () {
 		document.body.appendChild( renderer.domElement );
 
 		scene = new THREE.Scene();
-		scene.fog = new THREE.FogExp2( 0x020406, 0.0013 );
+		scene.fog = new THREE.FogExp2( 0x020406, 0.0016 );
 
 		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
 		camera.position.copy( stPos );
