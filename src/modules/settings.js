@@ -1,7 +1,7 @@
 // define-block
-var md = new MobileDetect( window.navigator.userAgent ).mobile();
+const md = new MobileDetect( window.navigator.userAgent ).mobile();
 
-var options = {
+const options = {
 	radius: 30,
 	viscosity: 0.12,
 	elasticity: 0.015,

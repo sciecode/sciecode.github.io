@@ -8,19 +8,20 @@
 * You can pass in a random number generator object if you like.
 * It is assumed to have a random() method.
 */
-var r = undefined;
-if (r == undefined) r = Math;
-var grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
-[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
-[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
-var p = [];
-for (var i=0; i<256; i++) {
+const r = Math;
+
+const grad3 = [
+	[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
+	[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
+	[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]
+];
+
+const p = [];
+for (let  i=0; i<256; i++) {
   p[i] = Math.floor(r.random()*256);
 }
-
-// To remove the need for index wrapping, double the permutation table length
-var perm = [];
-for(var i=0; i<512; i++) {
+const perm = [];
+for(let i=0; i<512; i++) {
   perm[i]=p[i & 255];
 }
 
@@ -39,9 +40,9 @@ function fade(t) {
 // Classic Perlin noise, 3D version
 function noise(x, y, z) {
   // Find unit grid cell containing point
-  var X = Math.floor(x);
-  var Y = Math.floor(y);
-  var Z = Math.floor(z);
+  let X = Math.floor(x);
+  let Y = Math.floor(y);
+  let Z = Math.floor(z);
 
   // Get relative xyz coordinates of point within that cell
   x = x - X;
@@ -54,38 +55,38 @@ function noise(x, y, z) {
   Z = Z & 255;
 
   // Calculate a set of eight hashed gradient indices
-  var gi000 = perm[X+perm[Y+perm[Z]]] % 12;
-  var gi001 = perm[X+perm[Y+perm[Z+1]]] % 12;
-  var gi010 = perm[X+perm[Y+1+perm[Z]]] % 12;
-  var gi011 = perm[X+perm[Y+1+perm[Z+1]]] % 12;
-  var gi100 = perm[X+1+perm[Y+perm[Z]]] % 12;
-  var gi101 = perm[X+1+perm[Y+perm[Z+1]]] % 12;
-  var gi110 = perm[X+1+perm[Y+1+perm[Z]]] % 12;
-  var gi111 = perm[X+1+perm[Y+1+perm[Z+1]]] % 12;
+  const gi000 = perm[X+perm[Y+perm[Z]]] % 12,
+  gi001 = perm[X+perm[Y+perm[Z+1]]] % 12,
+	gi010 = perm[X+perm[Y+1+perm[Z]]] % 12,
+  gi011 = perm[X+perm[Y+1+perm[Z+1]]] % 12,
+  gi100 = perm[X+1+perm[Y+perm[Z]]] % 12,
+  gi101 = perm[X+1+perm[Y+perm[Z+1]]] % 12,
+  gi110 = perm[X+1+perm[Y+1+perm[Z]]] % 12,
+  gi111 = perm[X+1+perm[Y+1+perm[Z+1]]] % 12,
 
   // Calculate noise contributions from each of the eight corners
-  var n000= dot(grad3[gi000], x, y, z);
-  var n100= dot(grad3[gi100], x-1, y, z);
-  var n010= dot(grad3[gi010], x, y-1, z);
-  var n110= dot(grad3[gi110], x-1, y-1, z);
-  var n001= dot(grad3[gi001], x, y, z-1);
-  var n101= dot(grad3[gi101], x-1, y, z-1);
-  var n011= dot(grad3[gi011], x, y-1, z-1);
-  var n111= dot(grad3[gi111], x-1, y-1, z-1);
+  n000 = dot(grad3[gi000], x, y, z),
+  n100 = dot(grad3[gi100], x-1, y, z),
+  n010 = dot(grad3[gi010], x, y-1, z),
+  n110 = dot(grad3[gi110], x-1, y-1, z),
+  n001 = dot(grad3[gi001], x, y, z-1),
+  n101 = dot(grad3[gi101], x-1, y, z-1),
+  n011 = dot(grad3[gi011], x, y-1, z-1),
+  n111 = dot(grad3[gi111], x-1, y-1, z-1),
   // Compute the fade curve value for each of x, y, z
-  var u = fade(x);
-  var v = fade(y);
-  var w = fade(z);
+  u = fade(x),
+  v = fade(y),
+  w = fade(z),
   // Interpolate along x the contributions from each of the corners
-  var nx00 = mix(n000, n100, u);
-  var nx01 = mix(n001, n101, u);
-  var nx10 = mix(n010, n110, u);
-  var nx11 = mix(n011, n111, u);
+  nx00 = mix(n000, n100, u),
+  nx01 = mix(n001, n101, u),
+  nx10 = mix(n010, n110, u),
+  nx11 = mix(n011, n111, u),
   // Interpolate the four results along y
-  var nxy0 = mix(nx00, nx10, v);
-  var nxy1 = mix(nx01, nx11, v);
+  nxy0 = mix(nx00, nx10, v),
+  nxy1 = mix(nx01, nx11, v),
   // Interpolate the two last results along z
-  var nxyz = mix(nxy0, nxy1, w);
+  nxyz = mix(nxy0, nxy1, w);
 
   return nxyz;
 };

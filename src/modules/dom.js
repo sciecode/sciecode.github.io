@@ -4,50 +4,54 @@ import * as floor from './floor.js';
 import { easeInOutQuint, easeInOutQuart } from '../helpers/easing.js';
 
 // define-block
-var undef;
+let _camera,
+_controls,
 
-var _camera = undef;
-var _controls = undef;
+body,
+overlay,
+brand,
+inside,
 
-var body = undef;
-var overlay = undef;
-var brand = undef;
-var inside = undef;
+mbCheckbox,
+menu,
+qualities,
+quality_list,
+quality_value,
 
-var mbCheckbox = undef;
-var menu = undef;
-var qualities = undef;
-var quality_list = undef;
-var quality_value = undef;
-var caret = undef;
-var settings_items = undef;
-var notice = undef;
+caret,
+notice,
+settings_items,
 
-var radSlider = undef;
-var visSlider = undef;
-var elaSlider = undef;
+radSlider,
+visSlider,
+elaSlider,
 
-var color1 = undef;
-var color2 = undef;
+color1,
+color2,
 
-var fluid_ball = undef;
+fluid_ball,
 
-var stBtn = undef;
+stBtn,
 
-var stExp = false;
-var edExp = false;
-var prevTime = undef;
-var curTime = undef;
-var sumTime = undef;
+stExp,
+edExp,
+prevTime,
+curTime,
+sumTime,
 
-var ball = 0;
-var direction = 1;
-var amount = 1;
+ball,
+direction,
+amount;
+
 
 function init( camera, controls ) {
 
 	_camera = camera;
 	_controls = controls;
+
+	ball = 0;
+	direction = 1;
+	amount = 1;
 
 	body = document.getElementsByTagName( "BODY" )[ 0 ];
 
@@ -88,8 +92,10 @@ function init( camera, controls ) {
 		settings.update( 'radius', this.value );
 		inside = document.getElementById( "ball_sphere_inside" );
 		inside.style.transform = "scale(" + settings.options.radius / 50; + ")";
-		var radValue = document.getElementById( "rad_value" );
+
+		let radValue = document.getElementById( "rad_value" );
 		radValue.innerHTML = this.value;
+
 		radValue = document.getElementById( "rad_title_value" );
 		radValue.innerHTML = this.value;
 
@@ -100,8 +106,10 @@ function init( camera, controls ) {
 		settings.update( 'radius', this.value );
 		inside = document.getElementById( "ball_sphere_inside" );
 		inside.style.transform = "scale(" + settings.options.radius / 50; + ")";
-		var radValue = document.getElementById( "rad_value" );
+
+		let radValue = document.getElementById( "rad_value" );
 		radValue.innerHTML = this.value;
+
 		radValue = document.getElementById( "rad_title_value" );
 		radValue.innerHTML = this.value;
 
@@ -110,11 +118,14 @@ function init( camera, controls ) {
 	visSlider.addEventListener( "mousemove", function ( ) {
 
 		settings.update( 'viscosity', this.value / 100 );
-		var visValue = document.getElementById( "vis_value" );
+
+		let visValue = document.getElementById( "vis_value" );
 		visValue.innerHTML = this.value;
+
 		visValue = document.getElementById( "vis_title_value" );
 		visValue.innerHTML = this.value;
-		var fluid_box = document.getElementById( "fluid_box" );
+
+		const fluid_box = document.getElementById( "fluid_box" );
 		fluid_box.style.background = "rgba(78, 177, " + ( 219 - 140 * settings.options.viscosity / 0.3 ) + "," + ( 0.2 + 0.2 * settings.options.viscosity / 0.3 ) + ")";
 		fluid_box.style.border = "2px solid rgba(78, 177, " + ( 219 - 140 * settings.options.viscosity / 0.3 ) + ", 1)";
 
@@ -123,11 +134,14 @@ function init( camera, controls ) {
 	visSlider.addEventListener( "touchmove", function ( ) {
 
 		settings.update( 'viscosity', this.value / 100 );
-		var visValue = document.getElementById( "vis_value" );
+
+		let visValue = document.getElementById( "vis_value" );
 		visValue.innerHTML = this.value;
+
 		visValue = document.getElementById( "vis_title_value" );
 		visValue.innerHTML = this.value;
-		var fluid_box = document.getElementById( "fluid_box" );
+
+		const fluid_box = document.getElementById( "fluid_box" );
 		fluid_box.style.background = "rgba(78, 177, " + ( 219 - 140 * settings.options.viscosity / 0.3 ) + "," + ( 0.2 + 0.2 * settings.options.viscosity / 0.3 ) + ")";
 		fluid_box.style.border = "2px solid rgba(78, 177, " + ( 219 - 140 * settings.options.viscosity / 0.3 ) + ", 1)";
 
@@ -136,8 +150,10 @@ function init( camera, controls ) {
 	elaSlider.addEventListener( "mousemove", function ( ) {
 
 		settings.update( 'elasticity', this.value / 1000 );
-		var elaValue = document.getElementById( "ela_value" );
+
+		let elaValue = document.getElementById( "ela_value" );
 		elaValue.innerHTML = this.value;
+
 		elaValue = document.getElementById( "ela_title_value" );
 		elaValue.innerHTML = this.value;
 
@@ -146,8 +162,10 @@ function init( camera, controls ) {
 	elaSlider.addEventListener( "touchmove", function ( ) {
 
 		settings.update( 'elasticity', this.value / 1000 );
-		var elaValue = document.getElementById( "ela_value" );
+
+		let elaValue = document.getElementById( "ela_value" );
 		elaValue.innerHTML = this.value;
+
 		elaValue = document.getElementById( "ela_title_value" );
 		elaValue.innerHTML = this.value;
 
@@ -155,11 +173,13 @@ function init( camera, controls ) {
 
 	color1.addEventListener( "mousemove", function ( ) {
 
-		var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 		floor.update();
 		settings.update( 'color1', "#" + col.getHexString() );
-		var col1 = document.getElementById( "color1_value" );
+
+		let col1 = document.getElementById( "color1_value" );
 		col1.style.background = "#" + col.getHexString();
+
 		col1 = document.getElementById( "color1_box" );
 		col1.style.background = "#" + col.getHexString();
 
@@ -167,11 +187,13 @@ function init( camera, controls ) {
 
 	color1.addEventListener( "touchmove", function ( ) {
 
-		var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 		floor.update();
 		settings.update( 'color1', "#" + col.getHexString() );
-		var col1 = document.getElementById( "color1_value" );
+
+		let col1 = document.getElementById( "color1_value" );
 		col1.style.background = "#" + col.getHexString();
+
 		col1 = document.getElementById( "color1_box" );
 		col1.style.background = "#" + col.getHexString();
 
@@ -179,10 +201,12 @@ function init( camera, controls ) {
 
 	color2.addEventListener( "mousemove", function ( ) {
 
-		var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 		settings.update( 'color2', "#" + col.getHexString() );
-		var col2 = document.getElementById( "color2_value" );
+
+		let col2 = document.getElementById( "color2_value" );
 		col2.style.background = "#" + col.getHexString();
+
 		col2 = document.getElementById( "color2_box" );
 		col2.style.background = "#" + col.getHexString();
 
@@ -190,10 +214,12 @@ function init( camera, controls ) {
 
 	color2.addEventListener( "touchmove", function ( ) {
 
-		var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 		settings.update( 'color2', "#" + col.getHexString() );
-		var col2 = document.getElementById( "color2_value" );
+
+		let col2 = document.getElementById( "color2_value" );
 		col2.style.background = "#" + col.getHexString();
+
 		col2 = document.getElementById( "color2_box" );
 		col2.style.background = "#" + col.getHexString();
 
@@ -209,7 +235,7 @@ function init( camera, controls ) {
 
 		settings.update( 'motionBlur', ! settings.options.motionBlur );
 
-		var mbValue = document.getElementById( "motion_blur_title_value" );
+		const mbValue = document.getElementById( "motion_blur_title_value" );
 
 		this.classList.toggle( "disabled" );
 		mbValue.classList.toggle( "disabled" );
@@ -231,16 +257,17 @@ function init( camera, controls ) {
 	menu.addEventListener( "click", function ( ) {
 
 		this.classList.toggle( "menu_active" );
-		var set = document.getElementById( "settings" );
+
+		const set = document.getElementById( "settings" );
 		set.classList.toggle( "final_settings" );
 
 	}, false );
 
-	for ( var i = 0; i < settings_items.length; i ++ ) {
+	for ( let i = 0, j = settings_items.length; i < j; i ++ ) {
 
 		settings_items[ i ].addEventListener( "click", function ( ) {
 
-			for ( var i = 0; i < settings_items.length; i ++ ) {
+			for ( let i = 0, j = settings_items.length; i < j; i ++ ) {
 
 				settings_items[ i ].classList.remove( "selected_item" );
 
@@ -251,28 +278,30 @@ function init( camera, controls ) {
 
 	}
 
-	for ( var i = 0; i < qualities.length; i ++ ) {
+	for ( let i = 0, j = qualities.length; i < j; i ++ ) {
 
 		qualities[ i ].addEventListener( "click", function ( e ) {
 
 			e.preventDefault();
 			if ( this.dataset.quality == settings.options.quality ) return;
-			for ( var i = 0; i < qualities.length; i ++ ) {
+			for ( let i = 0, j = qualities.length; i < j; i ++ ) {
 
 				qualities[ i ].classList.remove( "selected" );
 				qualities[ i ].classList.remove( "recommended" );
 
 			}
+
 			this.classList.add( "selected" );
 			quality_list.classList.remove( "vis" );
 			quality_value.classList.remove( "vis" );
 			quality_value.innerHTML = this.innerHTML + " <span class=\"pn\">" + ( 65 ) * Math.pow( 2, this.dataset.quality ) + "k</span><span class=\"caret\"></span>";
+
 			changeQuality( this.dataset.quality );
 
 		}, false );
 		qualities[ i ].addEventListener( 'transitionend', function () {
 
-			var node = this;
+			const node = this;
 			setTimeout( function () {
 
 				node.classList.remove( "recommended" );
@@ -320,6 +349,7 @@ function startExperience() {
 	brand.classList.remove( "nodelay" );
 	brand.classList.remove( "brandInit" );
 	overlay.classList.add( "invisible" );
+
 	stExp = true;
 	prevTime = Date.now();
 	sumTime = 0;
@@ -334,20 +364,20 @@ function startUI() {
 	_controls.maxDistance = 250;
 	_controls.minDistance = 150;
 
-	var delays = document.querySelectorAll( ".delay" );
-	for ( var i = 0; i < delays.length; i ++ )
+	const delays = document.querySelectorAll( ".delay" );
+	for ( let i = 0, j = delays.length; i < j; i ++ )
 		delays[ i ].classList.remove( "delay" );
 
-	var inactives = document.querySelectorAll( ".inactive" );
-	for ( var i = 0; i < inactives.length; i ++ )
+	const inactives = document.querySelectorAll( ".inactive" );
+	for ( let i = 0, j = inactives.length; i < j; i ++ )
 		inactives[ i ].classList.remove( "inactive" );
 
 }
 
 function showError() {
 
-	var videocontainer = document.getElementById( "video-container" );
-	var video = document.createElement( "VIDEO" );
+	const videocontainer = document.getElementById( "video-container" );
+	const video = document.createElement( "VIDEO" );
 	video.src = '.assets/media/loop.mp4';
 	video.loop = true;
 	video.autoplay = true;
@@ -355,11 +385,11 @@ function showError() {
 
 	videocontainer.appendChild( video );
 
-	var intro = document.getElementById( "intro" );
-	var btn = document.getElementById( "st_btn" );
-	var notice = document.getElementById( "st_notice" );
-	var steps = document.getElementById( "st_steps" );
-	var body = document.getElementsByTagName( "BODY" )[ 0 ];
+	const intro = document.getElementById( "intro" );
+	const btn = document.getElementById( "st_btn" );
+	const notice = document.getElementById( "st_notice" );
+	const steps = document.getElementById( "st_steps" );
+	const body = document.getElementsByTagName( "BODY" )[ 0 ];
 
 	intro.classList.add( "hidden" );
 	btn.classList.add( "hidden" );
@@ -372,13 +402,13 @@ function showError() {
 
 function update() {
 
-	var t;
+	let t;
 	if ( stExp && ! edExp ) {
 
 		if ( sumTime < 3500 ) {
 
 			curTime = Date.now();
-			var elapsedTime = curTime - prevTime;
+			const elapsedTime = curTime - prevTime;
 			prevTime = curTime;
 
 			sumTime += elapsedTime;
@@ -400,24 +430,29 @@ function update() {
 
 	}
 
-	if ( ball > 130 || ball < 0 ) {
+	if ( fluid_ball.parentNode.classList.contains( 'selected_item') ) {
 
-		direction *= - 1;
+		if ( ball > 130 || ball < 0 ) {
+
+			direction *= - 1;
+
+		}
+
+		if ( ball > 35 && ball < 95 ) {
+
+			amount = 1 - 0.6 * settings.options.viscosity / 0.3;
+
+		} else {
+
+			amount = 1.5;
+
+		}
+
+		ball += direction * amount;
+		fluid_ball.style.transform = "translateX(" + ball + "px) translateY(-20px)";
 
 	}
 
-	if ( ball > 35 && ball < 95 ) {
-
-		amount = 1 - 0.6 * settings.options.viscosity / 0.3;
-
-	} else {
-
-		amount = 1.5;
-
-	}
-
-	ball += direction * amount;
-	fluid_ball.style.transform = "translateX(" + ball + "px) translateY(-20px)";
 
 }
 

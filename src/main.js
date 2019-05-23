@@ -8,10 +8,11 @@ import * as fbo from './modules/fbo.js';
 import * as particles from './modules/particles.js';
 
 // defines-block
-var w, h;
-var renderer, scene, camera, controls;
-var stPos = new THREE.Vector3( 0, 200, - 0.1 );
-var isGPU = true;
+let w, h;
+let renderer, scene, camera, controls;
+let isGPU = true;
+
+const stPos = new THREE.Vector3( 0, 200, - 0.1 );
 
 function start() {
 
@@ -39,9 +40,9 @@ function start() {
 
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.setPixelRatio( window.devicePixelRatio );
-	renderer.setClearColor( 0x020406 );
+	renderer.background = new THREE.Color( 0x020406 );
 
-	renderer.sortObjects = true;
+	renderer.sortObjects = false;
 	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 	renderer.shadowMap.enabled = true;
 
@@ -62,8 +63,9 @@ function start() {
 	// initialization-block
 	load();
 
-	var gl = renderer.getContext();
-	var precision = 'lowp';
+	const gl = renderer.getContext();
+
+	let precision = 'lowp';
 	if ( gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.MEDIUM_FLOAT ).precision > 0 &&
 		gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT ).precision > 0 ) {
 

@@ -18,7 +18,7 @@ vec4 pack1K ( float depth ) {
 
 void main () {
 
-   gl_FragColor = pack1K( length( vWorldPosition.xyz - lightPos.xyz ) );
+   gl_FragColor = pack1K( length( vWorldPosition.xyz - lightPos.xyz )*0.05 );
 
 }
 `;

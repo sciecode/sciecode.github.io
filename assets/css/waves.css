@@ -1,10 +1,7 @@
 /* === [IMPORTS] === */
 
-@import url('https://fonts.googleapis.com/css?family=Raleway:900');
-@import url('https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c:700');
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800');
-@import url('https://fonts.googleapis.com/css?family=Neuton:400');
-
+@import url('https://fonts.googleapis.com/css?family=Raleway:900&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,900&display=swap');
 
 /* === [GLOBAL] === */
 
@@ -108,6 +105,7 @@ body.hid #brand {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: subpixel-antialiased;
   font-family: 'Raleway', sans-serif;
+	font-weight: 900;
   z-index: 21;
   text-shadow: 1px 1px rgba(0,0,0,0.4);
   pointer-events: none;
@@ -343,7 +341,7 @@ body.hid #brand {
 
 #quality_value {
   text-transform: capitalize;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: normal;
   color: #e4e5e6;
   cursor: pointer;
@@ -351,7 +349,7 @@ body.hid #brand {
 }
 
 #quality_value span.pn {
-  font-weight: 600;
+  font-weight: 400;
 }
 
 #quality_value::after {
@@ -475,14 +473,6 @@ body.hid #brand {
   text-decoration: underline;
 }
 
-
-/* === [NOTICE] === */
-
-#notice  { position: fixed; width: 100vw; top: 8vh; }
-#noticeText { color: #949494; font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 13px; text-align: center; text-rendering: optimizeLegibility; -webkit-font-smoothing: subpixel-antialiased; transition: transform 0.8s ease 0.2s, opacity 0.8s linear; user-select: none;}
-.notice { opacity: 0; transform: translateY(10px); }
-.noticePulse { opacity: 1; transform: translateY(0px); }
-
 /* === [MENU_ICON] === */
 
 #settings_menu {
@@ -589,6 +579,7 @@ body.hid #brand {
 
 .settings_header {
   text-align: center;
+	font-weight: 900;
   color: #e4e5e6;
   margin: 1.5vh 30px 1.5vh 30px;
   text-rendering: optimizeLegibility;
@@ -648,7 +639,7 @@ body.hid #brand {
   margin-left: 5px;
   line-height: 15.5px;
   font-size: 12px;
-  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: subpixel-antialiased;
   transition: 0.6s ease 0.6s;

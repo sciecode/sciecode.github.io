@@ -10,41 +10,37 @@ import distance_vert from '../glsl/distance.vert.js';
 import distance_frag from '../glsl/distance.frag.js';
 
 // define-block
-var undef;
-var mesh;
-var set;
+let mesh,
+_camera,
 
-var _color1;
-var _color2;
-var _camera;
+_color1,
+_color2,
 
-var renderShader;
-var distanceShader;
+renderShader,
+distanceShader,
 
-var i3;
+TEXTURE_WIDTH,
+TEXTURE_HEIGHT,
+AMOUNT;
 
-var TEXTURE_WIDTH;
-var TEXTURE_HEIGHT;
-var AMOUNT;
+const set = {
+	befEnlargementNear: 34.0,
+	befEnlargementFar: 129.0,
+	befEnlargementFactor: 5.2,
+	aftEnlargementNear: 34.0,
+	aftEnlargementFar: 129.0,
+	aftEnlargementFactor: 1.8,
+	befOpacityNear: 0.0,
+	befOpacityFar: 79.0,
+	befOpacityBase: 0.35,
+	aftOpacityNear: 0.0,
+	aftOpacityFar: 79.0,
+	aftOpacityBase: 0.35
+};
 
 function init( camera ) {
 
 	_camera = camera;
-
-	set = {
-		befEnlargementNear: 34.0,
-		befEnlargementFar: 129.0,
-		befEnlargementFactor: 5.2,
-		aftEnlargementNear: 34.0,
-		aftEnlargementFar: 129.0,
-		aftEnlargementFactor: 1.8,
-		befOpacityNear: 0.0,
-		befOpacityFar: 79.0,
-		befOpacityBase: 0.35,
-		aftOpacityNear: 0.0,
-		aftOpacityFar: 79.0,
-		aftOpacityBase: 0.35
-	};
 
 	TEXTURE_WIDTH = settings.options.TEXTURE_WIDTH;
 	TEXTURE_HEIGHT = settings.options.TEXTURE_HEIGHT;
@@ -62,9 +58,9 @@ function init( camera ) {
 				dim: { type: "f", value: 0 },
 				sizeRatio: { type: "f", value: 0 },
 				lightPos: { type: 'v3', value: lights.mesh.position },
-				color1: { type: 'c', value: undef },
-				color2: { type: 'c', value: undef },
-				camera: { type: "v3", value: new THREE.Vector3() },
+				color1: { type: 'c' },
+				color2: { type: 'c' },
+				camera: { type: "v3" },
 				befEnlargementNear: { type: "f", value: set.befEnlargementNear },
 				befEnlargementFar: { type: "f", value: set.befEnlargementFar },
 				befEnlargementFactor: { type: "f", value: set.befEnlargementFactor },
@@ -116,16 +112,16 @@ function init( camera ) {
 
 
 	// geometry-block
-	var position = new Float32Array( AMOUNT * 3 );
-	for ( var i = 0; i < ( AMOUNT ); i ++ ) {
+	const position = new Float32Array( AMOUNT * 3 );
+	for ( let i = 0; i < AMOUNT ; i ++ ) {
 
-		i3 = i * 3;
+		const i3 = i * 3;
 		position[ i3 + 0 ] = ~ ~ ( i / ( TEXTURE_HEIGHT ) ) / ( TEXTURE_WIDTH );
 		position[ i3 + 1 ] = ( i % ( TEXTURE_HEIGHT ) ) / ( TEXTURE_HEIGHT );
 
 	}
 
-	var geometry = new THREE.BufferGeometry();
+	const geometry = new THREE.BufferGeometry();
 	geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
 
 	mesh = new THREE.Points( geometry, renderShader );
@@ -140,6 +136,7 @@ function update() {
 
 	_color1.setStyle( settings.options.color1 );
 	_color2.setStyle( settings.options.color2 );
+
 	distanceShader.uniforms.texturePosition.value = fbo.rtt.texture;
 	renderShader.uniforms.texturePosition.value = fbo.rtt.texture;
 	renderShader.uniforms.textureDefaultPosition.value = fbo.defaultPosition.texture;

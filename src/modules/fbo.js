@@ -10,35 +10,34 @@ import position_frag from '../glsl/position.frag.js';
 import velocity_frag from '../glsl/velocity.frag.js';
 
 // define-block;
-var undef;
+let _mesh,
+_scene,
+_camera,
+_renderer,
 
-var _mesh;
-var _scene;
-var _camera;
-var _renderer;
+_copyShader,
+_positionShader,
+_velocityShader,
 
-var _copyShader;
-var _positionShader;
-var _velocityShader;
-var rtt;
-var _rtt;
-var _rtt2;
-var _vtt;
-var _vtt2;
+rtt,
+_rtt,
+_rtt2,
+_vtt,
+_vtt2,
 
-var TEXTURE_WIDTH;
-var TEXTURE_HEIGHT;
-var AMOUNT;
-var randomData;
+randomData,
+randomTexture,
+defaultPosition,
 
-var cur = Date.now();
-var prev = cur;
+TEXTURE_WIDTH,
+TEXTURE_HEIGHT,
+AMOUNT,
 
-var dim = 220;
-var life = 0;
+cur = Date.now(),
+prev = cur,
+life = 0;
 
-var randomTexture;
-var defaultPosition;
+const dim = 220;
 
 function init( renderer, camera ) {
 
@@ -59,7 +58,7 @@ function init( renderer, camera ) {
 	_copyShader = new THREE.ShaderMaterial( {
 		uniforms: {
 			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
-			texture: { type: 't', value: undef }
+			texture: { type: 't'}
 		},
 		precision: settings.options.precision,
 		vertexShader: quad_vert,
@@ -69,8 +68,8 @@ function init( renderer, camera ) {
 	_positionShader = new THREE.ShaderMaterial( {
 		uniforms: {
 			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
-			texturePosition: { type: 't', value: undef },
-			textureVelocity: { type: 't', value: undef }
+			texturePosition: { type: 't' },
+			textureVelocity: { type: 't' }
 		},
 		precision: settings.options.precision,
 		vertexShader: quad_vert,
@@ -85,8 +84,8 @@ function init( renderer, camera ) {
 		uniforms: {
 			resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 			textureRandom: { type: 't', value: randomTexture.texture },
-			texturePosition: { type: 't', value: undef },
-			textureVelocity: { type: 't', value: undef },
+			texturePosition: { type: 't' },
+			textureVelocity: { type: 't' },
 			mousePosition: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
 			mousePrev: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
 			mouseVelocity: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
@@ -155,7 +154,7 @@ function _copyTexture( input, output ) {
 
 function _updatePosition() {
 
-	var tmp = _rtt;
+	const tmp = _rtt;
 	_rtt = _rtt2;
 	_rtt2 = tmp;
 
@@ -169,7 +168,7 @@ function _updatePosition() {
 
 function _updateVelocity() {
 
-	var tmp = _vtt;
+	const tmp = _vtt;
 	_vtt = _vtt2;
 	_vtt2 = tmp;
 
@@ -183,6 +182,7 @@ function _updateVelocity() {
 	_velocityShader.uniforms.mousePrev.value.copy( mouse.prev );
 	_velocityShader.uniforms.mouseVelocity.value.copy( mouse.speed );
 	_velocityShader.uniforms.time.value = life;
+
 	_renderer.setRenderTarget( _vtt );
 	_renderer.render( _scene, _camera );
 
@@ -191,9 +191,9 @@ function _updateVelocity() {
 function _createRandomTexture() {
 
 	randomData = new Float32Array( AMOUNT * 4 );
-	for ( var x = 0; x < TEXTURE_WIDTH; x ++ ) {
+	for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
 
-		for ( var z = 0; z < TEXTURE_HEIGHT; z ++ ) {
+		for ( let z = 0; z < TEXTURE_HEIGHT; z ++ ) {
 
 			randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 ] = THREE.Math.randFloat( - 1, 1 );
 			randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = THREE.Math.randFloat( - 1, 1 );
@@ -202,13 +202,15 @@ function _createRandomTexture() {
 		}
 
 	}
-	var tmp = {};
+
+	const tmp = {};
 	tmp.texture = new THREE.DataTexture( randomData, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
 	tmp.texture.needsUpdate = true;
 	tmp.texture.generateMipmaps = false;
 	tmp.texture.flipY = false;
+
 	return tmp;
 
 }
@@ -216,43 +218,40 @@ function _createRandomTexture() {
 
 function _createPositionTexture() {
 
-	var data = new Float32Array( AMOUNT * 4 );
-	for ( var x = 0; x < TEXTURE_WIDTH; x ++ ) {
+	const data = new Float32Array( AMOUNT * 4 );
+	for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
 
-		for ( var z = 0; z < TEXTURE_HEIGHT; z ++ ) {
+		for ( let z = 0; z < TEXTURE_HEIGHT; z ++ ) {
 
-			var xNorm = x / TEXTURE_WIDTH;
-			var zNorm = z / TEXTURE_HEIGHT;
-			var time = life;
-			var res = 7.6;
+			const xNorm = x / TEXTURE_WIDTH;
+			const zNorm = z / TEXTURE_HEIGHT;
+			const res = 7.6;
 			data[ x * TEXTURE_HEIGHT * 4 + z * 4 ] = dim / 2 - dim * ( x / TEXTURE_WIDTH ) + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 ];
-			data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = noise( xNorm * res, zNorm * res / 2, time ) * 8 + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] * 1.0;
+			data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = noise( xNorm * res, zNorm * res / 2, life ) * 8 + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] * 1.0;
 			data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 2 ] = dim / 2 - dim * ( z / TEXTURE_HEIGHT ) + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 2 ];
-
-			// data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
-			// data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = Math.sin(xNorm*Math.PI + Math.PI*2.0*5.0*zNorm + Math.PI*time)*3.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*3.5;
-			// data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT) + Math.sin(xNorm*Math.PI*1.5 + Math.PI*time)*5.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
 
 		}
 
 	}
-	var tmp = {};
+
+	const tmp = {};
 	tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
 	tmp.texture.needsUpdate = true;
 	tmp.texture.generateMipmaps = false;
 	tmp.texture.flipY = false;
+
 	return tmp;
 
 }
 
 function _createDefaultPositionTexture() {
 
-	var data = new Float32Array( AMOUNT * 4 );
-	for ( var x = 0; x < TEXTURE_WIDTH; x ++ ) {
+	const data = new Float32Array( AMOUNT * 4 );
+	for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
 
-		for ( var z = 0; z < TEXTURE_HEIGHT; z ++ ) {
+		for ( let z = 0; z < TEXTURE_HEIGHT; z ++ ) {
 
 			data[ x * TEXTURE_HEIGHT * 4 + z * 4 ] = dim / 2 - dim * ( x / TEXTURE_WIDTH );
 			data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = 0;
@@ -261,26 +260,29 @@ function _createDefaultPositionTexture() {
 		}
 
 	}
-	var tmp = {};
+
+	const tmp = {};
 	tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
 	tmp.texture.needsUpdate = true;
 	tmp.texture.generateMipmaps = false;
 	tmp.texture.flipY = false;
+
 	return tmp;
 
 }
 
 function _createVelocityTexture() {
 
-	var tmp = {};
+	const tmp = {};
 	tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 	tmp.texture.minFilter = THREE.NearestFilter;
 	tmp.texture.magFilter = THREE.NearestFilter;
 	tmp.texture.needsUpdate = true;
 	tmp.texture.generateMipmaps = false;
 	tmp.texture.flipY = false;
+
 	return tmp;
 
 }
@@ -288,7 +290,7 @@ function _createVelocityTexture() {
 function update() {
 
 	cur = Date.now();
-	var offset = cur - prev;
+	const offset = cur - prev;
 	prev = cur;
 
 	life += Math.min( offset / ( 1200 ), 1 / 8 );

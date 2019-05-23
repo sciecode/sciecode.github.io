@@ -1,12 +1,17 @@
+// FIX SLINGSOT EFFECT WHEN MOUSE LEAVES DOCUMENT
+
 // define-block
-var _camera;
-var mouse = new THREE.Vector2( 1, 1 );
-var prev = new THREE.Vector3( 999, 0, 0 );
-var tmpmouse = new THREE.Vector3();
-var position = new THREE.Vector3( 999, 0, 0 );
-var speed = new THREE.Vector3();
-var raycaster = new THREE.Raycaster();
-var plane3d = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ) );
+let _camera;
+
+const mouse = new THREE.Vector2( 1, 1 ),
+prev = new THREE.Vector3( 999, 0, 0 ),
+tmpmouse = new THREE.Vector3(),
+position = new THREE.Vector3( 999, 0, 0 ),
+speed = new THREE.Vector3(),
+
+raycaster = new THREE.Raycaster(),
+plane = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ) );
+
 
 function init( camera ) {
 
@@ -23,7 +28,7 @@ function update( ) {
 	prev.copy( position );
 	raycaster.setFromCamera( mouse, _camera );
 
-	raycaster.ray.intersectPlane( plane3d, tmpmouse );
+	raycaster.ray.intersectPlane( plane, tmpmouse );
 	if ( tmpmouse != null ) {
 
 		position.copy( tmpmouse );

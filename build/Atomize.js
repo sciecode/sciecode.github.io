@@ -2,9 +2,9 @@
 	'use strict';
 
 	// define-block
-	var md = new MobileDetect( window.navigator.userAgent ).mobile();
+	const md = new MobileDetect( window.navigator.userAgent ).mobile();
 
-	var options = {
+	const options = {
 		radius: 30,
 		viscosity: 0.12,
 		elasticity: 0.015,
@@ -74,12 +74,12 @@
 	// import-block
 
 	// define-block
-	var undef;
-	var SCREEN_WIDTH = undef;
-	var SCREEN_HEIGHT = undef;
-	var savePass = undef;
-	var blendPass = undef;
-	var composer = undef;
+	let savePass,
+	blendPass,
+	composer,
+
+	SCREEN_WIDTH,
+	SCREEN_HEIGHT;
 
 	function init( renderer, scene, camera, width, height ) {
 
@@ -89,9 +89,9 @@
 		SCREEN_WIDTH = width;
 		SCREEN_HEIGHT = height;
 
-		var renderPass = new THREE.RenderPass( scene, camera );
+		const renderPass = new THREE.RenderPass( scene, camera );
 
-		var renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
+		const renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
 		savePass = new THREE.SavePass( new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, renderTargetParameters ) );
 
 		blendPass = new THREE.ShaderPass( THREE.BlendShader, "tDiffuse1" );
@@ -99,8 +99,8 @@
 		blendPass.uniforms[ 'tDiffuse2' ].value = savePass.renderTarget.texture;
 		blendPass.uniforms[ 'mixRatio' ].value = 0.25;
 
-		var bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width, height ), 0.2, 0, 0.19 );
-		var copyPass = new THREE.ShaderPass( THREE.CopyShader );
+		const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width, height ), 0.2, 0, 0.19 );
+		const copyPass = new THREE.ShaderPass( THREE.CopyShader );
 		copyPass.renderToScreen = true;
 
 		composer.addPass( renderPass );
@@ -141,34 +141,32 @@
 	// import-block
 
 	// define-block
-	var undef$1;
-	var mesh = undef$1;
+	let mesh;
+
+	const c1 = {}, c2 = {};
+	const color = new THREE.Color();
 
 	function init$1() {
-
-		var geometry = new THREE.PlaneGeometry( 4000, 4000, 10, 10 );
-		var _material = new THREE.MeshStandardMaterial( {
+		const geometry = new THREE.PlaneGeometry( 4000, 4000, 10, 10 );
+		const _material = new THREE.MeshStandardMaterial( {
 			roughness: 0.7,
 			metalness: 1.0,
 			dithering: true,
 			color: 0x1b2738,
 			emissive: 0x000000
 		} );
-		var floor = mesh = new THREE.Mesh( geometry, _material );
-		floor.rotation.x = - 1.57;
-		floor.position.y = - 55;
-		floor.receiveShadow = true;
+
+		mesh = new THREE.Mesh( geometry, _material );
+		mesh.rotation.x = - 1.57;
+		mesh.position.y = - 55;
+		mesh.receiveShadow = true;
 
 	}
 
 	function update$1() {
 
-		var c1 = {}, c2 = {};
-
+		color.setStyle( options.color1 ).getHSL( c2 );
 		mesh.material.color.getHSL( c1 );
-
-		var C = new THREE.Color( options.color1 );
-		C.getHSL( c2 );
 		mesh.material.color.setHSL( ( c2.h + 0.045 % 1 ), c1.s, c1.l );
 
 	}
@@ -188,50 +186,54 @@
 	// import-block
 
 	// define-block
-	var undef$2;
+	let _camera,
+	_controls,
 
-	var _camera = undef$2;
-	var _controls = undef$2;
+	body,
+	overlay,
+	brand,
+	inside,
 
-	var body = undef$2;
-	var overlay = undef$2;
-	var brand = undef$2;
-	var inside = undef$2;
+	mbCheckbox,
+	menu,
+	qualities,
+	quality_list,
+	quality_value,
 
-	var mbCheckbox = undef$2;
-	var menu = undef$2;
-	var qualities = undef$2;
-	var quality_list = undef$2;
-	var quality_value = undef$2;
-	var caret = undef$2;
-	var settings_items = undef$2;
-	var notice = undef$2;
+	caret,
+	notice,
+	settings_items,
 
-	var radSlider = undef$2;
-	var visSlider = undef$2;
-	var elaSlider = undef$2;
+	radSlider,
+	visSlider,
+	elaSlider,
 
-	var color1 = undef$2;
-	var color2 = undef$2;
+	color1,
+	color2,
 
-	var fluid_ball = undef$2;
+	fluid_ball,
 
-	var stBtn = undef$2;
+	stBtn,
 
-	var stExp = false;
-	var edExp = false;
-	var prevTime = undef$2;
-	var curTime = undef$2;
-	var sumTime = undef$2;
+	stExp,
+	edExp,
+	prevTime,
+	curTime,
+	sumTime,
 
-	var ball = 0;
-	var direction = 1;
-	var amount = 1;
+	ball,
+	direction,
+	amount;
+
 
 	function init$2( camera, controls ) {
 
 		_camera = camera;
 		_controls = controls;
+
+		ball = 0;
+		direction = 1;
+		amount = 1;
 
 		body = document.getElementsByTagName( "BODY" )[ 0 ];
 
@@ -270,8 +272,10 @@
 
 			update( 'radius', this.value );
 			inside = document.getElementById( "ball_sphere_inside" );
-			inside.style.transform = "scale(" + options.radius / 50;		var radValue = document.getElementById( "rad_value" );
+			inside.style.transform = "scale(" + options.radius / 50;
+			let radValue = document.getElementById( "rad_value" );
 			radValue.innerHTML = this.value;
+
 			radValue = document.getElementById( "rad_title_value" );
 			radValue.innerHTML = this.value;
 
@@ -281,8 +285,10 @@
 
 			update( 'radius', this.value );
 			inside = document.getElementById( "ball_sphere_inside" );
-			inside.style.transform = "scale(" + options.radius / 50;		var radValue = document.getElementById( "rad_value" );
+			inside.style.transform = "scale(" + options.radius / 50;
+			let radValue = document.getElementById( "rad_value" );
 			radValue.innerHTML = this.value;
+
 			radValue = document.getElementById( "rad_title_value" );
 			radValue.innerHTML = this.value;
 
@@ -291,11 +297,14 @@
 		visSlider.addEventListener( "mousemove", function ( ) {
 
 			update( 'viscosity', this.value / 100 );
-			var visValue = document.getElementById( "vis_value" );
+
+			let visValue = document.getElementById( "vis_value" );
 			visValue.innerHTML = this.value;
+
 			visValue = document.getElementById( "vis_title_value" );
 			visValue.innerHTML = this.value;
-			var fluid_box = document.getElementById( "fluid_box" );
+
+			const fluid_box = document.getElementById( "fluid_box" );
 			fluid_box.style.background = "rgba(78, 177, " + ( 219 - 140 * options.viscosity / 0.3 ) + "," + ( 0.2 + 0.2 * options.viscosity / 0.3 ) + ")";
 			fluid_box.style.border = "2px solid rgba(78, 177, " + ( 219 - 140 * options.viscosity / 0.3 ) + ", 1)";
 
@@ -304,11 +313,14 @@
 		visSlider.addEventListener( "touchmove", function ( ) {
 
 			update( 'viscosity', this.value / 100 );
-			var visValue = document.getElementById( "vis_value" );
+
+			let visValue = document.getElementById( "vis_value" );
 			visValue.innerHTML = this.value;
+
 			visValue = document.getElementById( "vis_title_value" );
 			visValue.innerHTML = this.value;
-			var fluid_box = document.getElementById( "fluid_box" );
+
+			const fluid_box = document.getElementById( "fluid_box" );
 			fluid_box.style.background = "rgba(78, 177, " + ( 219 - 140 * options.viscosity / 0.3 ) + "," + ( 0.2 + 0.2 * options.viscosity / 0.3 ) + ")";
 			fluid_box.style.border = "2px solid rgba(78, 177, " + ( 219 - 140 * options.viscosity / 0.3 ) + ", 1)";
 
@@ -317,8 +329,10 @@
 		elaSlider.addEventListener( "mousemove", function ( ) {
 
 			update( 'elasticity', this.value / 1000 );
-			var elaValue = document.getElementById( "ela_value" );
+
+			let elaValue = document.getElementById( "ela_value" );
 			elaValue.innerHTML = this.value;
+
 			elaValue = document.getElementById( "ela_title_value" );
 			elaValue.innerHTML = this.value;
 
@@ -327,8 +341,10 @@
 		elaSlider.addEventListener( "touchmove", function ( ) {
 
 			update( 'elasticity', this.value / 1000 );
-			var elaValue = document.getElementById( "ela_value" );
+
+			let elaValue = document.getElementById( "ela_value" );
 			elaValue.innerHTML = this.value;
+
 			elaValue = document.getElementById( "ela_title_value" );
 			elaValue.innerHTML = this.value;
 
@@ -336,11 +352,13 @@
 
 		color1.addEventListener( "mousemove", function ( ) {
 
-			var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+			const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 			update$1();
 			update( 'color1', "#" + col.getHexString() );
-			var col1 = document.getElementById( "color1_value" );
+
+			let col1 = document.getElementById( "color1_value" );
 			col1.style.background = "#" + col.getHexString();
+
 			col1 = document.getElementById( "color1_box" );
 			col1.style.background = "#" + col.getHexString();
 
@@ -348,11 +366,13 @@
 
 		color1.addEventListener( "touchmove", function ( ) {
 
-			var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+			const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 			update$1();
 			update( 'color1', "#" + col.getHexString() );
-			var col1 = document.getElementById( "color1_value" );
+
+			let col1 = document.getElementById( "color1_value" );
 			col1.style.background = "#" + col.getHexString();
+
 			col1 = document.getElementById( "color1_box" );
 			col1.style.background = "#" + col.getHexString();
 
@@ -360,10 +380,12 @@
 
 		color2.addEventListener( "mousemove", function ( ) {
 
-			var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+			const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 			update( 'color2', "#" + col.getHexString() );
-			var col2 = document.getElementById( "color2_value" );
+
+			let col2 = document.getElementById( "color2_value" );
 			col2.style.background = "#" + col.getHexString();
+
 			col2 = document.getElementById( "color2_box" );
 			col2.style.background = "#" + col.getHexString();
 
@@ -371,10 +393,12 @@
 
 		color2.addEventListener( "touchmove", function ( ) {
 
-			var col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+			const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
 			update( 'color2', "#" + col.getHexString() );
-			var col2 = document.getElementById( "color2_value" );
+
+			let col2 = document.getElementById( "color2_value" );
 			col2.style.background = "#" + col.getHexString();
+
 			col2 = document.getElementById( "color2_box" );
 			col2.style.background = "#" + col.getHexString();
 
@@ -390,7 +414,7 @@
 
 			update( 'motionBlur', ! options.motionBlur );
 
-			var mbValue = document.getElementById( "motion_blur_title_value" );
+			const mbValue = document.getElementById( "motion_blur_title_value" );
 
 			this.classList.toggle( "disabled" );
 			mbValue.classList.toggle( "disabled" );
@@ -412,16 +436,17 @@
 		menu.addEventListener( "click", function ( ) {
 
 			this.classList.toggle( "menu_active" );
-			var set = document.getElementById( "settings" );
+
+			const set = document.getElementById( "settings" );
 			set.classList.toggle( "final_settings" );
 
 		}, false );
 
-		for ( var i = 0; i < settings_items.length; i ++ ) {
+		for ( let i = 0, j = settings_items.length; i < j; i ++ ) {
 
 			settings_items[ i ].addEventListener( "click", function ( ) {
 
-				for ( var i = 0; i < settings_items.length; i ++ ) {
+				for ( let i = 0, j = settings_items.length; i < j; i ++ ) {
 
 					settings_items[ i ].classList.remove( "selected_item" );
 
@@ -432,28 +457,30 @@
 
 		}
 
-		for ( var i = 0; i < qualities.length; i ++ ) {
+		for ( let i = 0, j = qualities.length; i < j; i ++ ) {
 
 			qualities[ i ].addEventListener( "click", function ( e ) {
 
 				e.preventDefault();
 				if ( this.dataset.quality == options.quality ) return;
-				for ( var i = 0; i < qualities.length; i ++ ) {
+				for ( let i = 0, j = qualities.length; i < j; i ++ ) {
 
 					qualities[ i ].classList.remove( "selected" );
 					qualities[ i ].classList.remove( "recommended" );
 
 				}
+
 				this.classList.add( "selected" );
 				quality_list.classList.remove( "vis" );
 				quality_value.classList.remove( "vis" );
 				quality_value.innerHTML = this.innerHTML + " <span class=\"pn\">" + ( 65 ) * Math.pow( 2, this.dataset.quality ) + "k</span><span class=\"caret\"></span>";
+
 				changeQuality$1( this.dataset.quality );
 
 			}, false );
 			qualities[ i ].addEventListener( 'transitionend', function () {
 
-				var node = this;
+				const node = this;
 				setTimeout( function () {
 
 					node.classList.remove( "recommended" );
@@ -501,6 +528,7 @@
 		brand.classList.remove( "nodelay" );
 		brand.classList.remove( "brandInit" );
 		overlay.classList.add( "invisible" );
+
 		stExp = true;
 		prevTime = Date.now();
 		sumTime = 0;
@@ -515,20 +543,20 @@
 		_controls.maxDistance = 250;
 		_controls.minDistance = 150;
 
-		var delays = document.querySelectorAll( ".delay" );
-		for ( var i = 0; i < delays.length; i ++ )
+		const delays = document.querySelectorAll( ".delay" );
+		for ( let i = 0, j = delays.length; i < j; i ++ )
 			delays[ i ].classList.remove( "delay" );
 
-		var inactives = document.querySelectorAll( ".inactive" );
-		for ( var i = 0; i < inactives.length; i ++ )
+		const inactives = document.querySelectorAll( ".inactive" );
+		for ( let i = 0, j = inactives.length; i < j; i ++ )
 			inactives[ i ].classList.remove( "inactive" );
 
 	}
 
 	function showError() {
 
-		var videocontainer = document.getElementById( "video-container" );
-		var video = document.createElement( "VIDEO" );
+		const videocontainer = document.getElementById( "video-container" );
+		const video = document.createElement( "VIDEO" );
 		video.src = '.assets/media/loop.mp4';
 		video.loop = true;
 		video.autoplay = true;
@@ -536,11 +564,11 @@
 
 		videocontainer.appendChild( video );
 
-		var intro = document.getElementById( "intro" );
-		var btn = document.getElementById( "st_btn" );
-		var notice = document.getElementById( "st_notice" );
-		var steps = document.getElementById( "st_steps" );
-		var body = document.getElementsByTagName( "BODY" )[ 0 ];
+		const intro = document.getElementById( "intro" );
+		const btn = document.getElementById( "st_btn" );
+		const notice = document.getElementById( "st_notice" );
+		const steps = document.getElementById( "st_steps" );
+		const body = document.getElementsByTagName( "BODY" )[ 0 ];
 
 		intro.classList.add( "hidden" );
 		btn.classList.add( "hidden" );
@@ -553,13 +581,13 @@
 
 	function update$2() {
 
-		var t;
+		let t;
 		if ( stExp && ! edExp ) {
 
 			if ( sumTime < 3500 ) {
 
 				curTime = Date.now();
-				var elapsedTime = curTime - prevTime;
+				const elapsedTime = curTime - prevTime;
 				prevTime = curTime;
 
 				sumTime += elapsedTime;
@@ -581,67 +609,76 @@
 
 		}
 
-		if ( ball > 130 || ball < 0 ) {
+		if ( fluid_ball.parentNode.classList.contains( 'selected_item') ) {
 
-			direction *= - 1;
+			if ( ball > 130 || ball < 0 ) {
+
+				direction *= - 1;
+
+			}
+
+			if ( ball > 35 && ball < 95 ) {
+
+				amount = 1 - 0.6 * options.viscosity / 0.3;
+
+			} else {
+
+				amount = 1.5;
+
+			}
+
+			ball += direction * amount;
+			fluid_ball.style.transform = "translateX(" + ball + "px) translateY(-20px)";
 
 		}
 
-		if ( ball > 35 && ball < 95 ) {
-
-			amount = 1 - 0.6 * options.viscosity / 0.3;
-
-		} else {
-
-			amount = 1.5;
-
-		}
-
-		ball += direction * amount;
-		fluid_ball.style.transform = "translateX(" + ball + "px) translateY(-20px)";
 
 	}
 
 	// define-block
-	var undef$3;
-	var mesh$1 = undef$3;
+	let mesh$1;
 
 	function init$3() {
 
 		mesh$1 = new THREE.Object3D();
 		mesh$1.position.set( 0, 190, 0 );
 
-		var ambient = new THREE.AmbientLight( 0x333333 );
+		const ambient = new THREE.AmbientLight( 0x333333, 1.4 );
 		mesh$1.add( ambient );
 
-		var directionalLight = new THREE.DirectionalLight( 0xba8b8b, 0.5 );
+		const directionalLight = new THREE.DirectionalLight( 0xba8b8b, 0.5 );
 		directionalLight.position.set( 1, 1, 1 );
 		mesh$1.add( directionalLight );
 
-		var directionalLight2 = new THREE.DirectionalLight( 0x8bbab4, 0.3 );
+		const directionalLight2 = new THREE.DirectionalLight( 0x8bbab4, 0.3 );
 		directionalLight2.position.set( 1, 1, - 1 );
 		mesh$1.add( directionalLight2 );
 
-		var pointLight = new THREE.PointLight( 0x999999, 1, 1600 );
+		const pointLight = new THREE.PointLight( 0x999999, 1.2, 1600 );
 		pointLight.castShadow = true;
 		pointLight.shadow.camera.near = 10;
-		pointLight.shadow.camera.far = 1500;
+		pointLight.shadow.camera.far = 1000;
 		pointLight.shadow.bias = 0.04;
 		pointLight.shadow.mapSize.width = 2048;
-		pointLight.shadow.mapSize.height = 1024;
+		pointLight.shadow.mapSize.height = 2048;
 		mesh$1.add( pointLight );
 
 	}
 
+	// FIX SLINGSOT EFFECT WHEN MOUSE LEAVES DOCUMENT
+
 	// define-block
-	var _camera$1;
-	var mouse = new THREE.Vector2( 1, 1 );
-	var prev = new THREE.Vector3( 999, 0, 0 );
-	var tmpmouse = new THREE.Vector3();
-	var position = new THREE.Vector3( 999, 0, 0 );
-	var speed = new THREE.Vector3();
-	var raycaster = new THREE.Raycaster();
-	var plane3d = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ) );
+	let _camera$1;
+
+	const mouse = new THREE.Vector2( 1, 1 ),
+	prev = new THREE.Vector3( 999, 0, 0 ),
+	tmpmouse = new THREE.Vector3(),
+	position = new THREE.Vector3( 999, 0, 0 ),
+	speed = new THREE.Vector3(),
+
+	raycaster = new THREE.Raycaster(),
+	plane = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ) );
+
 
 	function init$4( camera ) {
 
@@ -658,7 +695,7 @@
 		prev.copy( position );
 		raycaster.setFromCamera( mouse, _camera$1 );
 
-		raycaster.ray.intersectPlane( plane3d, tmpmouse );
+		raycaster.ray.intersectPlane( plane, tmpmouse );
 		if ( tmpmouse != null ) {
 
 			position.copy( tmpmouse );
@@ -709,19 +746,20 @@
 	* You can pass in a random number generator object if you like.
 	* It is assumed to have a random() method.
 	*/
-	var r = undefined;
-	if (r == undefined) r = Math;
-	var grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
-	[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
-	[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
-	var p = [];
-	for (var i=0; i<256; i++) {
+	const r = Math;
+
+	const grad3 = [
+		[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
+		[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
+		[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]
+	];
+
+	const p = [];
+	for (let  i=0; i<256; i++) {
 	  p[i] = Math.floor(r.random()*256);
 	}
-
-	// To remove the need for index wrapping, double the permutation table length
-	var perm = [];
-	for(var i=0; i<512; i++) {
+	const perm = [];
+	for(let i=0; i<512; i++) {
 	  perm[i]=p[i & 255];
 	}
 
@@ -737,9 +775,9 @@
 	// Classic Perlin noise, 3D version
 	function noise(x, y, z) {
 	  // Find unit grid cell containing point
-	  var X = Math.floor(x);
-	  var Y = Math.floor(y);
-	  var Z = Math.floor(z);
+	  let X = Math.floor(x);
+	  let Y = Math.floor(y);
+	  let Z = Math.floor(z);
 
 	  // Get relative xyz coordinates of point within that cell
 	  x = x - X;
@@ -752,38 +790,38 @@
 	  Z = Z & 255;
 
 	  // Calculate a set of eight hashed gradient indices
-	  var gi000 = perm[X+perm[Y+perm[Z]]] % 12;
-	  var gi001 = perm[X+perm[Y+perm[Z+1]]] % 12;
-	  var gi010 = perm[X+perm[Y+1+perm[Z]]] % 12;
-	  var gi011 = perm[X+perm[Y+1+perm[Z+1]]] % 12;
-	  var gi100 = perm[X+1+perm[Y+perm[Z]]] % 12;
-	  var gi101 = perm[X+1+perm[Y+perm[Z+1]]] % 12;
-	  var gi110 = perm[X+1+perm[Y+1+perm[Z]]] % 12;
-	  var gi111 = perm[X+1+perm[Y+1+perm[Z+1]]] % 12;
+	  const gi000 = perm[X+perm[Y+perm[Z]]] % 12,
+	  gi001 = perm[X+perm[Y+perm[Z+1]]] % 12,
+		gi010 = perm[X+perm[Y+1+perm[Z]]] % 12,
+	  gi011 = perm[X+perm[Y+1+perm[Z+1]]] % 12,
+	  gi100 = perm[X+1+perm[Y+perm[Z]]] % 12,
+	  gi101 = perm[X+1+perm[Y+perm[Z+1]]] % 12,
+	  gi110 = perm[X+1+perm[Y+1+perm[Z]]] % 12,
+	  gi111 = perm[X+1+perm[Y+1+perm[Z+1]]] % 12,
 
 	  // Calculate noise contributions from each of the eight corners
-	  var n000= dot(grad3[gi000], x, y, z);
-	  var n100= dot(grad3[gi100], x-1, y, z);
-	  var n010= dot(grad3[gi010], x, y-1, z);
-	  var n110= dot(grad3[gi110], x-1, y-1, z);
-	  var n001= dot(grad3[gi001], x, y, z-1);
-	  var n101= dot(grad3[gi101], x-1, y, z-1);
-	  var n011= dot(grad3[gi011], x, y-1, z-1);
-	  var n111= dot(grad3[gi111], x-1, y-1, z-1);
+	  n000 = dot(grad3[gi000], x, y, z),
+	  n100 = dot(grad3[gi100], x-1, y, z),
+	  n010 = dot(grad3[gi010], x, y-1, z),
+	  n110 = dot(grad3[gi110], x-1, y-1, z),
+	  n001 = dot(grad3[gi001], x, y, z-1),
+	  n101 = dot(grad3[gi101], x-1, y, z-1),
+	  n011 = dot(grad3[gi011], x, y-1, z-1),
+	  n111 = dot(grad3[gi111], x-1, y-1, z-1),
 	  // Compute the fade curve value for each of x, y, z
-	  var u = fade(x);
-	  var v = fade(y);
-	  var w = fade(z);
+	  u = fade(x),
+	  v = fade(y),
+	  w = fade(z),
 	  // Interpolate along x the contributions from each of the corners
-	  var nx00 = mix(n000, n100, u);
-	  var nx01 = mix(n001, n101, u);
-	  var nx10 = mix(n010, n110, u);
-	  var nx11 = mix(n011, n111, u);
+	  nx00 = mix(n000, n100, u),
+	  nx01 = mix(n001, n101, u),
+	  nx10 = mix(n010, n110, u),
+	  nx11 = mix(n011, n111, u),
 	  // Interpolate the four results along y
-	  var nxy0 = mix(nx00, nx10, v);
-	  var nxy1 = mix(nx01, nx11, v);
+	  nxy0 = mix(nx00, nx10, v),
+	  nxy1 = mix(nx01, nx11, v),
 	  // Interpolate the two last results along z
-	  var nxyz = mix(nxy0, nxy1, w);
+	  nxyz = mix(nxy0, nxy1, w);
 
 	  return nxyz;
 	}
@@ -973,35 +1011,34 @@ void main() {
 	// import-block
 
 	// define-block;
-	var undef$4;
+	let _mesh,
+	_scene,
+	_camera$2,
+	_renderer,
 
-	var _mesh;
-	var _scene;
-	var _camera$2;
-	var _renderer;
+	_copyShader,
+	_positionShader,
+	_velocityShader,
 
-	var _copyShader;
-	var _positionShader;
-	var _velocityShader;
-	var rtt;
-	var _rtt;
-	var _rtt2;
-	var _vtt;
-	var _vtt2;
+	rtt,
+	_rtt,
+	_rtt2,
+	_vtt,
+	_vtt2,
 
-	var TEXTURE_WIDTH;
-	var TEXTURE_HEIGHT;
-	var AMOUNT;
-	var randomData;
+	randomData,
+	randomTexture,
+	defaultPosition,
 
-	var cur = Date.now();
-	var prev$1 = cur;
+	TEXTURE_WIDTH,
+	TEXTURE_HEIGHT,
+	AMOUNT,
 
-	var dim = 220;
-	var life = 0;
+	cur = Date.now(),
+	prev$1 = cur,
+	life = 0;
 
-	var randomTexture;
-	var defaultPosition;
+	const dim = 220;
 
 	function init$5( renderer, camera ) {
 
@@ -1022,7 +1059,7 @@ void main() {
 		_copyShader = new THREE.ShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
-				texture: { type: 't', value: undef$4 }
+				texture: { type: 't'}
 			},
 			precision: options.precision,
 			vertexShader: quad_vert,
@@ -1032,8 +1069,8 @@ void main() {
 		_positionShader = new THREE.ShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
-				texturePosition: { type: 't', value: undef$4 },
-				textureVelocity: { type: 't', value: undef$4 }
+				texturePosition: { type: 't' },
+				textureVelocity: { type: 't' }
 			},
 			precision: options.precision,
 			vertexShader: quad_vert,
@@ -1048,8 +1085,8 @@ void main() {
 			uniforms: {
 				resolution: { type: 'v2', value: new THREE.Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				textureRandom: { type: 't', value: randomTexture.texture },
-				texturePosition: { type: 't', value: undef$4 },
-				textureVelocity: { type: 't', value: undef$4 },
+				texturePosition: { type: 't' },
+				textureVelocity: { type: 't' },
 				mousePosition: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
 				mousePrev: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
 				mouseVelocity: { type: 'v3', value: new THREE.Vector3( 0, 0, 0 ) },
@@ -1118,7 +1155,7 @@ void main() {
 
 	function _updatePosition() {
 
-		var tmp = _rtt;
+		const tmp = _rtt;
 		_rtt = _rtt2;
 		_rtt2 = tmp;
 
@@ -1132,7 +1169,7 @@ void main() {
 
 	function _updateVelocity() {
 
-		var tmp = _vtt;
+		const tmp = _vtt;
 		_vtt = _vtt2;
 		_vtt2 = tmp;
 
@@ -1146,6 +1183,7 @@ void main() {
 		_velocityShader.uniforms.mousePrev.value.copy( prev );
 		_velocityShader.uniforms.mouseVelocity.value.copy( speed );
 		_velocityShader.uniforms.time.value = life;
+
 		_renderer.setRenderTarget( _vtt );
 		_renderer.render( _scene, _camera$2 );
 
@@ -1154,9 +1192,9 @@ void main() {
 	function _createRandomTexture() {
 
 		randomData = new Float32Array( AMOUNT * 4 );
-		for ( var x = 0; x < TEXTURE_WIDTH; x ++ ) {
+		for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
 
-			for ( var z = 0; z < TEXTURE_HEIGHT; z ++ ) {
+			for ( let z = 0; z < TEXTURE_HEIGHT; z ++ ) {
 
 				randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 ] = THREE.Math.randFloat( - 1, 1 );
 				randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = THREE.Math.randFloat( - 1, 1 );
@@ -1165,13 +1203,15 @@ void main() {
 			}
 
 		}
-		var tmp = {};
+
+		const tmp = {};
 		tmp.texture = new THREE.DataTexture( randomData, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 		tmp.texture.minFilter = THREE.NearestFilter;
 		tmp.texture.magFilter = THREE.NearestFilter;
 		tmp.texture.needsUpdate = true;
 		tmp.texture.generateMipmaps = false;
 		tmp.texture.flipY = false;
+
 		return tmp;
 
 	}
@@ -1179,43 +1219,40 @@ void main() {
 
 	function _createPositionTexture() {
 
-		var data = new Float32Array( AMOUNT * 4 );
-		for ( var x = 0; x < TEXTURE_WIDTH; x ++ ) {
+		const data = new Float32Array( AMOUNT * 4 );
+		for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
 
-			for ( var z = 0; z < TEXTURE_HEIGHT; z ++ ) {
+			for ( let z = 0; z < TEXTURE_HEIGHT; z ++ ) {
 
-				var xNorm = x / TEXTURE_WIDTH;
-				var zNorm = z / TEXTURE_HEIGHT;
-				var time = life;
-				var res = 7.6;
+				const xNorm = x / TEXTURE_WIDTH;
+				const zNorm = z / TEXTURE_HEIGHT;
+				const res = 7.6;
 				data[ x * TEXTURE_HEIGHT * 4 + z * 4 ] = dim / 2 - dim * ( x / TEXTURE_WIDTH ) + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 ];
-				data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = noise( xNorm * res, zNorm * res / 2, time ) * 8 + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] * 1.0;
+				data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = noise( xNorm * res, zNorm * res / 2, life ) * 8 + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] * 1.0;
 				data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 2 ] = dim / 2 - dim * ( z / TEXTURE_HEIGHT ) + randomData[ x * TEXTURE_HEIGHT * 4 + z * 4 + 2 ];
-
-				// data[x*TEXTURE_HEIGHT*4 + z*4] = -dim/2 + dim*(x/TEXTURE_WIDTH) + randomData[x*TEXTURE_HEIGHT*4 + z*4];
-				// data[x*TEXTURE_HEIGHT*4 + z*4 + 1] = Math.sin(xNorm*Math.PI + Math.PI*2.0*5.0*zNorm + Math.PI*time)*3.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 1]*3.5;
-				// data[x*TEXTURE_HEIGHT*4 + z*4 + 2] = -dim/2 + dim*(z/TEXTURE_HEIGHT) + Math.sin(xNorm*Math.PI*1.5 + Math.PI*time)*5.0 + randomData[x*TEXTURE_HEIGHT*4 + z*4 + 2];
 
 			}
 
 		}
-		var tmp = {};
+
+		const tmp = {};
 		tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 		tmp.texture.minFilter = THREE.NearestFilter;
 		tmp.texture.magFilter = THREE.NearestFilter;
 		tmp.texture.needsUpdate = true;
 		tmp.texture.generateMipmaps = false;
 		tmp.texture.flipY = false;
+
 		return tmp;
 
 	}
 
 	function _createDefaultPositionTexture() {
 
-		var data = new Float32Array( AMOUNT * 4 );
-		for ( var x = 0; x < TEXTURE_WIDTH; x ++ ) {
+		const data = new Float32Array( AMOUNT * 4 );
+		for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
 
-			for ( var z = 0; z < TEXTURE_HEIGHT; z ++ ) {
+			for ( let z = 0; z < TEXTURE_HEIGHT; z ++ ) {
 
 				data[ x * TEXTURE_HEIGHT * 4 + z * 4 ] = dim / 2 - dim * ( x / TEXTURE_WIDTH );
 				data[ x * TEXTURE_HEIGHT * 4 + z * 4 + 1 ] = 0;
@@ -1224,26 +1261,29 @@ void main() {
 			}
 
 		}
-		var tmp = {};
+
+		const tmp = {};
 		tmp.texture = new THREE.DataTexture( data, TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 		tmp.texture.minFilter = THREE.NearestFilter;
 		tmp.texture.magFilter = THREE.NearestFilter;
 		tmp.texture.needsUpdate = true;
 		tmp.texture.generateMipmaps = false;
 		tmp.texture.flipY = false;
+
 		return tmp;
 
 	}
 
 	function _createVelocityTexture() {
 
-		var tmp = {};
+		const tmp = {};
 		tmp.texture = new THREE.DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_HEIGHT, TEXTURE_WIDTH, THREE.RGBAFormat, THREE.FloatType );
 		tmp.texture.minFilter = THREE.NearestFilter;
 		tmp.texture.magFilter = THREE.NearestFilter;
 		tmp.texture.needsUpdate = true;
 		tmp.texture.generateMipmaps = false;
 		tmp.texture.flipY = false;
+
 		return tmp;
 
 	}
@@ -1251,7 +1291,7 @@ void main() {
 	function update$4() {
 
 		cur = Date.now();
-		var offset = cur - prev$1;
+		const offset = cur - prev$1;
 		prev$1 = cur;
 
 		life += Math.min( offset / ( 1200 ), 1 / 8 );
@@ -1435,7 +1475,7 @@ vec4 pack1K ( float depth ) {
 
 void main () {
 
-   gl_FragColor = pack1K( length( vWorldPosition.xyz - lightPos.xyz ) );
+   gl_FragColor = pack1K( length( vWorldPosition.xyz - lightPos.xyz )*0.05 );
 
 }
 `;
@@ -1443,41 +1483,37 @@ void main () {
 	// import-block
 
 	// define-block
-	var undef$5;
-	var mesh$2;
-	var set;
+	let mesh$2,
+	_camera$3,
 
-	var _color1;
-	var _color2;
-	var _camera$3;
+	_color1,
+	_color2,
 
-	var renderShader;
-	var distanceShader;
+	renderShader,
+	distanceShader,
 
-	var i3;
+	TEXTURE_WIDTH$1,
+	TEXTURE_HEIGHT$1,
+	AMOUNT$1;
 
-	var TEXTURE_WIDTH$1;
-	var TEXTURE_HEIGHT$1;
-	var AMOUNT$1;
+	const set = {
+		befEnlargementNear: 34.0,
+		befEnlargementFar: 129.0,
+		befEnlargementFactor: 5.2,
+		aftEnlargementNear: 34.0,
+		aftEnlargementFar: 129.0,
+		aftEnlargementFactor: 1.8,
+		befOpacityNear: 0.0,
+		befOpacityFar: 79.0,
+		befOpacityBase: 0.35,
+		aftOpacityNear: 0.0,
+		aftOpacityFar: 79.0,
+		aftOpacityBase: 0.35
+	};
 
 	function init$6( camera ) {
 
 		_camera$3 = camera;
-
-		set = {
-			befEnlargementNear: 34.0,
-			befEnlargementFar: 129.0,
-			befEnlargementFactor: 5.2,
-			aftEnlargementNear: 34.0,
-			aftEnlargementFar: 129.0,
-			aftEnlargementFactor: 1.8,
-			befOpacityNear: 0.0,
-			befOpacityFar: 79.0,
-			befOpacityBase: 0.35,
-			aftOpacityNear: 0.0,
-			aftOpacityFar: 79.0,
-			aftOpacityBase: 0.35
-		};
 
 		TEXTURE_WIDTH$1 = options.TEXTURE_WIDTH;
 		TEXTURE_HEIGHT$1 = options.TEXTURE_HEIGHT;
@@ -1495,9 +1531,9 @@ void main () {
 					dim: { type: "f", value: 0 },
 					sizeRatio: { type: "f", value: 0 },
 					lightPos: { type: 'v3', value: mesh$1.position },
-					color1: { type: 'c', value: undef$5 },
-					color2: { type: 'c', value: undef$5 },
-					camera: { type: "v3", value: new THREE.Vector3() },
+					color1: { type: 'c' },
+					color2: { type: 'c' },
+					camera: { type: "v3" },
 					befEnlargementNear: { type: "f", value: set.befEnlargementNear },
 					befEnlargementFar: { type: "f", value: set.befEnlargementFar },
 					befEnlargementFactor: { type: "f", value: set.befEnlargementFactor },
@@ -1549,16 +1585,16 @@ void main () {
 
 
 		// geometry-block
-		var position = new Float32Array( AMOUNT$1 * 3 );
-		for ( var i = 0; i < ( AMOUNT$1 ); i ++ ) {
+		const position = new Float32Array( AMOUNT$1 * 3 );
+		for ( let i = 0; i < AMOUNT$1 ; i ++ ) {
 
-			i3 = i * 3;
+			const i3 = i * 3;
 			position[ i3 + 0 ] = ~ ~ ( i / ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_WIDTH$1 );
 			position[ i3 + 1 ] = ( i % ( TEXTURE_HEIGHT$1 ) ) / ( TEXTURE_HEIGHT$1 );
 
 		}
 
-		var geometry = new THREE.BufferGeometry();
+		const geometry = new THREE.BufferGeometry();
 		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
 
 		mesh$2 = new THREE.Points( geometry, renderShader );
@@ -1573,6 +1609,7 @@ void main () {
 
 		_color1.setStyle( options.color1 );
 		_color2.setStyle( options.color2 );
+
 		distanceShader.uniforms.texturePosition.value = rtt.texture;
 		renderShader.uniforms.texturePosition.value = rtt.texture;
 		renderShader.uniforms.textureDefaultPosition.value = defaultPosition.texture;
@@ -1583,10 +1620,11 @@ void main () {
 	// import-block
 
 	// defines-block
-	var w, h;
-	var renderer, scene, camera, controls;
-	var stPos = new THREE.Vector3( 0, 200, - 0.1 );
-	var isGPU = true;
+	let w, h;
+	let renderer, scene, camera, controls;
+	let isGPU = true;
+
+	const stPos = new THREE.Vector3( 0, 200, - 0.1 );
 
 	function start() {
 
@@ -1614,9 +1652,9 @@ void main () {
 
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		renderer.setPixelRatio( window.devicePixelRatio );
-		renderer.setClearColor( 0x020406 );
+		renderer.background = new THREE.Color( 0x020406 );
 
-		renderer.sortObjects = true;
+		renderer.sortObjects = false;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.shadowMap.enabled = true;
 
@@ -1637,8 +1675,9 @@ void main () {
 		// initialization-block
 		load();
 
-		var gl = renderer.getContext();
-		var precision = 'lowp';
+		const gl = renderer.getContext();
+
+		let precision = 'lowp';
 		if ( gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.MEDIUM_FLOAT ).precision > 0 &&
 			gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT ).precision > 0 ) {
 
