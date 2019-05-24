@@ -32,6 +32,8 @@ THREE.EffectComposer = function ( renderer, renderTarget ) {
 
 	this.passes = [];
 
+	const clock = new THREE.Clock();
+
 	// dependencies
 
 	if ( THREE.CopyShader === undefined ) {
@@ -47,8 +49,6 @@ THREE.EffectComposer = function ( renderer, renderTarget ) {
 	}
 
 	this.copyPass = new THREE.ShaderPass( THREE.CopyShader );
-
-	this._previousFrameTime = Date.now();
 
 };
 
@@ -99,11 +99,9 @@ Object.assign( THREE.EffectComposer.prototype, {
 
 		if ( deltaTime === undefined ) {
 
-			deltaTime = ( Date.now() - this._previousFrameTime ) * 0.001;
+			deltaTime = clock.getDelta();
 
 		}
-
-		this._previousFrameTime = Date.now();
 
 		var currentRenderTarget = this.renderer.getRenderTarget();
 

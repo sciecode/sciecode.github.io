@@ -223,14 +223,13 @@
 
 	stExp,
 	edExp,
-	prevTime,
-	curTime,
 	sumTime,
 
 	ball,
 	direction,
 	amount;
 
+	const clock = new THREE.Clock();
 
 	function init$2( camera, controls ) {
 
@@ -536,7 +535,6 @@
 		overlay.classList.add( "invisible" );
 
 		stExp = true;
-		prevTime = Date.now();
 		sumTime = 0;
 
 	}
@@ -592,11 +590,9 @@
 
 			if ( sumTime < 3500 ) {
 
-				curTime = Date.now();
-				const elapsedTime = curTime - prevTime;
-				prevTime = curTime;
+				const delta = clock.getDelta();
 
-				sumTime += elapsedTime;
+				sumTime += delta * 1000;
 
 				t = sumTime / 3500;
 
@@ -1040,11 +1036,10 @@ void main() {
 	TEXTURE_HEIGHT,
 	AMOUNT,
 
-	cur = Date.now(),
-	prev$1 = cur,
 	life = 0;
 
-	const dim = 220;
+	const dim = 220,
+	clock$1 = new THREE.Clock();
 
 	async function init$5( renderer, camera ) {
 
@@ -1302,11 +1297,7 @@ void main() {
 
 	function update$4() {
 
-		cur = Date.now();
-		const offset = cur - prev$1;
-		prev$1 = cur;
-
-		life += Math.min( offset / ( 1200 ), 1 / 8 );
+		life += Math.min( clock$1.getDelta / 1.2, 1 / 8 );
 
 		update$3( );
 

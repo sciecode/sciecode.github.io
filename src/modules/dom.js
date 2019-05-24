@@ -35,14 +35,13 @@ stBtn,
 
 stExp,
 edExp,
-prevTime,
-curTime,
 sumTime,
 
 ball,
 direction,
 amount;
 
+const clock = new THREE.Clock();
 
 function init( camera, controls ) {
 
@@ -351,7 +350,6 @@ function startExperience() {
 	overlay.classList.add( "invisible" );
 
 	stExp = true;
-	prevTime = Date.now();
 	sumTime = 0;
 
 }
@@ -407,11 +405,9 @@ function update() {
 
 		if ( sumTime < 3500 ) {
 
-			curTime = Date.now();
-			const elapsedTime = curTime - prevTime;
-			prevTime = curTime;
+			const delta = clock.getDelta();
 
-			sumTime += elapsedTime;
+			sumTime += delta * 1000;
 
 			t = sumTime / 3500;
 

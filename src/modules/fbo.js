@@ -33,11 +33,10 @@ TEXTURE_WIDTH,
 TEXTURE_HEIGHT,
 AMOUNT,
 
-cur = Date.now(),
-prev = cur,
 life = 0;
 
-const dim = 220;
+const dim = 220,
+clock = new THREE.Clock();
 
 async function init( renderer, camera ) {
 
@@ -295,11 +294,7 @@ function _createVelocityTexture() {
 
 function update() {
 
-	cur = Date.now();
-	const offset = cur - prev;
-	prev = cur;
-
-	life += Math.min( offset / ( 1200 ), 1 / 8 );
+	life += Math.min( clock.getDelta / 1.2, 1 / 8 );
 
 	mouse.update( );
 
