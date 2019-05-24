@@ -405,9 +405,7 @@ function update() {
 
 		if ( sumTime < 3500 ) {
 
-			const delta = clock.getDelta();
-
-			sumTime += delta * 1000;
+			sumTime += clock.getDelta() * 1000;
 
 			t = sumTime / 3500;
 

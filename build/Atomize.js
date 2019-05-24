@@ -590,9 +590,7 @@
 
 			if ( sumTime < 3500 ) {
 
-				const delta = clock.getDelta();
-
-				sumTime += delta * 1000;
+				sumTime += clock.getDelta() * 1000;
 
 				t = sumTime / 3500;
 
@@ -1297,7 +1295,7 @@ void main() {
 
 	function update$4() {
 
-		life += Math.min( clock$1.getDelta / 1.2, 1 / 8 );
+		life += Math.min( clock$1.getDelta() / 1.2, 1 / 8 );
 
 		update$3( );
 

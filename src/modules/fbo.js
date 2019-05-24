@@ -294,7 +294,7 @@ function _createVelocityTexture() {
 
 function update() {
 
-	life += Math.min( clock.getDelta / 1.2, 1 / 8 );
+	life += Math.min( clock.getDelta() / 1.2, 1 / 8 );
 
 	mouse.update( );
 
