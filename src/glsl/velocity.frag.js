@@ -91,22 +91,30 @@ float cnoise(vec3 P){
 }
 
 vec2 distToSegment( vec3 x1, vec3 x2, vec3 x0 ) {
-    vec3 v = x2 - x1;
-    vec3 w = x0 - x1;
+  vec3 v = x2 - x1;
+  vec3 w = x0 - x1;
 
-    float c1 = dot(w,v);
-    float c2 = dot(v,v);
+  float c1 = dot(w,v);
+  float c2 = dot(v,v);
 
-    if ( c1 <= 0.0 ) {
-        return vec2( distance( x0, x1 ), 0.0 );
-    }
-    if ( c2 <= c1) {
-        return vec2( distance( x0, x2), 1.0 );
-    }
+  if ( c1 <= 0.0 ) {
+      return vec2( distance( x0, x1 ), 0.0 );
+  }
+  if ( c2 <= c1) {
+      return vec2( distance( x0, x2), 1.0 );
+  }
 
-    float b = c1 / c2;
-    vec3 pb = x1 + b*v;
-    return vec2( distance( x0, pb ), b );
+  float b = c1 / c2;
+  vec3 pb = x1 + b*v;
+  return vec2( distance( x0, pb ), b );
+}
+
+float when_gt(float x, float y) {
+  return max(sign(x - y), 0.0);
+}
+
+float when_le(float x, float y) {
+  return 1.0 - when_gt(x, y);
 }
 
 void main() {
@@ -129,13 +137,10 @@ void main() {
     vec3 offset = (pos - cur);
     vec2 dist = distToSegment(mousePrev, mousePosition, cur) / mouseRadius;
 
-    if ( dist.x <= 1.0 ) {
-        vel += offset*elasticity*1.0 - vel * viscosity;
-        vel += ( normalize( cur - ( mousePrev + ( mousePosition - mousePrev ) * dist.y ) ) * mix( 7.0, 0.1, dist.x ) + rand * 0.02 );
-    }
-    else {
-        vel += offset*elasticity - vel * viscosity;
-    }
+    vel += ( offset*elasticity*1.0 - vel * viscosity ) * when_le( dist.x, 1.0 );
+    vel += ( normalize( cur - ( mousePrev + ( mousePosition - mousePrev ) * dist.y ) ) * mix( 7.0, 0.1, dist.x ) + rand * 0.02 ) * when_le( dist.x, 1.0 );
+
+    vel += ( offset*elasticity - vel * viscosity ) * when_gt( dist.x, 1.0 );
 
     gl_FragColor = vec4( vel, 1.0 );
 }
