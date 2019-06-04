@@ -1,47 +1,50 @@
 // import-block
+import {
+	Clock,
+	Color
+} from 'three';
 import * as settings from './settings.js';
 import * as floor from './floor.js';
 import { easeInOutQuint, easeInOutQuart } from '../helpers/easing.js';
 
 // define-block
 let _camera,
-_controls,
+	_controls,
 
-body,
-overlay,
-brand,
-inside,
+	body,
+	overlay,
+	brand,
+	inside,
 
-mbCheckbox,
-menu,
-qualities,
-quality_list,
-quality_value,
+	mbCheckbox,
+	menu,
+	qualities,
+	quality_list,
+	quality_value,
 
-caret,
-notice,
-settings_items,
+	caret,
+	settings_items,
 
-radSlider,
-visSlider,
-elaSlider,
+	radSlider,
+	visSlider,
+	elaSlider,
 
-color1,
-color2,
+	color1,
+	color2,
 
-fluid_ball,
+	fluid_ball,
 
-stBtn,
+	stBtn,
 
-stExp,
-edExp,
-sumTime,
+	stExp,
+	edExp,
+	sumTime,
 
-ball,
-direction,
-amount;
+	ball,
+	direction,
+	amount;
 
-const clock = new THREE.Clock();
+const clock = new Clock();
 
 function init( camera, controls ) {
 
@@ -53,8 +56,6 @@ function init( camera, controls ) {
 	amount = 1;
 
 	body = document.getElementsByTagName( "BODY" )[ 0 ];
-
-	notice = document.getElementById( "noticeText" );
 
 	qualities = document.getElementsByClassName( "qualities" );
 	quality_list = document.getElementById( "quality_list" );
@@ -172,7 +173,7 @@ function init( camera, controls ) {
 
 	color1.addEventListener( "mousemove", function ( ) {
 
-		const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		const col = new Color( "hsl(" + this.value + ",  73%, 46%)" );
 		floor.update();
 		settings.update( 'color1', "#" + col.getHexString() );
 
@@ -186,7 +187,7 @@ function init( camera, controls ) {
 
 	color1.addEventListener( "touchmove", function ( ) {
 
-		const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		const col = new Color( "hsl(" + this.value + ",  73%, 46%)" );
 		floor.update();
 		settings.update( 'color1', "#" + col.getHexString() );
 
@@ -200,7 +201,7 @@ function init( camera, controls ) {
 
 	color2.addEventListener( "mousemove", function ( ) {
 
-		const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		const col = new Color( "hsl(" + this.value + ",  73%, 46%)" );
 		settings.update( 'color2', "#" + col.getHexString() );
 
 		let col2 = document.getElementById( "color2_value" );
@@ -213,7 +214,7 @@ function init( camera, controls ) {
 
 	color2.addEventListener( "touchmove", function ( ) {
 
-		const col = new THREE.Color( "hsl(" + this.value + ",  73%, 46%)" );
+		const col = new Color( "hsl(" + this.value + ",  73%, 46%)" );
 		settings.update( 'color2', "#" + col.getHexString() );
 
 		let col2 = document.getElementById( "color2_value" );
@@ -224,7 +225,7 @@ function init( camera, controls ) {
 
 	}, false );
 
-	stBtn.addEventListener( "click", function ( ) {
+	stBtn.addEventListener( "click", function ( e ) {
 
 		startExperience();
 
@@ -339,7 +340,6 @@ function changeQuality( val ) {
 
 }
 
-
 function startExperience() {
 
 	document.body.classList.remove( "starting" );
@@ -357,7 +357,7 @@ function startExperience() {
 function startUI() {
 
 	_controls.enableZoom = true;
-	_controls.enableRotate = true;
+	_controls.enableRotate = ( settings.md == null ) ? true : false;
 	_controls.maxPolarAngle = Math.PI * 1.8 / 5;
 	_controls.maxDistance = 250;
 	_controls.minDistance = 150;
@@ -424,7 +424,7 @@ function update() {
 
 	}
 
-	if ( fluid_ball.parentNode.classList.contains( 'selected_item') ) {
+	if ( fluid_ball.parentNode.classList.contains( 'selected_item' ) ) {
 
 		if ( ball > 130 || ball < 0 ) {
 

@@ -1,4 +1,10 @@
 // import-block
+import {
+	AdditiveBlending, NoBlending, BackSide,
+	ShaderMaterial, UniformsUtils, UniformsLib,
+	BufferGeometry, BufferAttribute,
+	Color, Points,
+} from 'three';
 import * as settings from './settings.js';
 import * as lights from './lights.js';
 import * as fbo from './fbo.js';
@@ -11,17 +17,17 @@ import distance_frag from '../glsl/distance.frag.js';
 
 // define-block
 let mesh,
-_camera,
+	_camera,
 
-_color1,
-_color2,
+	_color1,
+	_color2,
 
-renderShader,
-distanceShader,
+	renderShader,
+	distanceShader,
 
-TEXTURE_WIDTH,
-TEXTURE_HEIGHT,
-AMOUNT;
+	TEXTURE_WIDTH,
+	TEXTURE_HEIGHT,
+	AMOUNT;
 
 const set = {
 	befEnlargementNear: 34.0,
@@ -40,7 +46,7 @@ const set = {
 
 async function init( camera ) {
 
-	return new Promise(resolve => {
+	return new Promise( resolve => {
 
 		_camera = camera;
 
@@ -50,10 +56,10 @@ async function init( camera ) {
 
 
 		// material-block
-		renderShader = new THREE.ShaderMaterial( {
-			uniforms: THREE.UniformsUtils.merge( [
-				THREE.UniformsLib.shadowmap,
-				THREE.UniformsLib.lights,
+		renderShader = new ShaderMaterial( {
+			uniforms: UniformsUtils.merge( [
+				UniformsLib.shadowmap,
+				UniformsLib.lights,
 				{
 					textureDefaultPosition: { type: "t", value: fbo.defaultPosition },
 					texturePosition: { type: "t", value: null },
@@ -85,20 +91,20 @@ async function init( camera ) {
 			fragmentShader: render_frag,
 			lights: true,
 			transparent: true,
-			blending: THREE.AdditiveBlending,
+			blending: AdditiveBlending,
 			depthTest: false,
 			depthWrite: false,
 		} );
 
-		_color1 = new THREE.Color( settings.options.color1 );
-		_color2 = new THREE.Color( settings.options.color2 );
+		_color1 = new Color( settings.options.color1 );
+		_color2 = new Color( settings.options.color2 );
 
 		renderShader.uniforms.color1.value = _color1;
 		renderShader.uniforms.color2.value = _color2;
 		renderShader.uniforms.dim.value = fbo.dim;
 		renderShader.uniforms.sizeRatio.value = settings.options.sizeRatio;
 
-		distanceShader = new THREE.ShaderMaterial( {
+		distanceShader = new ShaderMaterial( {
 			uniforms: {
 				lightPos: { type: 'v3', value: lights.mesh.position },
 				texturePosition: { type: 't', value: null }
@@ -108,14 +114,14 @@ async function init( camera ) {
 			fragmentShader: distance_frag,
 			depthTest: false,
 			depthWrite: false,
-			side: THREE.BackSide,
-			blending: THREE.NoBlending
+			side: BackSide,
+			blending: NoBlending
 		} );
 
 
 		// geometry-block
 		const position = new Float32Array( AMOUNT * 3 );
-		for ( let i = 0; i < AMOUNT ; i ++ ) {
+		for ( let i = 0; i < AMOUNT; i ++ ) {
 
 			const i3 = i * 3;
 			position[ i3 + 0 ] = ~ ~ ( i / ( TEXTURE_HEIGHT ) ) / ( TEXTURE_WIDTH );
@@ -123,17 +129,17 @@ async function init( camera ) {
 
 		}
 
-		const geometry = new THREE.BufferGeometry();
-		geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
+		const geometry = new BufferGeometry();
+		geometry.addAttribute( 'position', new BufferAttribute( position, 3 ) );
 
-		mesh = new THREE.Points( geometry, renderShader );
+		mesh = new Points( geometry, renderShader );
 		mesh.customDistanceMaterial = distanceShader;
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 
 		resolve( true );
 
-	});
+	} );
 
 }
 

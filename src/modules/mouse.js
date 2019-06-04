@@ -1,25 +1,29 @@
 // FIX SLINGSOT EFFECT WHEN MOUSE LEAVES DOCUMENT
+import {
+	Vector2, Vector3,
+	Raycaster, Plane
+} from 'three';
 
 // define-block
 let _camera;
 
-const mouse = new THREE.Vector2( 1, 1 ),
-prev = new THREE.Vector3( 999, 0, 0 ),
-tmpmouse = new THREE.Vector3(),
-position = new THREE.Vector3( 999, 0, 0 ),
-speed = new THREE.Vector3(),
+const mouse = new Vector2(),
+	prev = new Vector3(),
+	tmpmouse = new Vector3(),
+	position = new Vector3(),
+	speed = new Vector3(),
 
-raycaster = new THREE.Raycaster(),
-plane = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ) );
+	raycaster = new Raycaster(),
+	plane = new Plane( new Vector3( 0, 1, 0 ) );
 
 
 function init( camera ) {
 
 	_camera = camera;
 
-	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-	document.addEventListener( 'touchstart', onDocumentTouchStart, false );
-	document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+	window.addEventListener( 'mousemove', onDocumentMouseMove );
+	window.addEventListener( 'touchstart', onDocumentTouchStart );
+	window.addEventListener( 'touchmove', onDocumentTouchMove );
 
 }
 

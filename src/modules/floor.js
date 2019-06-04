@@ -1,15 +1,22 @@
 // import-block
+import {
+	Color,
+	PlaneGeometry,
+	MeshStandardMaterial,
+	Mesh,
+} from 'three';
 import { options } from './settings.js';
 
 // define-block
 let mesh;
 
 const c1 = {}, c2 = {};
-const color = new THREE.Color();
+const color = new Color();
 
 function init() {
-	const geometry = new THREE.PlaneGeometry( 4000, 4000, 10, 10 );
-	const _material = new THREE.MeshStandardMaterial( {
+
+	const geometry = new PlaneGeometry( 4000, 4000, 10, 10 );
+	const _material = new MeshStandardMaterial( {
 		roughness: 0.7,
 		metalness: 1.0,
 		dithering: true,
@@ -17,7 +24,7 @@ function init() {
 		emissive: 0x000000
 	} );
 
-	mesh = new THREE.Mesh( geometry, _material );
+	mesh = new Mesh( geometry, _material );
 	mesh.rotation.x = - 1.57;
 	mesh.position.y = - 55;
 	mesh.receiveShadow = true;

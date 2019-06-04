@@ -83,4 +83,4 @@ function update( prop, val ) {
 
 }
 
-export { options, reset, changeQuality, update };
+export { options, reset, changeQuality, update, md };

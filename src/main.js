@@ -1,5 +1,13 @@
 // import-block
-import * as postprocessing from './postprocessing/composer.js';
+import {
+	Vector3,
+	WebGLRenderer, Scene, PerspectiveCamera,
+	PCFSoftShadowMap, FogExp2
+} from 'three';
+
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+import * as postprocessing from './modules/composer.js';
 import * as settings from './modules/settings.js';
 import * as dom from './modules/dom.js';
 import * as lights from './modules/lights.js';
@@ -9,23 +17,22 @@ import * as particles from './modules/particles.js';
 
 // defines-block
 let w, h,
-renderer, scene, camera, controls,
+	renderer, scene, camera, controls,
+	isGPU = true,
+	loading = true,
+	fboLoaded = false,
+	particlesLoaded = false,
+	postprocessingLoaded = false,
+	sceneComplete = false;
 
-isGPU = true,
-loading = true,
-fboLoaded = false,
-particlesLoaded = false,
-postprocessingLoaded = false,
-sceneComplete = false;
-
-const stPos = new THREE.Vector3( 0, 200, - 0.1 );
+const stPos = new Vector3( 0, 200, - 0.1 );
 
 function start() {
 
 	// init-renderer-block
 	try {
 
-		renderer = new THREE.WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
+		renderer = new WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
 
 	} catch ( err ) {
 
@@ -52,21 +59,24 @@ function start() {
 	renderer.setClearColor( 0x020406 );
 
 	renderer.sortObjects = false;
-	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+	renderer.shadowMap.type = PCFSoftShadowMap;
 	renderer.shadowMap.enabled = true;
 
 	document.body.appendChild( renderer.domElement );
 
-	scene = new THREE.Scene();
-	scene.fog = new THREE.FogExp2( 0x020406, 0.0016 );
+	scene = new Scene();
+	scene.fog = new FogExp2( 0x020406, 0.0016 );
 
-	camera = new THREE.PerspectiveCamera( 75, w / h, 1, 10000 );
+	camera = new PerspectiveCamera( 75, w / h, 1, 10000 );
 	camera.position.copy( stPos );
 
-	controls = new THREE.OrbitControls( camera, renderer.domElement );
+	controls = new OrbitControls( camera, renderer.domElement );
+	controls.enableDamping = true;
+	controls.dampingFactor = 0.05;
 	controls.enablePan = false;
 	controls.enableZoom = false;
 	controls.enableRotate = false;
+	controls.rotateSpeed = 0.02;
 	controls.update();
 
 	const gl = renderer.getContext();
@@ -100,9 +110,23 @@ function load() {
 	scene.add( lights.mesh );
 	scene.add( floor.mesh );
 
-	fbo.init( renderer, camera ).then( (status) => { fboLoaded = status } );
-	particles.init( camera ).then( (status) => { particlesLoaded = status } );
-	postprocessing.init( renderer, scene, camera, w, h ).then( (status) => { postprocessingLoaded = status } );
+	fbo.init( renderer, camera ).then( ( status ) => {
+
+		fboLoaded = status;
+
+	} );
+
+	particles.init( camera ).then( ( status ) => {
+
+		particlesLoaded = status;
+
+	} );
+
+	postprocessing.init( renderer, scene, camera, w, h ).then( ( status ) => {
+
+		postprocessingLoaded = status;
+
+	} );
 
 	dom.init( camera, controls );
 
