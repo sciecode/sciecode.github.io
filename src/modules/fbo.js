@@ -20,20 +20,19 @@ import position_frag from '../glsl/position.frag.js';
 import velocity_frag from '../glsl/velocity.frag.js';
 
 // define-block;
-let _mesh,
-	_scene,
-	_camera,
-	_renderer,
+let mesh,
+	scene,
+	camera,
+	renderer,
 
-	_copyShader,
-	_positionShader,
-	_velocityShader,
+	copyShader,
+	positionShader,
+	velocityShader,
 
 	rtt,
-	_rtt,
-	_rtt2,
-	_vtt,
-	_vtt2,
+	rtt2,
+	vtt,
+	vtt2,
 
 	randomData,
 	randomTexture,
@@ -48,25 +47,25 @@ let _mesh,
 const dim = 220,
 	clock = new Clock();
 
-async function init( renderer, camera ) {
+async function init( WebGLRenderer, PerspectiveCamera ) {
 
 	return new Promise( resolve => {
 
-		mouse.init( camera );
+		mouse.init( PerspectiveCamera );
 
 		TEXTURE_WIDTH = settings.options.TEXTURE_WIDTH;
 		TEXTURE_HEIGHT = settings.options.TEXTURE_HEIGHT;
 		AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
-		_renderer = renderer;
-		_scene = new Scene();
-		_camera = new Camera();
-		_camera.position.z = 1;
+		renderer = WebGLRenderer;
+		scene = new Scene();
+		camera = new Camera();
+		camera.position.z = 1;
 
-		randomTexture = _createRandomTexture();
-		defaultPosition = _createDefaultPositionTexture();
+		randomTexture = createRandomTexture();
+		defaultPosition = createDefaultPositionTexture();
 
-		_copyShader = new ShaderMaterial( {
+		copyShader = new ShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texture: { type: 't' }
@@ -76,7 +75,7 @@ async function init( renderer, camera ) {
 			fragmentShader: through_frag,
 		} );
 
-		_positionShader = new ShaderMaterial( {
+		positionShader = new ShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texturePosition: { type: 't' },
@@ -91,7 +90,7 @@ async function init( renderer, camera ) {
 			depthTest: false
 		} );
 
-		_velocityShader = new ShaderMaterial( {
+		velocityShader = new ShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				textureRandom: { type: 't', value: randomTexture.texture },
@@ -116,10 +115,10 @@ async function init( renderer, camera ) {
 			depthTest: false
 		} );
 
-		_mesh = new Mesh( new PlaneBufferGeometry( 2, 2 ), _copyShader );
-		_scene.add( _mesh );
+		mesh = new Mesh( new PlaneBufferGeometry( 2, 2 ), copyShader );
+		scene.add( mesh );
 
-		_vtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
+		vtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
 			wrapS: ClampToEdgeWrapping,
 			wrapT: ClampToEdgeWrapping,
 			minFilter: NearestFilter,
@@ -131,11 +130,11 @@ async function init( renderer, camera ) {
 			stencilBuffer: false
 		} );
 
-		_vtt2 = _vtt.clone();
-		_copyTexture( _createVelocityTexture(), _vtt );
-		_copyTexture( _vtt, _vtt2 );
+		vtt2 = vtt.clone();
+		copyTexture( createVelocityTexture(), vtt );
+		copyTexture( vtt, vtt2 );
 
-		_rtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
+		rtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
 			wrapS: ClampToEdgeWrapping,
 			wrapT: ClampToEdgeWrapping,
 			minFilter: NearestFilter,
@@ -148,9 +147,9 @@ async function init( renderer, camera ) {
 			stencilBuffer: false
 		} );
 
-		_rtt2 = _rtt.clone();
-		_copyTexture( _createPositionTexture(), _rtt );
-		_copyTexture( _rtt, _rtt2 );
+		rtt2 = rtt.clone();
+		copyTexture( createPositionTexture(), rtt );
+		copyTexture( rtt, rtt2 );
 
 		resolve( true );
 
@@ -158,52 +157,52 @@ async function init( renderer, camera ) {
 
 }
 
-function _copyTexture( input, output ) {
+function copyTexture( input, output ) {
 
-	_mesh.material = _copyShader;
-	_copyShader.uniforms.texture.value = input.texture;
-	_renderer.setRenderTarget( output );
-	_renderer.render( _scene, _camera );
-
-}
-
-function _updatePosition() {
-
-	const tmp = _rtt;
-	_rtt = _rtt2;
-	_rtt2 = tmp;
-
-	_mesh.material = _positionShader;
-	_positionShader.uniforms.textureVelocity.value = _vtt.texture;
-	_positionShader.uniforms.texturePosition.value = _rtt2.texture;
-	_renderer.setRenderTarget( _rtt );
-	_renderer.render( _scene, _camera );
+	mesh.material = copyShader;
+	copyShader.uniforms.texture.value = input.texture;
+	renderer.setRenderTarget( output );
+	renderer.render( scene, camera );
 
 }
 
-function _updateVelocity() {
+function updatePosition() {
 
-	const tmp = _vtt;
-	_vtt = _vtt2;
-	_vtt2 = tmp;
+	const tmp = rtt;
+	rtt = rtt2;
+	rtt2 = tmp;
 
-	_mesh.material = _velocityShader;
-	_velocityShader.uniforms.mouseRadius.value = settings.options.radius;
-	_velocityShader.uniforms.viscosity.value = settings.options.viscosity;
-	_velocityShader.uniforms.elasticity.value = settings.options.elasticity;
-	_velocityShader.uniforms.textureVelocity.value = _vtt2.texture;
-	_velocityShader.uniforms.texturePosition.value = _rtt.texture;
-	_velocityShader.uniforms.mousePosition.value.copy( mouse.position );
-	_velocityShader.uniforms.mousePrev.value.copy( mouse.prev );
-	_velocityShader.uniforms.mouseVelocity.value.copy( mouse.speed );
-	_velocityShader.uniforms.time.value = life;
-
-	_renderer.setRenderTarget( _vtt );
-	_renderer.render( _scene, _camera );
+	mesh.material = positionShader;
+	positionShader.uniforms.textureVelocity.value = vtt.texture;
+	positionShader.uniforms.texturePosition.value = rtt2.texture;
+	renderer.setRenderTarget( rtt );
+	renderer.render( scene, camera );
 
 }
 
-function _createRandomTexture() {
+function updateVelocity() {
+
+	const tmp = vtt;
+	vtt = vtt2;
+	vtt2 = tmp;
+
+	mesh.material = velocityShader;
+	velocityShader.uniforms.mouseRadius.value = settings.options.radius;
+	velocityShader.uniforms.viscosity.value = settings.options.viscosity;
+	velocityShader.uniforms.elasticity.value = settings.options.elasticity;
+	velocityShader.uniforms.textureVelocity.value = vtt2.texture;
+	velocityShader.uniforms.texturePosition.value = rtt.texture;
+	velocityShader.uniforms.mousePosition.value.copy( mouse.position );
+	velocityShader.uniforms.mousePrev.value.copy( mouse.prev );
+	velocityShader.uniforms.mouseVelocity.value.copy( mouse.speed );
+	velocityShader.uniforms.time.value = life;
+
+	renderer.setRenderTarget( vtt );
+	renderer.render( scene, camera );
+
+}
+
+function createRandomTexture() {
 
 	randomData = new Float32Array( AMOUNT * 4 );
 	for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
@@ -231,7 +230,7 @@ function _createRandomTexture() {
 }
 
 
-function _createPositionTexture() {
+function createPositionTexture() {
 
 	const data = new Float32Array( AMOUNT * 4 );
 	for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
@@ -261,7 +260,7 @@ function _createPositionTexture() {
 
 }
 
-function _createDefaultPositionTexture() {
+function createDefaultPositionTexture() {
 
 	const data = new Float32Array( AMOUNT * 4 );
 	for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
@@ -288,7 +287,7 @@ function _createDefaultPositionTexture() {
 
 }
 
-function _createVelocityTexture() {
+function createVelocityTexture() {
 
 	const tmp = {};
 	tmp.texture = new DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_HEIGHT, TEXTURE_WIDTH, RGBAFormat, FloatType );
@@ -308,9 +307,8 @@ function update() {
 
 	mouse.update( );
 
-	_updateVelocity();
-	_updatePosition();
-	rtt = _rtt;
+	updateVelocity();
+	updatePosition();
 
 }
 

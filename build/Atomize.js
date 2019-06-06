@@ -51597,20 +51597,19 @@ void main() {
 	// import-block
 
 	// define-block;
-	let _mesh,
-		_scene,
-		_camera$2,
-		_renderer,
+	let mesh$2,
+		scene,
+		camera,
+		renderer,
 
-		_copyShader,
-		_positionShader,
-		_velocityShader,
+		copyShader,
+		positionShader,
+		velocityShader,
 
 		rtt,
-		_rtt,
-		_rtt2,
-		_vtt,
-		_vtt2,
+		rtt2,
+		vtt,
+		vtt2,
 
 		randomData,
 		randomTexture,
@@ -51625,25 +51624,25 @@ void main() {
 	const dim = 220,
 		clock$1 = new Clock();
 
-	async function init$5( renderer, camera ) {
+	async function init$5( WebGLRenderer, PerspectiveCamera ) {
 
 		return new Promise( resolve => {
 
-			init$4( camera );
+			init$4( PerspectiveCamera );
 
 			TEXTURE_WIDTH = options.TEXTURE_WIDTH;
 			TEXTURE_HEIGHT = options.TEXTURE_HEIGHT;
 			AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
-			_renderer = renderer;
-			_scene = new Scene();
-			_camera$2 = new Camera();
-			_camera$2.position.z = 1;
+			renderer = WebGLRenderer;
+			scene = new Scene();
+			camera = new Camera();
+			camera.position.z = 1;
 
-			randomTexture = _createRandomTexture();
-			defaultPosition = _createDefaultPositionTexture();
+			randomTexture = createRandomTexture();
+			defaultPosition = createDefaultPositionTexture();
 
-			_copyShader = new ShaderMaterial( {
+			copyShader = new ShaderMaterial( {
 				uniforms: {
 					resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 					texture: { type: 't' }
@@ -51653,7 +51652,7 @@ void main() {
 				fragmentShader: through_frag,
 			} );
 
-			_positionShader = new ShaderMaterial( {
+			positionShader = new ShaderMaterial( {
 				uniforms: {
 					resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 					texturePosition: { type: 't' },
@@ -51668,7 +51667,7 @@ void main() {
 				depthTest: false
 			} );
 
-			_velocityShader = new ShaderMaterial( {
+			velocityShader = new ShaderMaterial( {
 				uniforms: {
 					resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 					textureRandom: { type: 't', value: randomTexture.texture },
@@ -51693,10 +51692,10 @@ void main() {
 				depthTest: false
 			} );
 
-			_mesh = new Mesh( new PlaneBufferGeometry( 2, 2 ), _copyShader );
-			_scene.add( _mesh );
+			mesh$2 = new Mesh( new PlaneBufferGeometry( 2, 2 ), copyShader );
+			scene.add( mesh$2 );
 
-			_vtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
+			vtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
 				wrapS: ClampToEdgeWrapping,
 				wrapT: ClampToEdgeWrapping,
 				minFilter: NearestFilter,
@@ -51708,11 +51707,11 @@ void main() {
 				stencilBuffer: false
 			} );
 
-			_vtt2 = _vtt.clone();
-			_copyTexture( _createVelocityTexture(), _vtt );
-			_copyTexture( _vtt, _vtt2 );
+			vtt2 = vtt.clone();
+			copyTexture( createVelocityTexture(), vtt );
+			copyTexture( vtt, vtt2 );
 
-			_rtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
+			rtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
 				wrapS: ClampToEdgeWrapping,
 				wrapT: ClampToEdgeWrapping,
 				minFilter: NearestFilter,
@@ -51725,9 +51724,9 @@ void main() {
 				stencilBuffer: false
 			} );
 
-			_rtt2 = _rtt.clone();
-			_copyTexture( _createPositionTexture(), _rtt );
-			_copyTexture( _rtt, _rtt2 );
+			rtt2 = rtt.clone();
+			copyTexture( createPositionTexture(), rtt );
+			copyTexture( rtt, rtt2 );
 
 			resolve( true );
 
@@ -51735,52 +51734,52 @@ void main() {
 
 	}
 
-	function _copyTexture( input, output ) {
+	function copyTexture( input, output ) {
 
-		_mesh.material = _copyShader;
-		_copyShader.uniforms.texture.value = input.texture;
-		_renderer.setRenderTarget( output );
-		_renderer.render( _scene, _camera$2 );
-
-	}
-
-	function _updatePosition() {
-
-		const tmp = _rtt;
-		_rtt = _rtt2;
-		_rtt2 = tmp;
-
-		_mesh.material = _positionShader;
-		_positionShader.uniforms.textureVelocity.value = _vtt.texture;
-		_positionShader.uniforms.texturePosition.value = _rtt2.texture;
-		_renderer.setRenderTarget( _rtt );
-		_renderer.render( _scene, _camera$2 );
+		mesh$2.material = copyShader;
+		copyShader.uniforms.texture.value = input.texture;
+		renderer.setRenderTarget( output );
+		renderer.render( scene, camera );
 
 	}
 
-	function _updateVelocity() {
+	function updatePosition() {
 
-		const tmp = _vtt;
-		_vtt = _vtt2;
-		_vtt2 = tmp;
+		const tmp = rtt;
+		rtt = rtt2;
+		rtt2 = tmp;
 
-		_mesh.material = _velocityShader;
-		_velocityShader.uniforms.mouseRadius.value = options.radius;
-		_velocityShader.uniforms.viscosity.value = options.viscosity;
-		_velocityShader.uniforms.elasticity.value = options.elasticity;
-		_velocityShader.uniforms.textureVelocity.value = _vtt2.texture;
-		_velocityShader.uniforms.texturePosition.value = _rtt.texture;
-		_velocityShader.uniforms.mousePosition.value.copy( position );
-		_velocityShader.uniforms.mousePrev.value.copy( prev );
-		_velocityShader.uniforms.mouseVelocity.value.copy( speed );
-		_velocityShader.uniforms.time.value = life;
-
-		_renderer.setRenderTarget( _vtt );
-		_renderer.render( _scene, _camera$2 );
+		mesh$2.material = positionShader;
+		positionShader.uniforms.textureVelocity.value = vtt.texture;
+		positionShader.uniforms.texturePosition.value = rtt2.texture;
+		renderer.setRenderTarget( rtt );
+		renderer.render( scene, camera );
 
 	}
 
-	function _createRandomTexture() {
+	function updateVelocity() {
+
+		const tmp = vtt;
+		vtt = vtt2;
+		vtt2 = tmp;
+
+		mesh$2.material = velocityShader;
+		velocityShader.uniforms.mouseRadius.value = options.radius;
+		velocityShader.uniforms.viscosity.value = options.viscosity;
+		velocityShader.uniforms.elasticity.value = options.elasticity;
+		velocityShader.uniforms.textureVelocity.value = vtt2.texture;
+		velocityShader.uniforms.texturePosition.value = rtt.texture;
+		velocityShader.uniforms.mousePosition.value.copy( position );
+		velocityShader.uniforms.mousePrev.value.copy( prev );
+		velocityShader.uniforms.mouseVelocity.value.copy( speed );
+		velocityShader.uniforms.time.value = life;
+
+		renderer.setRenderTarget( vtt );
+		renderer.render( scene, camera );
+
+	}
+
+	function createRandomTexture() {
 
 		randomData = new Float32Array( AMOUNT * 4 );
 		for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
@@ -51808,7 +51807,7 @@ void main() {
 	}
 
 
-	function _createPositionTexture() {
+	function createPositionTexture() {
 
 		const data = new Float32Array( AMOUNT * 4 );
 		for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
@@ -51838,7 +51837,7 @@ void main() {
 
 	}
 
-	function _createDefaultPositionTexture() {
+	function createDefaultPositionTexture() {
 
 		const data = new Float32Array( AMOUNT * 4 );
 		for ( let x = 0; x < TEXTURE_WIDTH; x ++ ) {
@@ -51865,7 +51864,7 @@ void main() {
 
 	}
 
-	function _createVelocityTexture() {
+	function createVelocityTexture() {
 
 		const tmp = {};
 		tmp.texture = new DataTexture( new Float32Array( AMOUNT * 4 ), TEXTURE_HEIGHT, TEXTURE_WIDTH, RGBAFormat, FloatType );
@@ -51885,9 +51884,8 @@ void main() {
 
 		update$3( );
 
-		_updateVelocity();
-		_updatePosition();
-		rtt = _rtt;
+		updateVelocity();
+		updatePosition();
 
 	}
 
@@ -52075,8 +52073,8 @@ void main () {
 	// import-block
 
 	// define-block
-	let mesh$2,
-		_camera$3,
+	let mesh$3,
+		_camera$2,
 
 		_color1,
 		_color2,
@@ -52107,7 +52105,7 @@ void main () {
 
 		return new Promise( resolve => {
 
-			_camera$3 = camera;
+			_camera$2 = camera;
 
 			TEXTURE_WIDTH$1 = options.TEXTURE_WIDTH;
 			TEXTURE_HEIGHT$1 = options.TEXTURE_HEIGHT;
@@ -52191,10 +52189,10 @@ void main () {
 			const geometry = new BufferGeometry();
 			geometry.addAttribute( 'position', new BufferAttribute( position, 3 ) );
 
-			mesh$2 = new Points( geometry, renderShader );
-			mesh$2.customDistanceMaterial = distanceShader;
-			mesh$2.castShadow = true;
-			mesh$2.receiveShadow = true;
+			mesh$3 = new Points( geometry, renderShader );
+			mesh$3.customDistanceMaterial = distanceShader;
+			mesh$3.castShadow = true;
+			mesh$3.receiveShadow = true;
 
 			resolve( true );
 
@@ -52211,7 +52209,7 @@ void main () {
 		distanceShader.uniforms.texturePosition.value = rtt.texture;
 		renderShader.uniforms.texturePosition.value = rtt.texture;
 		renderShader.uniforms.textureDefaultPosition.value = defaultPosition.texture;
-		renderShader.uniforms.camera.value = _camera$3.position;
+		renderShader.uniforms.camera.value = _camera$2.position;
 
 	}
 
@@ -52219,7 +52217,7 @@ void main () {
 
 	// defines-block
 	let w, h,
-		renderer, scene, camera, controls,
+		renderer$1, scene$1, camera$1, controls,
 		isGPU = true,
 		loading$1 = true,
 		fboLoaded = false,
@@ -52234,7 +52232,7 @@ void main () {
 		// init-renderer-block
 		try {
 
-			renderer = new WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
+			renderer$1 = new WebGLRenderer( { antialias: true, failIfMajorPerformanceCaveat: true } );
 
 		} catch ( err ) {
 
@@ -52256,23 +52254,23 @@ void main () {
 		w = window.innerWidth;
 		h = window.innerHeight;
 
-		renderer.setSize( w, h );
-		renderer.setPixelRatio( window.devicePixelRatio );
-		renderer.setClearColor( 0x020406 );
+		renderer$1.setSize( w, h );
+		renderer$1.setPixelRatio( window.devicePixelRatio );
+		renderer$1.setClearColor( 0x020406 );
 
-		renderer.sortObjects = false;
-		renderer.shadowMap.type = PCFSoftShadowMap;
-		renderer.shadowMap.enabled = true;
+		renderer$1.sortObjects = false;
+		renderer$1.shadowMap.type = PCFSoftShadowMap;
+		renderer$1.shadowMap.enabled = true;
 
-		document.body.appendChild( renderer.domElement );
+		document.body.appendChild( renderer$1.domElement );
 
-		scene = new Scene();
-		scene.fog = new FogExp2( 0x020406, 0.0016 );
+		scene$1 = new Scene();
+		scene$1.fog = new FogExp2( 0x020406, 0.0016 );
 
-		camera = new PerspectiveCamera( 75, w / h, 1, 10000 );
-		camera.position.copy( stPos );
+		camera$1 = new PerspectiveCamera( 75, w / h, 1, 10000 );
+		camera$1.position.copy( stPos );
 
-		controls = new OrbitControls( camera, renderer.domElement );
+		controls = new OrbitControls( camera$1, renderer$1.domElement );
 		controls.enableDamping = true;
 		controls.dampingFactor = 0.05;
 		controls.enablePan = false;
@@ -52281,7 +52279,7 @@ void main () {
 		controls.rotateSpeed = 0.02;
 		controls.update();
 
-		const gl = renderer.getContext();
+		const gl = renderer$1.getContext();
 
 		let precision = 'lowp';
 		if ( gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.MEDIUM_FLOAT ).precision > 0 &&
@@ -52309,47 +52307,47 @@ void main () {
 		init$3();
 		init$1();
 
-		scene.add( mesh$1 );
-		scene.add( mesh );
+		scene$1.add( mesh$1 );
+		scene$1.add( mesh );
 
-		init$5( renderer, camera ).then( ( status ) => {
+		init$5( renderer$1, camera$1 ).then( ( status ) => {
 
 			fboLoaded = status;
 
 		} );
 
-		init$6( camera ).then( ( status ) => {
+		init$6( camera$1 ).then( ( status ) => {
 
 			particlesLoaded = status;
 
 		} );
 
-		init( renderer, scene, camera, w, h ).then( ( status ) => {
+		init( renderer$1, scene$1, camera$1, w, h ).then( ( status ) => {
 
 			postprocessingLoaded = status;
 
 		} );
 
-		init$2( camera, controls );
+		init$2( camera$1, controls );
 
 	}
 
 	function loadParticles() {
 
-		scene.add( mesh$2 );
+		scene$1.add( mesh$3 );
 		sceneComplete = true;
 
 	}
 
 	function restart() {
 
-		scene.remove( mesh$2 );
+		scene$1.remove( mesh$3 );
 
 		update( 'restart', false );
-		init$5( renderer, camera );
-		init$6( camera );
+		init$5( renderer$1, camera$1 );
+		init$6( camera$1 );
 
-		scene.add( mesh$2 );
+		scene$1.add( mesh$3 );
 
 	}
 
@@ -52395,7 +52393,7 @@ void main () {
 
 		} else {
 
-			renderer.render( scene, camera );
+			renderer$1.render( scene$1, camera$1 );
 
 		}
 
@@ -52408,10 +52406,10 @@ void main () {
 		w = window.innerWidth;
 		h = window.innerHeight;
 
-		camera.aspect = w / h;
-		camera.updateProjectionMatrix();
+		camera$1.aspect = w / h;
+		camera$1.updateProjectionMatrix();
 
-		renderer.setSize( w, h );
+		renderer$1.setSize( w, h );
 		setSize( w, h );
 
 	};
