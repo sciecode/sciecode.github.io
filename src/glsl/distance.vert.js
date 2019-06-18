@@ -1,4 +1,5 @@
 export default /* glsl */`
+precision highp float;
 
 uniform sampler2D texturePosition;
 
@@ -8,14 +9,13 @@ void main() {
 
 	vec3 pos = texture2D( texturePosition, position.xy ).xyz;
 
-    vec4 worldPosition = modelMatrix * vec4( pos.xyz, 1.0 );
-    vec4 mvPosition = viewMatrix * worldPosition;
+	vec4 worldPosition = modelMatrix * vec4( pos.xyz, 1.0 );
 
-    gl_PointSize = 1.0;
+	vWorldPosition = worldPosition;
 
-    vWorldPosition = worldPosition;
+	gl_Position = projectionMatrix * viewMatrix * worldPosition;
 
-    gl_Position = projectionMatrix * mvPosition;
+	gl_PointSize = 1.0;
 
 }
 `;

@@ -5,9 +5,9 @@ import {
 	ClampToEdgeWrapping,
 	Vector2, Vector3,
 	Scene, Camera, Clock,
-	ShaderMaterial, Mesh,
-	DataTexture, PlaneBufferGeometry,
-	WebGLRenderTarget
+	RawShaderMaterial, Mesh,
+	DataTexture, BufferGeometry,
+	BufferAttribute, WebGLRenderTarget
 } from 'three';
 import * as mouse from './mouse.js';
 import * as settings from './settings.js';
@@ -60,37 +60,40 @@ async function init( WebGLRenderer, PerspectiveCamera ) {
 		renderer = WebGLRenderer;
 		scene = new Scene();
 		camera = new Camera();
-		camera.position.z = 1;
 
 		randomTexture = createRandomTexture();
 		defaultPosition = createDefaultPositionTexture();
 
-		copyShader = new ShaderMaterial( {
+		copyShader = new RawShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texture: { type: 't' }
 			},
-			precision: settings.options.precision,
 			vertexShader: quad_vert,
 			fragmentShader: through_frag,
+			fog: false,
+			lights: false,
+			depthWrite: false,
+			depthTest: false
 		} );
 
-		positionShader = new ShaderMaterial( {
+		positionShader = new RawShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				texturePosition: { type: 't' },
 				textureVelocity: { type: 't' }
 			},
-			precision: settings.options.precision,
 			vertexShader: quad_vert,
 			fragmentShader: position_frag,
 			blending: NoBlending,
 			transparent: false,
+			fog: false,
+			lights: false,
 			depthWrite: false,
 			depthTest: false
 		} );
 
-		velocityShader = new ShaderMaterial( {
+		velocityShader = new RawShaderMaterial( {
 			uniforms: {
 				resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 				textureRandom: { type: 't', value: randomTexture.texture },
@@ -106,16 +109,27 @@ async function init( WebGLRenderer, PerspectiveCamera ) {
 				dim: { type: 'f', value: dim },
 				time: { type: 'f', value: 0 },
 			},
-			precision: settings.options.precision,
 			vertexShader: quad_vert,
 			fragmentShader: velocity_frag,
 			blending: NoBlending,
 			transparent: false,
+			fog: false,
+			lights: false,
 			depthWrite: false,
 			depthTest: false
 		} );
 
-		mesh = new Mesh( new PlaneBufferGeometry( 2, 2 ), copyShader );
+		const geometry = new BufferGeometry();
+		const vertices = new Float32Array( [
+      -1.0, -1.0,
+      3.0, -1.0,
+      -1.0, 3.0
+    ] );
+
+		geometry.addAttribute( 'position', new BufferAttribute(vertices, 2) );
+
+		mesh = new Mesh( geometry, copyShader );
+		mesh.frustumCulled = false;
 		scene.add( mesh );
 
 		vtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {

@@ -1,4 +1,5 @@
 export default /* glsl */`
+precision highp float;
 
 #include <common>
 #include <packing>

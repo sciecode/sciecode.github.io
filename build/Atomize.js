@@ -51408,13 +51408,17 @@
 	}
 
 	var quad_vert = /* glsl */`
+precision highp float;
+
+attribute vec2 position;
 
 void main() {
-    gl_Position = vec4( position, 1.0 );
+    gl_Position = vec4( position, vec2(1.0) );
 }
 `;
 
 	var through_frag = /* glsl */`
+precision highp float;
 
 uniform vec2 resolution;
 uniform sampler2D texture;
@@ -51426,6 +51430,7 @@ void main() {
 `;
 
 	var position_frag = /* glsl */`
+precision highp float;
 
 uniform vec2 resolution;
 uniform sampler2D texturePosition;
@@ -51447,6 +51452,7 @@ void main() {
 `;
 
 	var velocity_frag = /* glsl */`
+precision highp float;
 
 uniform vec2 resolution;
 uniform sampler2D textureRandom;
@@ -51637,37 +51643,40 @@ void main() {
 			renderer = WebGLRenderer;
 			scene = new Scene();
 			camera = new Camera();
-			camera.position.z = 1;
 
 			randomTexture = createRandomTexture();
 			defaultPosition = createDefaultPositionTexture();
 
-			copyShader = new ShaderMaterial( {
+			copyShader = new RawShaderMaterial( {
 				uniforms: {
 					resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 					texture: { type: 't' }
 				},
-				precision: options.precision,
 				vertexShader: quad_vert,
 				fragmentShader: through_frag,
+				fog: false,
+				lights: false,
+				depthWrite: false,
+				depthTest: false
 			} );
 
-			positionShader = new ShaderMaterial( {
+			positionShader = new RawShaderMaterial( {
 				uniforms: {
 					resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 					texturePosition: { type: 't' },
 					textureVelocity: { type: 't' }
 				},
-				precision: options.precision,
 				vertexShader: quad_vert,
 				fragmentShader: position_frag,
 				blending: NoBlending,
 				transparent: false,
+				fog: false,
+				lights: false,
 				depthWrite: false,
 				depthTest: false
 			} );
 
-			velocityShader = new ShaderMaterial( {
+			velocityShader = new RawShaderMaterial( {
 				uniforms: {
 					resolution: { type: 'v2', value: new Vector2( TEXTURE_HEIGHT, TEXTURE_WIDTH ) },
 					textureRandom: { type: 't', value: randomTexture.texture },
@@ -51683,16 +51692,27 @@ void main() {
 					dim: { type: 'f', value: dim },
 					time: { type: 'f', value: 0 },
 				},
-				precision: options.precision,
 				vertexShader: quad_vert,
 				fragmentShader: velocity_frag,
 				blending: NoBlending,
 				transparent: false,
+				fog: false,
+				lights: false,
 				depthWrite: false,
 				depthTest: false
 			} );
 
-			mesh$2 = new Mesh( new PlaneBufferGeometry( 2, 2 ), copyShader );
+			const geometry = new BufferGeometry();
+			const vertices = new Float32Array( [
+	      -1.0, -1.0,
+	      3.0, -1.0,
+	      -1.0, 3.0
+	    ] );
+
+			geometry.addAttribute( 'position', new BufferAttribute(vertices, 2) );
+
+			mesh$2 = new Mesh( geometry, copyShader );
+			mesh$2.frustumCulled = false;
 			scene.add( mesh$2 );
 
 			vtt = new WebGLRenderTarget( TEXTURE_HEIGHT, TEXTURE_WIDTH, {
@@ -51890,6 +51910,7 @@ void main() {
 	}
 
 	var render_vert = /* glsl */`
+precision highp float;
 
 uniform sampler2D textureDefaultPosition;
 uniform sampler2D texturePosition;
@@ -51975,6 +51996,7 @@ void main() {
 `;
 
 	var render_frag = /* glsl */`
+precision highp float;
 
 #include <common>
 #include <packing>
@@ -52024,6 +52046,7 @@ void main() {
 `;
 
 	var distance_vert = /* glsl */`
+precision highp float;
 
 uniform sampler2D texturePosition;
 
@@ -52033,19 +52056,19 @@ void main() {
 
 	vec3 pos = texture2D( texturePosition, position.xy ).xyz;
 
-    vec4 worldPosition = modelMatrix * vec4( pos.xyz, 1.0 );
-    vec4 mvPosition = viewMatrix * worldPosition;
+	vec4 worldPosition = modelMatrix * vec4( pos.xyz, 1.0 );
 
-    gl_PointSize = 1.0;
+	vWorldPosition = worldPosition;
 
-    vWorldPosition = worldPosition;
+	gl_Position = projectionMatrix * viewMatrix * worldPosition;
 
-    gl_Position = projectionMatrix * mvPosition;
+	gl_PointSize = 1.0;
 
 }
 `;
 
 	var distance_frag = /* glsl */`
+precision highp float;
 
 uniform vec3 lightPos;
 varying vec4 vWorldPosition;
@@ -52147,6 +52170,7 @@ void main () {
 				vertexShader: render_vert,
 				fragmentShader: render_frag,
 				lights: true,
+				fog: false,
 				transparent: true,
 				blending: AdditiveBlending,
 				depthTest: false,
@@ -52169,6 +52193,8 @@ void main () {
 				precision: options.precision,
 				vertexShader: distance_vert,
 				fragmentShader: distance_frag,
+				lights: false,
+				fog: false,
 				depthTest: false,
 				depthWrite: false,
 				side: BackSide,
@@ -52193,6 +52219,7 @@ void main () {
 			mesh$3.customDistanceMaterial = distanceShader;
 			mesh$3.castShadow = true;
 			mesh$3.receiveShadow = true;
+			// mesh.frustumCulled = false;
 
 			resolve( true );
 

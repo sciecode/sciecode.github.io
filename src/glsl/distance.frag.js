@@ -1,4 +1,5 @@
 export default /* glsl */`
+precision highp float;
 
 uniform vec3 lightPos;
 varying vec4 vWorldPosition;
