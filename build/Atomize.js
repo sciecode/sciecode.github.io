@@ -52219,7 +52219,6 @@ void main () {
 			mesh$3.customDistanceMaterial = distanceShader;
 			mesh$3.castShadow = true;
 			mesh$3.receiveShadow = true;
-			// mesh.frustumCulled = false;
 
 			resolve( true );
 
