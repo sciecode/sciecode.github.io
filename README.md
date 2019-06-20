@@ -1,6 +1,4 @@
-## • [Atomize](https://sciecode.github.io/) • 
-
-This experiment was inspired by Edan Kwan's [The Spirit](http://edankwan.com/experiments/the-spirit/).
+[![](assets/images/logo.png "• Atomize •")](https://sciecode.github.io/)
 
 ## Build
 
