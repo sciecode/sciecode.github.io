@@ -1,4 +1,4 @@
-[![](assets/images/logo.png "• Atomize •")](https://sciecode.github.io/)
+<a href="https://sciecode.github.io/"><img src="assets/images/logo.png" width="300" height="300"/></a>
 
 ## Build
 
