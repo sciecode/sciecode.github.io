@@ -1,11 +1,14 @@
 // import-block
 import {
+	FogExp2,
+	PCFSoftShadowMap,
+	PerspectiveCamera,
+	Scene,
 	Vector3,
-	WebGLRenderer, Scene, PerspectiveCamera,
-	PCFSoftShadowMap, FogExp2
+	WebGLRenderer
 } from 'three';
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from './helpers/OrbitControls.js';
 
 import * as postprocessing from './modules/composer.js';
 import * as settings from './modules/settings.js';

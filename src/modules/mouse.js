@@ -1,7 +1,9 @@
 // FIX SLINGSOT EFFECT WHEN MOUSE LEAVES DOCUMENT
 import {
-	Vector2, Vector3,
-	Raycaster, Plane
+	Plane,
+	Raycaster,
+	Vector2,
+	Vector3
 } from 'three';
 
 // define-block
