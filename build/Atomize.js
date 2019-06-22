@@ -50806,11 +50806,13 @@
 
 		stExp,
 		edExp,
-		sumTime,
 
 		ball,
 		direction,
-		amount;
+		amount,
+
+		current,
+		t;
 
 	const clock = new Clock();
 
@@ -51115,7 +51117,6 @@
 		overlay.classList.add( "invisible" );
 
 		stExp = true;
-		sumTime = 0;
 
 	}
 
@@ -51165,14 +51166,13 @@
 
 	function update$2() {
 
-		let t;
 		if ( stExp && ! edExp ) {
 
-			if ( sumTime < 3500 ) {
+			current = clock.getElapsedTime();
 
-				sumTime += clock.getDelta() * 1000;
+			if ( current <= 3.5 ) {
 
-				t = sumTime / 3500;
+				t = current / 3.5;
 
 				let xpos = easeInOutQuint( t, 0, 130 );
 				let ypos = easeInOutQuart( t, 200, - 90 );
@@ -51181,7 +51181,6 @@
 
 			} else {
 
-				t = 1;
 				edExp = true;
 				startUI();
 
@@ -51902,7 +51901,7 @@ void main() {
 
 		life += Math.min( clock$1.getDelta() / 1.2, 1 / 8 );
 
-		update$3( );
+		update$3();
 
 		updateVelocity();
 		updatePosition();
@@ -52399,8 +52398,6 @@ void main () {
 
 	function update$6() {
 
-		update$2();
-
 		if ( sceneComplete ) {
 
 			controls.update();
@@ -52408,6 +52405,8 @@ void main () {
 			update$5();
 
 		}
+
+		update$2();
 
 	}
 

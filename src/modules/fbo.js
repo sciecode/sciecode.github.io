@@ -319,7 +319,7 @@ function update() {
 
 	life += Math.min( clock.getDelta() / 1.2, 1 / 8 );
 
-	mouse.update( );
+	mouse.update();
 
 	updateVelocity();
 	updatePosition();

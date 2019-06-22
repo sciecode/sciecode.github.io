@@ -176,8 +176,6 @@ function animate() {
 
 function update() {
 
-	dom.update();
-
 	if ( sceneComplete ) {
 
 		controls.update();
@@ -185,6 +183,8 @@ function update() {
 		particles.update();
 
 	}
+
+	dom.update();
 
 }
 

@@ -38,11 +38,13 @@ let _camera,
 
 	stExp,
 	edExp,
-	sumTime,
 
 	ball,
 	direction,
-	amount;
+	amount,
+
+	current,
+	t
 
 const clock = new Clock();
 
@@ -350,7 +352,6 @@ function startExperience() {
 	overlay.classList.add( "invisible" );
 
 	stExp = true;
-	sumTime = 0;
 
 }
 
@@ -400,14 +401,13 @@ function showError() {
 
 function update() {
 
-	let t;
 	if ( stExp && ! edExp ) {
 
-		if ( sumTime < 3500 ) {
+		current = clock.getElapsedTime();
 
-			sumTime += clock.getDelta() * 1000;
+		if ( current <= 3.5 ) {
 
-			t = sumTime / 3500;
+			t = current / 3.5;
 
 			let xpos = easeInOutQuint( t, 0, 130 );
 			let ypos = easeInOutQuart( t, 200, - 90 );
@@ -416,7 +416,6 @@ function update() {
 
 		} else {
 
-			t = 1;
 			edExp = true;
 			startUI();
 
