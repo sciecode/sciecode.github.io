@@ -7,7 +7,7 @@ import {
 } from 'three';
 
 // define-block
-let _camera;
+let _camera, entered;
 
 const mouse = new Vector2(),
 	prev = new Vector3(),
@@ -24,6 +24,7 @@ function init( camera ) {
 	_camera = camera;
 
 	window.addEventListener( 'mousemove', onDocumentMouseMove );
+	window.addEventListener( 'mouseover', onDocumentMouseOver );
 	window.addEventListener( 'touchstart', onDocumentTouchStart );
 	window.addEventListener( 'touchmove', onDocumentTouchMove );
 
@@ -43,6 +44,19 @@ function update( ) {
 
 	speed.copy( position.clone().sub( prev ) );
 	speed.y = 0;
+
+	if ( entered ) {
+
+		prev.copy( position );
+		entered = false;
+
+	}
+
+}
+
+function onDocumentMouseOver( evt ) {
+
+	entered = true;
 
 }
 

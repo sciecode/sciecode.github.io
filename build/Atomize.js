@@ -51176,7 +51176,7 @@
 
 				let xpos = easeInOutQuint( t, 0, 130 );
 				let ypos = easeInOutQuart( t, 200, - 90 );
-				let zpos = easeInOutQuart( t, 0, - 110 );
+				let zpos = easeInOutQuart( t, - 0.1, - 110 );
 				_camera.position.set( xpos, ypos, zpos );
 
 			} else {
@@ -51248,7 +51248,7 @@
 	// FIX SLINGSOT EFFECT WHEN MOUSE LEAVES DOCUMENT
 
 	// define-block
-	let _camera$1;
+	let _camera$1, entered;
 
 	const mouse = new Vector2(),
 		prev = new Vector3(),
@@ -51265,6 +51265,7 @@
 		_camera$1 = camera;
 
 		window.addEventListener( 'mousemove', onDocumentMouseMove );
+		window.addEventListener( 'mouseover', onDocumentMouseOver );
 		window.addEventListener( 'touchstart', onDocumentTouchStart );
 		window.addEventListener( 'touchmove', onDocumentTouchMove );
 
@@ -51284,6 +51285,19 @@
 
 		speed.copy( position.clone().sub( prev ) );
 		speed.y = 0;
+
+		if ( entered ) {
+
+			prev.copy( position );
+			entered = false;
+
+		}
+
+	}
+
+	function onDocumentMouseOver( evt ) {
+
+		entered = true;
 
 	}
 
