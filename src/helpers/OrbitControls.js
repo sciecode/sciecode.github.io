@@ -842,7 +842,7 @@ var OrbitControls = function ( object, domElement ) {
 
 		switch ( event.touches.length ) {
 
-			case 1:	// one-fingered touch: rotate
+			case 2:	// one-fingered touch: rotate
 
 				if ( scope.enableRotate === false ) return;
 
@@ -852,7 +852,7 @@ var OrbitControls = function ( object, domElement ) {
 
 				break;
 
-			case 2:	// two-fingered touch: dolly-pan
+			case 4:	// two-fingered touch: dolly-pan
 
 				if ( scope.enableZoom === false && scope.enablePan === false ) return;
 
@@ -885,7 +885,7 @@ var OrbitControls = function ( object, domElement ) {
 
 		switch ( event.touches.length ) {
 
-			case 1: // one-fingered touch: rotate
+			case 2: // one-fingered touch: rotate
 
 				if ( scope.enableRotate === false ) return;
 				if ( state !== STATE.TOUCH_ROTATE ) return; // is this needed?
@@ -894,7 +894,7 @@ var OrbitControls = function ( object, domElement ) {
 
 				break;
 
-			case 2: // two-fingered touch: dolly-pan
+			case 4: // two-fingered touch: dolly-pan
 
 				if ( scope.enableZoom === false && scope.enablePan === false ) return;
 				if ( state !== STATE.TOUCH_DOLLY_PAN ) return; // is this needed?
