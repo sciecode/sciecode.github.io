@@ -51142,7 +51142,7 @@
 
 		const videocontainer = document.getElementById( "video-container" );
 		const video = document.createElement( "VIDEO" );
-		video.src = '.assets/media/loop.mp4';
+		video.src = './assets/media/loop.mp4';
 		video.loop = true;
 		video.autoplay = true;
 		video.muted = true;
