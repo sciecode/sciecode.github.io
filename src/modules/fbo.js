@@ -51,7 +51,7 @@ async function init( WebGLRenderer, PerspectiveCamera ) {
 
 	return new Promise( resolve => {
 
-		mouse.init( PerspectiveCamera );
+		mouse.init( WebGLRenderer, PerspectiveCamera );
 
 		TEXTURE_WIDTH = settings.options.TEXTURE_WIDTH;
 		TEXTURE_HEIGHT = settings.options.TEXTURE_HEIGHT;

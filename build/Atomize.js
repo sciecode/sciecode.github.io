@@ -51260,14 +51260,14 @@
 		plane = new Plane( new Vector3( 0, 1, 0 ) );
 
 
-	function init$4( camera ) {
+	function init$4( renderer, camera ) {
 
 		_camera$1 = camera;
 
-		window.addEventListener( 'mousemove', onDocumentMouseMove );
-		window.addEventListener( 'mouseover', onDocumentMouseOver );
-		window.addEventListener( 'touchstart', onDocumentTouchStart );
-		window.addEventListener( 'touchmove', onDocumentTouchMove );
+		renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove );
+		renderer.domElement.addEventListener( 'mouseover', onDocumentMouseOver );
+		renderer.domElement.addEventListener( 'touchstart', onDocumentTouchStart );
+		renderer.domElement.addEventListener( 'touchmove', onDocumentTouchMove );
 
 	}
 
@@ -51320,6 +51320,8 @@
 	}
 
 	function onDocumentTouchMove( evt ) {
+
+		evt.preventDefault();
 
 		if ( evt.touches.length === 1 ) {
 
@@ -51647,7 +51649,7 @@ void main() {
 
 		return new Promise( resolve => {
 
-			init$4( PerspectiveCamera );
+			init$4( WebGLRenderer, PerspectiveCamera );
 
 			TEXTURE_WIDTH = options.TEXTURE_WIDTH;
 			TEXTURE_HEIGHT = options.TEXTURE_HEIGHT;

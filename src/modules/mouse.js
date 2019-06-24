@@ -19,14 +19,14 @@ const mouse = new Vector2(),
 	plane = new Plane( new Vector3( 0, 1, 0 ) );
 
 
-function init( camera ) {
+function init( renderer, camera ) {
 
 	_camera = camera;
 
-	window.addEventListener( 'mousemove', onDocumentMouseMove );
-	window.addEventListener( 'mouseover', onDocumentMouseOver );
-	window.addEventListener( 'touchstart', onDocumentTouchStart );
-	window.addEventListener( 'touchmove', onDocumentTouchMove );
+	renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove );
+	renderer.domElement.addEventListener( 'mouseover', onDocumentMouseOver );
+	renderer.domElement.addEventListener( 'touchstart', onDocumentTouchStart );
+	renderer.domElement.addEventListener( 'touchmove', onDocumentTouchMove );
 
 }
 
@@ -79,6 +79,8 @@ function onDocumentTouchStart( evt ) {
 }
 
 function onDocumentTouchMove( evt ) {
+
+	evt.preventDefault();
 
 	if ( evt.touches.length === 1 ) {
 
