@@ -26,7 +26,8 @@
   "license": "MIT",
   "homepage": "https://sciecode.github.io/",
   "devDependencies": {
-    "concurrently": "^4.1.0",
+    "lodash": "^4.17.13",
+    "concurrently": "^4.1.1",
     "ecstatic": "^4.1.2",
     "eslint": "^5.16.0",
     "eslint-config-mdcs": "^4.2.3",
