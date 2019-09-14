@@ -100,8 +100,11 @@ function start() {
 
 	settings.update( 'precision', precision );
 
+	window.addEventListener( 'resize', onWindowResize );
+
 	load();
-	requestAnimationFrame( animate ); // start
+
+	play();
 
 }
 
@@ -154,11 +157,21 @@ function restart() {
 
 }
 
-function animate() {
+function play() {
+
+	renderer.setAnimationLoop( () => {
+  
+		logic();
+		update();
+		render();
+  
+	} );
+  
+  }
+
+function logic() {
 
 	if ( settings.options.restart ) restart();
-
-	requestAnimationFrame( animate );
 
 	loading = ( ! fboLoaded || ! particlesLoaded || ! postprocessingLoaded );
 
@@ -167,10 +180,6 @@ function animate() {
 		loadParticles();
 
 	}
-
-	update();
-
-	render();
 
 }
 
@@ -202,7 +211,7 @@ function render( ) {
 
 }
 
-window.onresize = function () {
+function onWindowResize() {
 
 	if ( ! isGPU ) return;
 
@@ -215,6 +224,6 @@ window.onresize = function () {
 	renderer.setSize( w, h );
 	postprocessing.setSize( w, h );
 
-};
+}
 
 start();
