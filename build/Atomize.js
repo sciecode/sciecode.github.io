@@ -52338,7 +52338,7 @@ void main () {
 
 		update( 'precision', precision );
 
-		window.addEventListener( 'resize', onWindowResize );
+		window.addEventListener( 'resize orientationchange', onWindowResize );
 
 		load();
 

@@ -100,7 +100,7 @@ function start() {
 
 	settings.update( 'precision', precision );
 
-	window.addEventListener( 'resize', onWindowResize );
+	window.addEventListener( 'resize orientationchange', onWindowResize );
 
 	load();
 
