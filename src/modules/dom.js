@@ -409,7 +409,7 @@ function update() {
 
 			t = current / 3.5;
 
-			let xpos = easeInOutQuart( t, 0, 130 );
+			let xpos = easeInOutQuint( t, 0, 130 );
 			let ypos = easeInOutQuart( t, 200, - 90 );
 			let zpos = easeInOutQuart( t, - 0.1, - 110 );
 			_camera.position.set( xpos, ypos, zpos );

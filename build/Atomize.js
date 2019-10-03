@@ -50767,6 +50767,11 @@
 		if ((t/=1/2) < 1) return c/2*t*t*t*t + b;
 		return -c/2 * ((t-=2)*t*t*t - 2) + b;
 	}
+	// acceleration until halfway, then deceleration
+	function easeInOutQuint(t, b, c) {
+		if ((t/=1/2) < 1) return c/2*t*t*t*t*t + b;
+		return c/2*((t-=2)*t*t*t*t + 2) + b;
+	}
 
 	// import-block
 
@@ -51169,7 +51174,7 @@
 
 				t = current / 3.5;
 
-				let xpos = easeInOutQuart( t, 0, 130 );
+				let xpos = easeInOutQuint( t, 0, 130 );
 				let ypos = easeInOutQuart( t, 200, - 90 );
 				let zpos = easeInOutQuart( t, - 0.1, - 110 );
 				_camera.position.set( xpos, ypos, zpos );
