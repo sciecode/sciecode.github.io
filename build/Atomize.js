@@ -50592,15 +50592,15 @@
 		elasticity: 0.015,
 		color1: "#2095cc",
 		color2: "#20cc2e",
-		TEXTURE_WIDTH: 512,
-		TEXTURE_HEIGHT: 512,
-		quality: 2,
+		TEXTURE_WIDTH: 256,
+		TEXTURE_HEIGHT: 256,
+		quality: 0,
 		motionBlur: true,
-		useShadow: true,
-		sizeRatio: 1.32,
+		useShadow: false,
+		sizeRatio: 1.89,
 		restart: false,
 		mobile: ( md == null ) ? false : true,
-		precision: "lowp",
+		precision: "highp",
 	};
 
 	function changeQuality( val ) {
@@ -50766,11 +50766,6 @@
 	function easeInOutQuart(t, b, c) {
 		if ((t/=1/2) < 1) return c/2*t*t*t*t + b;
 		return -c/2 * ((t-=2)*t*t*t - 2) + b;
-	}
-	// acceleration until halfway, then deceleration
-	function easeInOutQuint(t, b, c) {
-		if ((t/=1/2) < 1) return c/2*t*t*t*t*t + b;
-		return c/2*((t-=2)*t*t*t*t + 2) + b;
 	}
 
 	// import-block
@@ -51091,7 +51086,7 @@
 
 		if ( ! options.mobile ) {
 
-			qualities[ 2 ].click();
+			qualities[ 0 ].click();
 
 		} else {
 
@@ -51174,7 +51169,7 @@
 
 				t = current / 3.5;
 
-				let xpos = easeInOutQuint( t, 0, 130 );
+				let xpos = easeInOutQuart( t, 0, 130 );
 				let ypos = easeInOutQuart( t, 200, - 90 );
 				let zpos = easeInOutQuart( t, - 0.1, - 110 );
 				_camera.position.set( xpos, ypos, zpos );

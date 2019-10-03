@@ -19,7 +19,7 @@
   "scripts": {
     "build": "rollup -c",
     "build-closure": "rollup -c && google-closure-compiler --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs utils/externs.js --js build/Atomize.js --js_output_file build/Atomize.min.js",
-    "dev": "concurrently --names \"ROLLUP,HTTP\" -c \"bgBlue.bold,bgGreen.bold\" \"rollup -c -w\" \"http-server\"",
+    "dev": "concurrently --names \"ROLLUP,HTTP\" -c \"bgBlue.bold,bgGreen.bold\" \"rollup -w -c \" \"http-server -c-1 -p 8010\"",
     "lint": "eslint src"
   },
   "author": "sciecode",

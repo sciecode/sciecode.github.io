@@ -7,15 +7,15 @@ const options = {
 	elasticity: 0.015,
 	color1: "#2095cc",
 	color2: "#20cc2e",
-	TEXTURE_WIDTH: 512,
-	TEXTURE_HEIGHT: 512,
-	quality: 2,
+	TEXTURE_WIDTH: 256,
+	TEXTURE_HEIGHT: 256,
+	quality: 0,
 	motionBlur: true,
-	useShadow: true,
-	sizeRatio: 1.32,
+	useShadow: false,
+	sizeRatio: 1.89,
 	restart: false,
 	mobile: ( md == null ) ? false : true,
-	precision: "lowp",
+	precision: "highp",
 };
 
 function reset() {
@@ -25,10 +25,11 @@ function reset() {
 	options.elasticity = 0.015;
 	options.color1 = "#2095cc";
 	options.color2 = "#20cc2e";
-	options.TEXTURE_WIDTH = 512;
-	options.TEXTURE_HEIGHT = 512;
-	options.sizeRatio = 1.32;
+	options.TEXTURE_WIDTH = 256;
+	options.TEXTURE_HEIGHT = 256;
+	options.sizeRatio = 1.89;
 	options.motionBlur = true;
+	options.useShadow = false;
 	options.restart = false;
 
 }
