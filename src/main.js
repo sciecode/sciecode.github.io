@@ -4,6 +4,7 @@ import {
 	PCFSoftShadowMap,
 	PerspectiveCamera,
 	Scene,
+	TOUCH,
 	Vector3,
 	WebGLRenderer
 } from 'three';
@@ -74,12 +75,13 @@ function start() {
 	camera.position.copy( stPos );
 
 	controls = new OrbitControls( camera, renderer.domElement );
-	controls.enableDamping = true;
-	controls.dampingFactor = 0.05;
+	controls.enabled = false;
 	controls.enablePan = false;
-	controls.enableZoom = false;
-	controls.enableRotate = false;
-	controls.rotateSpeed = 0.02;
+	controls.enableDamping = true;
+	controls.dampingFactor = 0.03;
+	controls.rotateSpeed = 0.4;
+	controls.touches.ONE = undefined;
+	controls.touches.TWO = TOUCH.DOLLY_ROTATE;
 	controls.update();
 
 	const gl = renderer.getContext();
@@ -100,7 +102,8 @@ function start() {
 
 	settings.update( 'precision', precision );
 
-	window.addEventListener( 'resize orientationchange', onWindowResize );
+	window.addEventListener( 'resize', onWindowResize );
+	window.addEventListener( 'orientationchange', onWindowResize );
 
 	load();
 
@@ -160,14 +163,14 @@ function restart() {
 function play() {
 
 	renderer.setAnimationLoop( () => {
-  
+
 		logic();
 		update();
 		render();
-  
+
 	} );
-  
-  }
+
+}
 
 function logic() {
 
@@ -187,7 +190,7 @@ function update() {
 
 	if ( sceneComplete ) {
 
-		controls.update();
+		if ( controls.enabled ) controls.update();
 		fbo.update();
 		particles.update();
 

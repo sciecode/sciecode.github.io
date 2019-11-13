@@ -44,7 +44,7 @@ let _camera,
 	amount,
 
 	current,
-	t
+	t;
 
 const clock = new Clock();
 
@@ -357,8 +357,7 @@ function startExperience() {
 
 function startUI() {
 
-	_controls.enableZoom = true;
-	_controls.enableRotate = true;
+	_controls.enabled = true;
 	_controls.maxPolarAngle = Math.PI * 1.8 / 5;
 	_controls.maxDistance = 250;
 	_controls.minDistance = 150;
@@ -413,6 +412,7 @@ function update() {
 			let ypos = easeInOutQuart( t, 200, - 90 );
 			let zpos = easeInOutQuart( t, - 0.1, - 110 );
 			_camera.position.set( xpos, ypos, zpos );
+			_camera.lookAt( _controls.target );
 
 		} else {
 
