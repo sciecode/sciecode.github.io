@@ -23,27 +23,27 @@ varying vec3 pos;
 
 void main() {
 
-	vec2 toCenter = (gl_PointCoord.xy - 0.5) * 2.0;
-	float len = length(toCenter);
-	if (len > 0.8) discard;
+	vec2 toCenter = ( gl_PointCoord.xy - 0.5 ) * 2.0;
+	float len = length( toCenter );
+	if ( len > 0.8 ) discard;
 
-  vec3 outgoingLight = mix(color2, color1, mix(0.0, 1.0, ratio))*1.0;
-  vec3 light = normalize(lightPos-pos);
+	vec3 outgoingLight = mix( color2, color1, ratio ) * 1.0;
+	vec3 light = normalize( lightPos - pos );
 
-  float luminosity = smoothstep(0.2,1.0,(max( 0.0, dot( vNormal, vec3(0.0,1.0,0.0)) ) ) );
-  outgoingLight *= 0.15 + luminosity*0.1;
+	float luminosity = smoothstep( 0.2, 1.0, dot( vNormal, vec3( 0.0, 1.0, 0.0 ) ) );
+	outgoingLight *= 0.15 + luminosity * 0.1;
 
-  luminosity = smoothstep(0.88,1.0,(max( 0.0, dot( vec3(0.0,1.0,0.0), light) ) ) );
-  outgoingLight *= 0.25 + luminosity*0.75;
+	luminosity = smoothstep( 0.88, 1.0, dot( vec3( 0.0, 1.0, 0.0 ), light ) );
+	outgoingLight *= 0.25 + luminosity * 0.75;
 
 	#ifdef USE_SHADOW
-    float shadow = smoothstep(0.0, 0.2, getShadowMask());
+		float shadow = smoothstep( 0.0, 0.2, getShadowMask() );
 		outgoingLight *= 0.65 + shadow*0.35;
 	#endif
 
-  float alpha = vAlpha;
+	float alpha = vAlpha;
 
-  gl_FragColor = vec4( outgoingLight , 1.0 );
+	gl_FragColor = vec4( outgoingLight, 1.0 );
 
 }
 `;

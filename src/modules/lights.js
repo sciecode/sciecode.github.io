@@ -29,7 +29,7 @@ function init() {
 	pointLight.shadow.camera.near = 10;
 	pointLight.shadow.camera.far = 1000;
 	pointLight.shadow.bias = 0.04;
-	pointLight.shadow.mapSize.width = 2048;
+	pointLight.shadow.mapSize.width = 1024;
 	pointLight.shadow.mapSize.height = 2048;
 	mesh.add( pointLight );
 

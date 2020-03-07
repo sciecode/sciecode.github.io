@@ -8,13 +8,11 @@ varying vec4 vWorldPosition;
 void main() {
 
 	vec3 pos = texture2D( texturePosition, position.xy ).xyz;
-
 	vec4 worldPosition = modelMatrix * vec4( pos.xyz, 1.0 );
 
 	vWorldPosition = worldPosition;
 
 	gl_Position = projectionMatrix * viewMatrix * worldPosition;
-
 	gl_PointSize = 1.0;
 
 }
