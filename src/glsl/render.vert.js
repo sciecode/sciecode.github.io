@@ -24,62 +24,53 @@ uniform float aftOpacityFar;
 uniform float aftOpacityBase;
 
 
-varying float ratio;
+varying float vRatio;
 varying float vAlpha;
-varying vec2 focalDirection;
 varying vec3 vNormal;
-varying vec3 pos;
+varying vec3 vPos;
 
 #include <common>
+
 #ifdef USE_SHADOW
 	#include <shadowmap_pars_vertex>
 #endif
 
-float diameter;
-
-float when_lt(float x, float y) {
-return max(sign(y - x), 0.0);
-}
-
-float when_ge(float x, float y) {
-return 1.0 - when_lt(x, y);
-}
-
 void main() {
 
 	vec3 def = texture2D( textureDefaultPosition, position.xy ).xyz;
-	pos = texture2D( texturePosition, position.xy ).xyz;
-
-	vNormal = pos - def;
-
-	float zRatio = ( pos.z + dim * 0.5 ) * 0.005;
-
-	ratio = zRatio;
+	vec3 pos = texture2D( texturePosition, position.xy ).xyz;
 
 	vec4 worldPosition = modelMatrix * vec4( pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPosition;
+	gl_Position = projectionMatrix * mvPosition;
 
-	float focalLength = length(camera);
+	vPos = pos;
+	vNormal = pos - def;
+	vRatio = ( pos.z + dim * 0.5 ) * 0.005;
+
+	float focalLength = length( camera );
 	float dist = focalLength + mvPosition.z;
-
 	float size = pow( abs( sizeRatio * 1.5 ), 1.2 );
 
-	float aftEnlargementMax = 130.0 + ( ( focalLength - 150.0 ) / 100.00 * 60.0 );
-	float befEnlargementMax = 130.0 + ( ( focalLength - 150.0 ) / 100.00 * 60.0 );
+	// DOF - Circle of Confusion Scaling
+	vec2 scaleFactor = vec2( befEnlargementFactor, aftEnlargementFactor );
+	vec2 scaleNear = vec2( befEnlargementNear, aftEnlargementNear );
+	vec2 scaleFar = vec2( 130.0 + ( focalLength - 150.0 ) * 0.6 );
+	vec2 scale = size * ( 1.0 + scaleFactor * smoothstep( scaleNear, scaleFar, vec2( dist ) ) );
+	float diameter = ( dist < 0.0 ) ? scale.x : scale.y;
 
-	diameter = size*( 1.0 + aftEnlargementFactor*smoothstep(aftEnlargementNear, aftEnlargementMax, abs(dist) ) ) * when_lt( dist, 0.0 );
-	vAlpha = aftOpacityBase + (1.0 - aftOpacityBase)*(1.0 - smoothstep(aftOpacityNear, aftOpacityFar, abs(dist) ) ) * when_lt( dist, 0.0 );
+	gl_PointSize = ( 1.27 - 0.3 * clamp( length( mvPosition.xyz ) / 600.0 , 0.0, 1.0 ) ) * diameter;
 
-	diameter += size*( 1.0 + befEnlargementFactor*smoothstep(befEnlargementNear, befEnlargementMax, abs(dist) ) ) * when_ge( dist, 0.0 );
-	vAlpha += befOpacityBase + (1.0 - befOpacityBase)*(1.0 - smoothstep(befOpacityNear, befOpacityFar, abs(dist) ) ) * when_ge( dist, 0.0 );
-
-	gl_PointSize = ( 1.27 - 0.3 * clamp( length(mvPosition.xyz) / 600.0 , 0.0, 1.0 ) ) * diameter;
-
-	gl_Position = projectionMatrix * mvPosition;
-	focalDirection = ( gl_Position.xyz / gl_Position.w ).xy;
+	// DOF - Blending
+	vec2 alphaBase = vec2( befOpacityBase, aftOpacityBase );
+	vec2 alphaNear = vec2( befOpacityNear, aftOpacityNear );
+	vec2 alphaFar = vec2( befOpacityFar, aftOpacityFar );
+	vec2 alpha = 1.0 - smoothstep( alphaNear, alphaFar, vec2( dist ) ) * alphaBase;
+	vAlpha = ( dist < 0.0 ) ? alpha.x : alpha.y;
 
 	#ifdef USE_SHADOW
 		#include <shadowmap_vertex>
 	#endif
+
 }
 `;

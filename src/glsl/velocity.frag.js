@@ -106,6 +106,7 @@ void main() {
 	pos += rand;
 
 	// damped-elastic motion
+	// a = d(position) * E - b * v
 	vel += ( pos - cur ) * elasticity - vel * viscosity;
 
 	// sdCapsule of current position to mouse line

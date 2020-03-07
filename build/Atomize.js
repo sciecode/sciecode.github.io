@@ -52075,7 +52075,9 @@ precision highp float;
 attribute vec2 position;
 
 void main() {
+
 	gl_Position = vec4( position, vec2(1.0) );
+
 }
 `;
 
@@ -52086,8 +52088,10 @@ uniform vec2 resolution;
 uniform sampler2D texture;
 
 void main() {
+
 	vec2 uv = gl_FragCoord.xy / resolution.xy;
 	gl_FragColor = texture2D( texture, uv );
+
 }
 `;
 
@@ -52221,6 +52225,7 @@ void main() {
 	pos += rand;
 
 	// damped-elastic motion
+	// a = d(position) * E - b * v
 	vel += ( pos - cur ) * elasticity - vel * viscosity;
 
 	// sdCapsule of current position to mouse line
@@ -52575,63 +52580,54 @@ uniform float aftOpacityFar;
 uniform float aftOpacityBase;
 
 
-varying float ratio;
+varying float vRatio;
 varying float vAlpha;
-varying vec2 focalDirection;
 varying vec3 vNormal;
-varying vec3 pos;
+varying vec3 vPos;
 
 #include <common>
+
 #ifdef USE_SHADOW
 	#include <shadowmap_pars_vertex>
 #endif
 
-float diameter;
-
-float when_lt(float x, float y) {
-return max(sign(y - x), 0.0);
-}
-
-float when_ge(float x, float y) {
-return 1.0 - when_lt(x, y);
-}
-
 void main() {
 
 	vec3 def = texture2D( textureDefaultPosition, position.xy ).xyz;
-	pos = texture2D( texturePosition, position.xy ).xyz;
-
-	vNormal = pos - def;
-
-	float zRatio = ( pos.z + dim * 0.5 ) * 0.005;
-
-	ratio = zRatio;
+	vec3 pos = texture2D( texturePosition, position.xy ).xyz;
 
 	vec4 worldPosition = modelMatrix * vec4( pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPosition;
+	gl_Position = projectionMatrix * mvPosition;
 
-	float focalLength = length(camera);
+	vPos = pos;
+	vNormal = pos - def;
+	vRatio = ( pos.z + dim * 0.5 ) * 0.005;
+
+	float focalLength = length( camera );
 	float dist = focalLength + mvPosition.z;
-
 	float size = pow( abs( sizeRatio * 1.5 ), 1.2 );
 
-	float aftEnlargementMax = 130.0 + ( ( focalLength - 150.0 ) / 100.00 * 60.0 );
-	float befEnlargementMax = 130.0 + ( ( focalLength - 150.0 ) / 100.00 * 60.0 );
+	// DOF - Circle of Confusion Scaling
+	vec2 scaleFactor = vec2( befEnlargementFactor, aftEnlargementFactor );
+	vec2 scaleNear = vec2( befEnlargementNear, aftEnlargementNear );
+	vec2 scaleFar = vec2( 130.0 + ( focalLength - 150.0 ) * 0.6 );
+	vec2 scale = size * ( 1.0 + scaleFactor * smoothstep( scaleNear, scaleFar, vec2( dist ) ) );
+	float diameter = ( dist < 0.0 ) ? scale.x : scale.y;
 
-	diameter = size*( 1.0 + aftEnlargementFactor*smoothstep(aftEnlargementNear, aftEnlargementMax, abs(dist) ) ) * when_lt( dist, 0.0 );
-	vAlpha = aftOpacityBase + (1.0 - aftOpacityBase)*(1.0 - smoothstep(aftOpacityNear, aftOpacityFar, abs(dist) ) ) * when_lt( dist, 0.0 );
+	gl_PointSize = ( 1.27 - 0.3 * clamp( length( mvPosition.xyz ) / 600.0 , 0.0, 1.0 ) ) * diameter;
 
-	diameter += size*( 1.0 + befEnlargementFactor*smoothstep(befEnlargementNear, befEnlargementMax, abs(dist) ) ) * when_ge( dist, 0.0 );
-	vAlpha += befOpacityBase + (1.0 - befOpacityBase)*(1.0 - smoothstep(befOpacityNear, befOpacityFar, abs(dist) ) ) * when_ge( dist, 0.0 );
-
-	gl_PointSize = ( 1.27 - 0.3 * clamp( length(mvPosition.xyz) / 600.0 , 0.0, 1.0 ) ) * diameter;
-
-	gl_Position = projectionMatrix * mvPosition;
-	focalDirection = ( gl_Position.xyz / gl_Position.w ).xy;
+	// DOF - Blending
+	vec2 alphaBase = vec2( befOpacityBase, aftOpacityBase );
+	vec2 alphaNear = vec2( befOpacityNear, aftOpacityNear );
+	vec2 alphaFar = vec2( befOpacityFar, aftOpacityFar );
+	vec2 alpha = 1.0 - smoothstep( alphaNear, alphaFar, vec2( dist ) ) * alphaBase;
+	vAlpha = ( dist < 0.0 ) ? alpha.x : alpha.y;
 
 	#ifdef USE_SHADOW
 		#include <shadowmap_vertex>
 	#endif
+
 }
 `;
 
@@ -52652,11 +52648,10 @@ uniform vec3 lightPos;
 uniform vec3 color1;
 uniform vec3 color2;
 
-varying float ratio;
+varying float vRatio;
 varying float vAlpha;
-varying vec2 focalDirection;
 varying vec3 vNormal;
-varying vec3 pos;
+varying vec3 vPos;
 
 void main() {
 
@@ -52664,8 +52659,8 @@ void main() {
 	float len = length( toCenter );
 	if ( len > 0.8 ) discard;
 
-	vec3 outgoingLight = mix( color2, color1, ratio ) * 1.0;
-	vec3 light = normalize( lightPos - pos );
+	vec3 outgoingLight = mix( color2, color1, vRatio );
+	vec3 light = normalize( lightPos - vPos );
 
 	float luminosity = smoothstep( 0.2, 1.0, dot( vNormal, vec3( 0.0, 1.0, 0.0 ) ) );
 	outgoingLight *= 0.15 + luminosity * 0.1;
@@ -52675,7 +52670,7 @@ void main() {
 
 	#ifdef USE_SHADOW
 		float shadow = smoothstep( 0.0, 0.2, getShadowMask() );
-		outgoingLight *= 0.65 + shadow*0.35;
+		outgoingLight *= 0.65 + shadow * 0.35;
 	#endif
 
 	float alpha = vAlpha;
