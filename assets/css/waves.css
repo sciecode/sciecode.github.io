@@ -455,13 +455,15 @@ body.hid #brand {
 
 #footer {
   position: absolute;
+  display: flex;
+  align-items: center;
   right: 4vw;
   bottom: 5vh;
 }
 
 .footers, .footers a {
   font-weight: 600;
-  display: inline-block;
+  display: block;
   color: #e4e5e6;
   font-size: 14px;
   text-rendering: optimizeLegibility;
@@ -470,8 +472,9 @@ body.hid #brand {
   letter-spacing: 1.1px;
 }
 
-.footers a {
-  text-decoration: underline;
+.footers {
+  /* text-decoration: underline; */
+  margin: auto 5px;
 }
 
 /* === [MENU_ICON] === */
@@ -1107,6 +1110,45 @@ input[type=range] {
   transition: opacity 0.4s linear 0.6s, transform 0.6s ease 0.6s;
   transform: scale(0);
   opacity: 0;
+}
+
+#twitter {
+  display: block;
+  height: 16px;
+  aspect-ratio: 1;
+  background-color: #e4e5e6;
+  mask-image: url(../images/twitter.svg);
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-image: url(../images/twitter.svg);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+}
+
+#mastodon {
+  display: block;
+  height: 16px;
+  aspect-ratio: 1;
+  background-color: #e4e5e6;
+  mask-image: url(../images/mastodon.svg);
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-image: url(../images/mastodon.svg);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+}
+
+#github {
+  display: block;
+  height: 16px;
+  aspect-ratio: 1;
+  background-color: #e4e5e6;
+  mask-image: url(../images/github.svg);
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-image: url(../images/github.svg);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
 }
 
 @media screen and (max-width: 700px) {
